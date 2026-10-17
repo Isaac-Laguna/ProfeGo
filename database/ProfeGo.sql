@@ -16,7 +16,6 @@ CREATE TABLE usuarios (
   UNIQUE KEY uq_usuarios_correo (correo),
   UNIQUE KEY uq_usuarios_telefono (telefono),
   UNIQUE KEY uq_usuarios_documento (documento)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Cuentas de estudiantes, docentes y administradores de ProfeGo.';
 
 CREATE TABLE dispositivos (
@@ -28,7 +27,6 @@ CREATE TABLE dispositivos (
   UNIQUE KEY uq_dispositivo_token (token_push),
   KEY idx_dispositivo_usuario (id_usuario),
   CONSTRAINT fk_dispositivo_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Dispositivos asociados a usuarios para notificaciones push.';
 
 CREATE TABLE perfiles_docente (
@@ -38,7 +36,6 @@ CREATE TABLE perfiles_docente (
   total_tutorias INT NOT NULL DEFAULT 0,
   PRIMARY KEY (id_docente),
   CONSTRAINT fk_perfil_usuario FOREIGN KEY (id_docente) REFERENCES usuarios (id_usuario)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Datos adicionales de verificación y resumen para usuarios con rol docente.';
 
 CREATE TABLE ubicacion_docente (
@@ -50,7 +47,6 @@ CREATE TABLE ubicacion_docente (
   PRIMARY KEY (id_docente),
   KEY idx_docente_cercano (en_linea, latitud, longitud),
   CONSTRAINT fk_ubicacion_perfil FOREIGN KEY (id_docente) REFERENCES perfiles_docente (id_docente)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Ubicación y disponibilidad en línea de cada docente.';
 
 CREATE TABLE asignaturas (
@@ -59,7 +55,6 @@ CREATE TABLE asignaturas (
   activo TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (id_asignatura),
   UNIQUE KEY uq_asignatura_nombre (nombre)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Catálogo de asignaturas disponibles para tutorías.';
 
 CREATE TABLE docente_asignaturas (
@@ -69,7 +64,6 @@ CREATE TABLE docente_asignaturas (
   PRIMARY KEY (id_docente, id_asignatura),
   CONSTRAINT fk_docente_asignatura_perfil FOREIGN KEY (id_docente) REFERENCES perfiles_docente (id_docente),
   CONSTRAINT fk_docente_asignatura_asignatura FOREIGN KEY (id_asignatura) REFERENCES asignaturas (id_asignatura)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Asignaturas que ofrece cada docente y su precio por hora.';
 
 CREATE TABLE solicitudes (
@@ -90,7 +84,6 @@ CREATE TABLE solicitudes (
   KEY idx_solicitud_estudiante (id_estudiante, estado),
   CONSTRAINT fk_solicitud_estudiante FOREIGN KEY (id_estudiante) REFERENCES usuarios (id_usuario),
   CONSTRAINT fk_solicitud_asignatura FOREIGN KEY (id_asignatura) REFERENCES asignaturas (id_asignatura)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Solicitudes de tutoría creadas por estudiantes.';
 
 CREATE TABLE ofertas (
@@ -106,7 +99,6 @@ CREATE TABLE ofertas (
   KEY idx_oferta_docente (id_docente, estado),
   CONSTRAINT fk_oferta_solicitud FOREIGN KEY (id_solicitud) REFERENCES solicitudes (id_solicitud),
   CONSTRAINT fk_oferta_docente FOREIGN KEY (id_docente) REFERENCES perfiles_docente (id_docente)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Propuestas de docentes para atender solicitudes de tutoría.';
 
 CREATE TABLE tutorias (
@@ -130,7 +122,6 @@ CREATE TABLE tutorias (
   CONSTRAINT fk_tutoria_solicitud FOREIGN KEY (id_solicitud) REFERENCES solicitudes (id_solicitud),
   CONSTRAINT fk_tutoria_estudiante FOREIGN KEY (id_estudiante) REFERENCES usuarios (id_usuario),
   CONSTRAINT fk_tutoria_docente FOREIGN KEY (id_docente) REFERENCES perfiles_docente (id_docente)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Tutorías confirmadas entre un estudiante y un docente.';
 
 CREATE TABLE pagos (
@@ -144,7 +135,6 @@ CREATE TABLE pagos (
   PRIMARY KEY (id_pago),
   UNIQUE KEY uq_pago_tutoria (id_tutoria),
   CONSTRAINT fk_pago_tutoria FOREIGN KEY (id_tutoria) REFERENCES tutorias (id_tutoria)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Información y estado del pago asociado a una tutoría.';
 
 CREATE TABLE calificaciones (
@@ -160,7 +150,6 @@ CREATE TABLE calificaciones (
   CONSTRAINT fk_calificacion_tutoria FOREIGN KEY (id_tutoria) REFERENCES tutorias (id_tutoria),
   CONSTRAINT fk_calificacion_evaluador FOREIGN KEY (id_evaluador) REFERENCES usuarios (id_usuario),
   CONSTRAINT fk_calificacion_evaluado FOREIGN KEY (id_evaluado) REFERENCES usuarios (id_usuario)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Puntuaciones y comentarios sobre participantes de una tutoría.';
 
 CREATE TABLE mensajes (
@@ -173,5 +162,4 @@ CREATE TABLE mensajes (
   KEY idx_mensaje_tutoria (id_tutoria, fecha_envio),
   CONSTRAINT fk_mensaje_tutoria FOREIGN KEY (id_tutoria) REFERENCES tutorias (id_tutoria),
   CONSTRAINT fk_mensaje_remitente FOREIGN KEY (id_remitente) REFERENCES usuarios (id_usuario)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Mensajes enviados durante una tutoría.';
