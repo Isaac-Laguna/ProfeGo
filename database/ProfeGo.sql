@@ -143,6 +143,7 @@ CREATE TABLE calificaciones (
   id_evaluador INT NOT NULL,
   id_evaluado INT NOT NULL,
   puntuacion TINYINT UNSIGNED NOT NULL,
+  comentarios VARCHAR (500) NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_calificacion (id_tutoria, id_evaluador),
   KEY idx_calificacion_evaluado (id_evaluado),
