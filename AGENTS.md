@@ -1,103 +1,137 @@
 # AGENTS.md
 
-The academic project will consist of developing an online/in-person tutoring platform.
+## Project overview
 
-This platform will be designed to connect students with qualified tutors across various subjects and educational levels. Students will be able to search for and book tutoring sessions, while tutors will be able to manage their availability and conduct tutoring sessions—either virtually (via video conference) or in person, as applicable.
+This academic project is an online and in-person tutoring platform.
 
-## Stack and structure
+The platform connects students with qualified tutors across different subjects and educational levels.
 
-- This project uses USBWebServer 8.6.5 to run.
-- PHP handles server-side rendering, sessions, and backend operations.
-- JavaScript handles browser interactions.
-- ES modules allow for the separation of frontend logic.
-- API PHP files receive requests and return responses.
-- JavaScript services centralize HTTP communication.
-- Shared components are reused whenever it makes sense.
-- Avoid circular dependencies.
-- ES Modules are allowed.
+Students can search for tutors and book tutoring sessions. Tutors can manage their availability and conduct sessions online or in person, as applicable.
 
-This is not limited to the mentioned ones; see *Technologies Handling* to more information.
+## Stack and architecture
+
+* Runtime environment: USBWebServer 8.6.5.
+* Backend: PHP.
+* Frontend: HTML, CSS, and JavaScript.
+* Database: use the database engine and configuration already established by the project.
+* JavaScript ES Modules are allowed.
+* Prefer native browser and PHP capabilities when they meet the requirements.
+* Follow the existing project architecture. Do not introduce a new architecture without a clear need.
+* Organize code by responsibility and feature when appropriate.
+* Keep modules cohesive and avoid circular dependencies.
+* Separate presentation, application logic, and backend responsibilities.
+* Centralize shared functionality when doing so improves maintainability.
+* Avoid unnecessary abstractions, files, and dependencies.
+* Do not introduce a framework, external dependency, or build step without first explaining its purpose, benefits, and alternatives and obtaining user approval.
 
 ## Conventions
 
-- The UI must be in Spanish. Incluiding:
-  - Labels and buttons.
-  - Validation messages.
-  - Notifications.
-  - Error messages displayed in the interface.
-  - Help texts and confirmations.
-- Code and Markdown in English and simple.
-- File and directory names must be in English.
-- Only necesary comments are allowed.
-- For design, see *Figma and Responsive Design*
+* All user-facing interface text must be in Spanish.
+* Use English for code identifiers, filenames, directory names, code comments, and technical documentation.
+* Keep code and technical Markdown clear, simple, and concise.
+* Write comments only when they clarify non-obvious behavior or important decisions.
+* Use descriptive names that communicate intent.
+* Avoid global variables unless necessary.
+* Follow the existing formatting and naming conventions when modifying established code.
+* Reuse existing components and utilities when appropriate instead of duplicating logic.
+* The README.md file must be written in Spanish.
+* Preserve the existing design and responsive behavior.
 
-## Rules
+## Design and responsive behavior
 
-- Do only what you were asked for; you can suggest tough.
-- If two instructions are in conflict, such as the user request, skill instruction, AGENTS.md, or any written instruction you are supposed to follow, *stop* and report to the user the conflicts.
-- The `README.md` file is the only file that has to be in Spanish (because users actively see it).
-- Read the `docs/constitution.md` file and the active spec `spec/NNN-name-` before modifying code.
-- You should not modify `AGENTS.md` (this file.)
-- Avoid global variables unless necessary.
+The Figma project contains Desktop and Mobile designs.
 
-### Memory
+Use Figma as a visual reference, not as a strict technical specification.
 
-Be aware of your memory file named `MEMORY.md`
+* Reproduce the intended visual structure, typography, spacing, colors, components, and interaction states.
+* Implement responsive behavior for the supported screen sizes.
+* Use the Mobile design to determine how the interface adapts to smaller screens.
+* Do not assume every Desktop element must remain visible on Mobile.
+* Do not simply scale down the Desktop layout.
+* Use appropriate CSS techniques, including media queries, Flexbox, and Grid.
+* Do not redesign established interfaces without user authorization.
+* Preserve existing design decisions unless a change is required by the task or approved by the user.
 
-- Read it when you start to know the current state of the project.
-- Update `MEMORY.md` only when there is relevant information worth preserving.
-- Do not record information that is already documented in README.md, AGENTS.md, or the specifications, unless it is useful for summarizing the current state.
-- Keep the file brief. Maximum 50 lines; summarize or erase information that no longer is of use.
-- If something becomes a permanent rule, suggest moving it to the `AGENTS.md` file instead of keeping it on memory.
-- Do not ever save sensible data, such as passwords, tokens, etc.
+## Security and data handling
 
-### Technologies Handling
+* Enforce authentication and authorization on the server for protected operations.
+* Never rely solely on frontend validation or hidden interface elements for access control.
+* Validate and appropriately handle all untrusted input on the server.
+* Use prepared statements for database queries.
+* Store passwords using appropriate password-hashing functions.
+* Do not expose credentials, tokens, or other secrets in client-side code or public files.
+* Protect state-changing requests against CSRF where applicable.
+* Handle user-generated content safely to prevent injection and cross-site scripting.
+* Follow the principle of least privilege when accessing user data and location information.
+* Do not introduce security-sensitive behavior without understanding its impact on existing authentication, sessions, and permissions.
 
-- Prioritize the native capabilities of PHP, JavaScript, HTML, and CSS.
-- Do not introduce frameworks without authorization.
-- Do not install dependencies or add build tools without approval.
-- If a library can simplify complex functionality, explain the benefits, alternatives, and maintenance costs before proposing it.
+## Development workflow
 
-### Security
+Before modifying code:
 
-- Verify authentication and authorization on the backend.
-- Do not rely solely on frontend validations.
-- Use prepared statements for database access.
-- Do not store passwords in plain text.
-- Do not expose credentials in public files.
-- Validate data received by the server.
-- Protect operations that modify data against CSRF, where applicable.
-- Avoid inserting user-provided content as HTML without sanitization or secure handling.
-- Request only the necessary location permissions and handle cases where they are denied.
+1. Read this file.
+2. Read MEMORY.md if it exists.
+3. Read docs/constitution.md.
+4. Read the active specification in spec/.
+5. Inspect the relevant existing code and tests.
+6. Identify the requirements and constraints relevant to the task.
+
+When implementing a task:
+
+* Make only the changes needed to satisfy the request.
+* Avoid unrelated refactoring and redesign.
+* Follow the active specification and established architecture.
+* Preserve existing functionality unless the task requires changing it.
+* Avoid circular dependencies and unnecessary coupling.
+* Do not assume that a feature is complete without verifying its relevant behavior.
+
+When finishing a task:
+
+* Run the relevant tests when possible.
+* Report which checks were run and whether they passed.
+* If a check could not be run, explain why.
+* Summarize the changes and any relevant limitations.
+* Update MEMORY.md only when meaningful project state, decisions, unresolved issues, or useful findings have changed.
+* Keep MEMORY.md at or below 50 lines.
+* Do not duplicate documentation unnecessarily.
+* Never store passwords, tokens, credentials, or other sensitive information in MEMORY.md.
+
+## Instructions and conflicts
+
+* Follow all applicable higher-priority instructions.
+* Distinguish genuine conflicts from instructions that can be satisfied together.
+* If a material conflict prevents a safe or correct implementation, stop the affected work and explain the conflict before proceeding.
+* Ask for clarification when the requirements are ambiguous and the ambiguity materially affects the implementation.
+* Do not stop for minor ambiguities that can be resolved safely using the established project conventions.
+* Do not modify AGENTS.md unless the user explicitly authorizes the change.
+
+## Documentation
+
+* Read docs/constitution.md and the active specification in spec/ before modifying code.
+* Treat the active specification as the source of requirements for the feature being implemented.
+* If documentation conflicts with the current implementation, identify the discrepancy rather than silently assuming which is correct.
+* Keep technical documentation in English, except README.md, which must be in Spanish.
+* Do not create or modify documentation unrelated to the requested task unless necessary to keep it accurate.
 
 ## Testing
 
-- JavaScript tests may use Node.js's built-in test runner when appropriate.
-- Command: node --test.
-- This command does not replace PHP, integration, database, or browser testing.
-- Run the relevant checks available in the project.
-- Do not claim that tests passed unless they were actually executed successfully.
-- Do not add a testing framework or dependency without user approval.
+* JavaScript tests may use Node.js's built-in test runner when appropriate.
+* Command: `node --test`.
+* This command does not replace PHP, integration, database, or browser testing.
+* Run the relevant checks available in the project.
+* Do not claim that tests passed unless they were actually executed successfully.
+* Do not add a testing framework or dependency without user approval.
 
-## Others
+## Dependencies and tooling
 
-### Figma and Responsive Design
+* Ask before adding external dependencies, frameworks, or build steps.
+* Explain why the addition is needed, its benefits, and reasonable alternatives.
+* Do not introduce tooling solely for stylistic preference.
+* Preserve compatibility with the existing USBWebServer environment unless a change is approved.
 
-The Figma project contains both Desktop and Mobile designs.
+## Scope and communication
 
-The Figma design should be used as a visual reference, not as a perfect technical specification.
-
-You must:
-
-- Reproduce the overall visual structure;
-- Follow the typography, font sizes, spacing, colors, components, hover states, and other visual decisions shown in Figma;
-- Implement responsive behavior;
-- Use the Mobile design as a reference to determine how the interface changes on smaller screens;
-- Not assume that all Desktop elements must remain visible on Mobile;
-- If an element appears on Desktop but not on Mobile, consider that there may be an intentional decision to hide it;
-- Avoid simply scaling down the entire Desktop interface;
-- Use CSS media queries, Flexbox, Grid, and other appropriate techniques to implement responsive behavior.
-
-The design may contain inconsistencies or imperfect decisions due to the team's time constraints. A general redesign of the project must not be carried out without authorization.
-
-The goal is to implement the existing design, not to replace it with a new one.
+* Do only what the user requested.
+* You may suggest relevant improvements, but distinguish suggestions from implemented changes.
+* Do not perform broad refactoring, redesign, or unrelated cleanup without authorization.
+* Communicate important assumptions, limitations, risks, and unresolved issues clearly.
