@@ -1,12 +1,27 @@
 # AGENTS.md
 
-## Figma and Responsive Design
+## Stack and structure
+
+- HTMl, CSS, JS strict mode and PHP.
+
+This is not limited to the mentioned ones; if you believe a new technology is necessary, tell it to the user.
+
+## Conventions
+
+- The UI must be in Spanish.
+- Code in English and simple.
+- File and directory names must be in English.
+- Only necesary comments are allowed.
+
+## Others
+
+### Figma and Responsive Design
 
 The Figma project contains both Desktop and Mobile designs.
 
 The Figma design should be used as a visual reference, not as a perfect technical specification.
 
-The agent must:
+You must:
 
 - Reproduce the overall visual structure;
 - Follow the typography, font sizes, spacing, colors, components, hover states, and other visual decisions shown in Figma;
