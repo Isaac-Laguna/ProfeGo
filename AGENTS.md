@@ -1,22 +1,22 @@
 # AGENTS.md
 
-## Figma y diseño responsive
+## Figma and Responsive Design
 
-El proyecto Figma contiene diseños Desktop y Mobile.
+The Figma project contains both Desktop and Mobile designs.
 
-El diseño de Figma debe utilizarse como referencia visual, no como una especificación técnica perfecta.
+The Figma design should be used as a visual reference, not as a perfect technical specification.
 
-El agente debe:
+The agent must:
 
-- reproducir la estructura visual general;
-- respetar tipografías, tamaños, espaciados, colores, componentes, estados hover y demás decisiones visibles en Figma;
-- implementar comportamiento responsive;
-- utilizar el diseño Mobile como referencia para determinar cómo cambia la interfaz en pantallas pequeñas;
-- no asumir que todos los elementos de Desktop deben permanecer visibles en Mobile;
-- si un elemento aparece en Desktop pero no en Mobile, considerar que puede existir una decisión intencional de ocultarlo;
-- evitar simplemente escalar toda la interfaz de Desktop;
-- utilizar CSS media queries, flexbox, grid y otras técnicas apropiadas para implementar el comportamiento responsive.
+- Reproduce the overall visual structure;
+- Follow the typography, font sizes, spacing, colors, components, hover states, and other visual decisions shown in Figma;
+- Implement responsive behavior;
+- Use the Mobile design as a reference to determine how the interface changes on smaller screens;
+- Not assume that all Desktop elements must remain visible on Mobile;
+- If an element appears on Desktop but not on Mobile, consider that there may be an intentional decision to hide it;
+- Avoid simply scaling down the entire Desktop interface;
+- Use CSS media queries, Flexbox, Grid, and other appropriate techniques to implement responsive behavior.
 
-El diseño puede contener inconsistencias o decisiones imperfectas debido a limitaciones de tiempo del equipo. No debe realizarse un rediseño general del proyecto sin autorización.
+The design may contain inconsistencies or imperfect decisions due to the team's time constraints. A general redesign of the project must not be carried out without authorization.
 
-El objetivo es implementar el diseño existente, no sustituirlo por un diseño nuevo.
+The goal is to implement the existing design, not to replace it with a new one.
