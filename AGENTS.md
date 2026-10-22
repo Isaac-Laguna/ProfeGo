@@ -37,6 +37,7 @@ Students can search for tutors and book tutoring sessions. Tutors can manage the
 * The README.md file must be written in Spanish.
 * You can only read but not modify `database/ProfeGo.sql` it is the database structure.
 * Preserve the existing design and responsive behavior.
+* Apply SOLID principles.
 
 ## Design and responsive behavior
 
