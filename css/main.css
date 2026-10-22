@@ -398,7 +398,7 @@ ul {
 /* Call to action */
 
 .cta {
-    margin-top: 41px;
+    margin-top: 120px;
     padding: 80px;
     background-color: var(--color-surface-muted);
 }
@@ -409,6 +409,8 @@ ul {
     align-items: center;
     justify-content: space-between;
     gap: 30px 40px;
+    max-width: 1120px;
+    margin-inline: auto;
 }
 
 .cta__title {
