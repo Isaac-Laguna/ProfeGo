@@ -433,14 +433,14 @@ ul {
 /* Footer */
 
 .site-footer {
-    padding-inline: var(--container-inline);
+    padding-inline: 32px;
     background-color: #ffffff;
 }
 
 .site-footer__inner {
     display: flex;
     align-items: flex-start;
-    max-width: 1282px;
+    max-width: none;
     min-height: 264px;
     margin-inline: auto;
     padding-top: 38px;
@@ -561,6 +561,7 @@ ul {
     }
 
     .cta {
+        margin-top: 80px;
         padding: 30px 10px;
     }
 
@@ -578,6 +579,10 @@ ul {
     .cta__actions {
         justify-content: center;
         min-width: 0;
+    }
+
+    .site-footer {
+        padding-inline: 20px;
     }
 
     .site-footer__inner {
