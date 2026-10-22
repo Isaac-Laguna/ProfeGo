@@ -35,6 +35,7 @@ Students can search for tutors and book tutoring sessions. Tutors can manage the
 * Follow the existing formatting and naming conventions when modifying established code.
 * Reuse existing components and utilities when appropriate instead of duplicating logic.
 * The README.md file must be written in Spanish.
+* You can only read but not modify `database/ProfeGo.sql` it is the database structure.
 * Preserve the existing design and responsive behavior.
 
 ## Design and responsive behavior
