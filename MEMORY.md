@@ -1,6 +1,7 @@
 # Project Memory
 
 ## Main page
+
 - `index.php` implements the Figma desktop and mobile homepage as static HTML; no app functionality yet.
 - Styles live in `css/main.css`. Figma raster assets are in `pages/images/` and social SVG icons in `pages/icons/`.
 - Responsive breakpoints: 1100px (hide steps image), 900px (mobile header and layout), 380px (compact CTA buttons).
