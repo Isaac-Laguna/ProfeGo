@@ -9,3 +9,9 @@
 - User-facing copy typos from Figma were corrected (accents and "concierte").
 - `api/`, `includes/`, `js/features/`, `js/shared/`, and `specs/` remain placeholders for upcoming work.
 - The project is served by USBWebServer at `http://localhost/` (document root is the project folder).
+
+## Login page
+
+- `pages/login.php` implements the Figma desktop and mobile login screen as static HTML; styles live in `css/login.css` and reuse tokens/brand from `main.css`.
+- No form functionality yet. Inputs start empty (the Figma error state was only a demo); links and the submit button are placeholders. Error styles remain in `login.css` for future validation.
+- Mobile breakpoint is 900px; the mobile layout keeps the design's scaled proportions.
