@@ -12,13 +12,13 @@
         <div class="site-header__inner">
             <a class="brand" href="index.php">
                 <span class="brand__crop">
-                    <img src="pages/images/logo.png" alt="ProfeGo" width="1254" height="1254">
+                    <img src="assets/images/logo.png" alt="ProfeGo" width="1254" height="1254">
                 </span>
             </a>
 
             <nav class="header-actions" aria-label="Cuenta">
                 <a class="button button--small button--account" href="#">Crear Cuenta</a>
-                <a class="button button--small button--login" href="#">Iniciar Sesion</a>
+                <a class="button button--small button--login" href="#">Iniciar Sesión</a>
             </nav>
         </div>
     </header>
@@ -26,9 +26,9 @@
     <main>
         <section class="hero container" aria-labelledby="hero-title">
             <div class="hero__copy">
-                <h1 class="hero__title" id="hero-title">¿Que es ProfeGo?</h1>
+                <h1 class="hero__title" id="hero-title">¿Qué es ProfeGo?</h1>
                 <p class="hero__lead">
-                    ProfeGo es una app para tutoria para todas las edades, con el fin de ayudar a los estudiantes o 
+                    ProfeGo es una app para tutoría para todas las edades, con el fin de ayudar a los estudiantes o 
                     universitarios con sus estudios ya sea desde una ubicación acordada o virtualmente!
                 </p>
                 <a class="button button--primary hero__action" href="#secciones">Ir a secciones</a>
@@ -36,7 +36,7 @@
 
             <div class="hero__media">
                 <img 
-                    src="pages/images/hero.png" 
+                    src="assets/images/hero.png" 
                     alt="Vista previa de la aplicación móvil de ProfeGo y sus funciones de tutoría" 
                     width="1280" 
                     height="640"
@@ -45,36 +45,36 @@
         </section>
 
         <section class="app-info container" id="secciones" aria-labelledby="app-info-title">
-            <h2 class="section-title" id="app-info-title">Informacion de la App</h2>
+            <h2 class="section-title" id="app-info-title">Información de la App</h2>
 
             <div class="info-grid">
                 <article class="info-card">
                     <div class="info-card__media">
-                        <img src="pages/images/info-tutors.png" alt="" width="405" height="405">
+                        <img src="assets/images/info-tutors.png" alt="" width="405" height="405">
                     </div>
                     <div class="info-card__copy">
-                        <h3>Tutores de todo</h3>
+                        <h3>Tutores de todo tipo</h3>
                         <p>Cualquiera con conocimientos en algo puede enseñar. Siempre y cuando se mantenga legal.</p>
                     </div>
                 </article>
 
                 <article class="info-card">
                     <div class="info-card__media">
-                        <img src="pages/images/info-reputation.png" alt="" width="405" height="405">
+                        <img src="assets/images/info-reputation.png" alt="" width="405" height="405">
                     </div>
                     <div class="info-card__copy">
-                        <h3>Reputacion</h3>
-                        <p>Los tutores seran calificados por los estudiantes en una escala del 1 al 5.</p>
+                        <h3>Reputación</h3>
+                        <p>Los tutores serán calificados por los estudiantes en una escala del 1 al 5.</p>
                     </div>
                 </article>
 
                 <article class="info-card">
                     <div class="info-card__media">
-                        <img src="pages/images/info-modality.png" alt="" width="405" height="405">
+                        <img src="assets/images/info-modality.png" alt="" width="405" height="405">
                     </div>
                     <div class="info-card__copy">
                         <h3>Modalidad flexible</h3>
-                        <p>Presencial o virtual, esa es la cuestion. Puedes seleccionar cualquiera de las 2 opciones.</p>
+                        <p>Presencial o virtual, esa es la cuestión. Puedes seleccionar cualquiera de las 2 opciones.</p>
                     </div>
                 </article>
             </div>
@@ -93,7 +93,7 @@
                                 deseas enseñarles.
                             </span>
                             <span class="mobile-only">
-                                Registrate o inicia sesion, para registrarte debes seleccionar 
+                                Regístrate o inicia sesión, para registrarte debes seleccionar 
                                 si eres estudiante o deseas enseñarles.
                             </span>
                         </p>
@@ -103,7 +103,7 @@
                         <h3>Seleccionar tus objetivos</h3>
                         <p>
                             Elige esas áreas del conocimiento en las que deseas aprender o enseñar, hacerlo nos permitirá 
-                            concerte mejor para hacerte recomendaciones acertadas.
+                            conocerte mejor para hacerte recomendaciones acertadas.
                         </p>
                     </div>
 
@@ -118,7 +118,7 @@
 
                 <div class="steps__media">
                     <img 
-                        src="pages/images/steps.jpg" 
+                        src="assets/images/steps.jpg" 
                         alt="Pasos para empezar en ProfeGo: registrarte, seleccionar tus objetivos y comenzar a aprender o enseñar" 
                         width="691" height="705"
                     >
@@ -129,13 +129,13 @@
         <section class="roles container" aria-labelledby="roles-title">
             <h2 class="section-title roles__title" id="roles-title">
                 <span class="desktop-only">Recibe ayuda para fortalecer tus habilidades.<br>O brinda esa ayuda</span>
-                <span class="mobile-only">Roles de la aplicacion</span>
+                <span class="mobile-only">Roles de la aplicación</span>
             </h2>
 
             <div class="roles__grid">
                 <article class="role-card">
                     <div class="role-card__media">
-                        <img src="pages/images/role-student.png" alt="" width="625" height="352">
+                        <img src="assets/images/role-student.png" alt="" width="625" height="352">
                     </div>
                     <div class="role-card__copy">
                         <h3>
@@ -151,7 +151,7 @@
 
                 <article class="role-card">
                     <div class="role-card__media">
-                        <img src="pages/images/role-teacher.png" alt="" width="625" height="338">
+                        <img src="assets/images/role-teacher.png" alt="" width="625" height="338">
                     </div>
                     <div class="role-card__copy">
                         <h3>
@@ -182,32 +182,32 @@
         <div class="site-footer__inner">
             <a class="brand brand--footer" href="index.php">
                 <span class="brand__crop">
-                    <img src="pages/images/logo.png" alt="ProfeGo" width="1254" height="1254">
+                    <img src="assets/images/logo.png" alt="ProfeGo" width="1254" height="1254">
                 </span>
             </a>
 
             <ul class="footer-social" aria-label="Redes sociales">
                 <li>
                     <a href="#" aria-label="Facebook de ProfeGo">
-                        <img src="pages/icons/icon-social-4.svg" alt="" width="20" height="20">
+                        <img src="assets/icons/icon-social-4.svg" alt="" width="20" height="20">
                         <span>ProfeGo</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" aria-label="LinkedIn de ProfeGo">
-                        <img src="pages/icons/icon-social-3.svg" alt="" width="20" height="20">
+                        <img src="assets/icons/icon-social-3.svg" alt="" width="20" height="20">
                         <span>ProfeGo</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" aria-label="YouTube de ProfeGo">
-                        <img src="pages/icons/icon-social-2.svg" alt="" width="20" height="20">
+                        <img src="assets/icons/icon-social-2.svg" alt="" width="20" height="20">
                         <span>@ProfeGo</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" aria-label="Instagram de ProfeGo">
-                        <img src="pages/icons/icon-social-1.svg" alt="" width="20" height="20">
+                        <img src="assets/icons/icon-social-1.svg" alt="" width="20" height="20">
                         <span>@ProfeGo</span>
                     </a>
                 </li>
@@ -215,8 +215,8 @@
 
             <div class="footer-contact">
                 <h2>Contacto</h2>
-                <p>Correo Electronico: ProfeGo@gmail.com</p>
-                <p>Telefeno: 3042825913</p>
+                <p>Correo Electrónico: ProfeGo@gmail.com</p>
+                <p>Teléfono: 3042825913</p>
             </div>
         </div>
     </footer>
