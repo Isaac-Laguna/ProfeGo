@@ -602,8 +602,9 @@ ul {
     }
 
     .footer-contact {
-        width: min(308px, 100%);
+        width: 100%;
         margin: 20px 0 0;
+        text-align: center;
     }
 }
 
