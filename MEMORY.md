@@ -7,4 +7,5 @@
 - Responsive breakpoints: 1100px (hide steps image), 900px (mobile header and layout), 380px (compact CTA buttons).
 - Typography uses Inter with a Segoe UI fallback because Inter is not bundled. Figma copy is kept verbatim, including existing typos.
 - `api/`, `assets/`, `includes/`, `js/features/`, `js/shared/`, and `specs/` remain placeholders for upcoming work.
+- The "Comentarios de estudiantes" section is omitted until real testimonials exist; its avatar images were removed.
 - The project is served by USBWebServer at `http://localhost/` (document root is the project folder).

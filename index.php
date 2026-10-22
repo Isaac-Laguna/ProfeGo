@@ -167,45 +167,6 @@
             </div>
         </section>
 
-        <section class="testimonials container" aria-labelledby="testimonials-title">
-            <h2 class="section-title" id="testimonials-title">Comentarios de estudiantes</h2>
-
-            <div class="testimonials__grid">
-                <figure class="quote">
-                    <blockquote>“Esta bueno.”</blockquote>
-                    <figcaption class="quote__author">
-                        <img class="quote__avatar" src="pages/images/avatar-1.png" alt="" width="45" height="45">
-                        <span class="quote__meta">
-                            <span class="quote__name">Albert Einstein</span>
-                            <span class="quote__role">Estudiante</span>
-                        </span>
-                    </figcaption>
-                </figure>
-
-                <figure class="quote">
-                    <blockquote>“Aquí aprendi a hacer focos.”</blockquote>
-                    <figcaption class="quote__author">
-                        <img class="quote__avatar" src="pages/images/avatar-2.png" alt="" width="45" height="45">
-                        <span class="quote__meta">
-                            <span class="quote__name">Nicolas Tesla</span>
-                            <span class="quote__role">Estudiante</span>
-                        </span>
-                    </figcaption>
-                </figure>
-
-                <figure class="quote">
-                    <blockquote>“Hueso”</blockquote>
-                    <figcaption class="quote__author">
-                        <img class="quote__avatar" src="pages/images/avatar-3.png" alt="" width="45" height="45">
-                        <span class="quote__meta">
-                            <span class="quote__name">Deleted Account</span>
-                            <span class="quote__role">Estudiante</span>
-                        </span>
-                    </figcaption>
-                </figure>
-            </div>
-        </section>
-
         <section class="cta" aria-labelledby="cta-title">
             <div class="cta__inner">
                 <h2 class="cta__title" id="cta-title">¿Qué necesitas?</h2>

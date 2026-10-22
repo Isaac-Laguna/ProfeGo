@@ -380,66 +380,6 @@ ul {
     line-height: 1.5;
 }
 
-/* Testimonials */
-
-.testimonials {
-    margin-top: 177px;
-}
-
-.testimonials .section-title {
-    margin-bottom: 30px;
-}
-
-.testimonials__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    align-items: start;
-    gap: 32px;
-}
-
-.quote {
-    display: flex;
-    flex-direction: column;
-    gap: 48px;
-    min-height: 198px;
-    padding: 32px;
-    background-color: #ffffff;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-}
-
-.quote blockquote {
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 1.5;
-}
-
-.quote__author {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.quote__avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.quote__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.5;
-}
-
-.quote__role {
-    color: var(--color-text-muted);
-}
-
 /* Call to action */
 
 .cta {
