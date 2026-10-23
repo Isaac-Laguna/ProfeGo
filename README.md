@@ -28,4 +28,12 @@ Explicar como se organizan los archivos.
 
 ### Reglas adicionales (eliminar en version final)
 
-Muchos interpretadores Markdown no reconocen bien caracteres que no sean ASCII standard, asi que evita dichos caracteres. Este archivo debe estar en el idioma spanish.
+Muchos interpretadores Markdown no reconocen bien caracteres que no sean ASCII standard, asi que evita dichos caracteres. Este archivo debe estar en el idioma Spanish.
+
+### Informacion a agregar (eliminar esta seccion en version final)
+
+#### Ejecucion
+
+El repositorio debe ser clonado dentro de la carpeta `root` de una instalacion de USBWebServer 8.6.5 Posteriormente ejecute el archivo `usbwebserver.exe` que se encuentra en su instalacion de USBWebServer, luego dirijase a **Settings** y en **Root dir** ingrese "**{path}/root/ProfeGo**" Regrese a **General** y presione el boton **PHPMyAdmin**. Que deberia abrir una pagina en su navegador.
+
+Inicie sesion con la credenciales de inicio que le brinda USBWebServer (o si las modifico, con las suyas). En la parte superior de la pagina, presione **SQL** y pegue el contenido que se encuentra en el archivo `root/ProfeGo/database/ProfeGo.sql` Presione el boton **Go** para ejecutar la query y listo. Regrese a su **General** en USBWebServer y presione **Localhost**. Con ello ya deberia poder usar la plataforma.
