@@ -1,0 +1,334 @@
+/* Register page */
+
+.register-page {
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.register-header {
+    position: absolute;
+    inset: 0 0 auto;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: 25px 0 0 55px;
+}
+
+.register-logo {
+    display: inline-block;
+}
+
+.register-logo:focus-visible {
+    outline: 3px solid var(--color-primary-800);
+    outline-offset: 2px;
+}
+
+.register-main {
+    display: flex;
+    justify-content: center;
+    padding: 120px 24px 96px;
+}
+
+.register-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 534px;
+    max-width: 100%;
+}
+
+.register-panel__title {
+    width: 100%;
+    margin-bottom: 27.6px;
+    color: var(--color-primary-800);
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    text-align: center;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.register-role {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+    max-width: 100%;
+    height: 40px;
+    margin: 0 0 26px;
+    background-color: var(--color-primary-500);
+    border: 1px solid var(--color-primary-600);
+    border-radius: var(--radius-sm);
+    color: #f5f5f5;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.register-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 320px;
+    max-width: 100%;
+    min-height: 504px;
+    margin-bottom: 15px;
+    padding: 23px;
+    background-color: #ffffff;
+    border: 1px solid #d9d9d9;
+    border-radius: var(--radius-sm);
+}
+
+.register-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.register-field label {
+    color: #1e1e1e;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.register-field input {
+    width: 100%;
+    height: 40px;
+    padding: 0 16px;
+    background-color: #ffffff;
+    border: 1px solid #d9d9d9;
+    border-radius: var(--radius-sm);
+    color: var(--color-secondary-600);
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.register-field input::placeholder {
+    color: #b3b3b3;
+    opacity: 1;
+}
+
+.register-field input:focus-visible {
+    outline: 3px solid var(--color-primary-800);
+    outline-offset: 1px;
+}
+
+.register-field--error input {
+    border-color: #ec221f;
+}
+
+.register-field__error {
+    color: #ec221f;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.6;
+}
+
+.register-terms {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 15px;
+    color: #1e1e1e;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.register-terms__checkbox {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin: 3px 0 0;
+    padding: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #ffffff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.register-terms__checkbox:checked {
+    background-color: #304485;
+    border-color: #304485;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.5 11.5 12.5 5' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 10px 10px;
+}
+
+.register-terms__checkbox:focus-visible {
+    outline: 3px solid var(--color-primary-800);
+    outline-offset: 2px;
+}
+
+.register-terms label {
+    cursor: pointer;
+}
+
+.register-terms a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+}
+
+.register-terms a:focus-visible {
+    outline: 3px solid var(--color-primary-800);
+    outline-offset: 2px;
+}
+
+.register-login {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    color: #1e1e1e;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.register-login a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+}
+
+.register-login a:focus-visible {
+    outline: 3px solid var(--color-primary-800);
+    outline-offset: 2px;
+}
+
+.register-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 178px;
+    height: 32px;
+    padding: 0 8px;
+    background-color: var(--color-primary-500);
+    border: 1px solid var(--color-primary-600);
+    border-radius: var(--radius-sm);
+    color: #eef2fe;
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.register-submit:hover {
+    filter: brightness(0.95);
+}
+
+.register-submit:focus-visible {
+    outline: 3px solid var(--color-primary-800);
+    outline-offset: 2px;
+}
+
+/* Tablet and mobile */
+
+@media (max-width: 900px) {
+    .register-header {
+        padding: 53px 0 0;
+        text-align: center;
+    }
+
+    .register-header .brand__crop {
+        width: 98px;
+        height: 110.25px;
+    }
+
+    .register-main {
+        padding: 211px 14px 64px;
+    }
+
+    .register-panel {
+        width: min(374px, 100%);
+    }
+
+    .register-panel__title {
+        margin-bottom: 15.25px;
+        font-size: clamp(40px, 13.71vw, 55.12px);
+    }
+
+    .register-role {
+        width: 183.72px;
+        height: 30.37px;
+        margin-bottom: 3.83px;
+        border-width: 0.77px;
+        border-radius: 6.12px;
+        font-size: 12.25px;
+    }
+
+    .register-card {
+        width: 244.96px;
+        min-height: 385.82px;
+        margin-bottom: 3.59px;
+        padding: 18.37px;
+        gap: 18.37px;
+        border: 0;
+        border-radius: 6.12px;
+    }
+
+    .register-field {
+        gap: 6.12px;
+    }
+
+    .register-field label {
+        font-size: 12.25px;
+    }
+
+    .register-field input {
+        height: 30.37px;
+        padding: 0 12.25px;
+        border-width: 0.77px;
+        border-radius: 6.12px;
+        font-size: 12.25px;
+    }
+
+    .register-field__error {
+        font-size: 10.72px;
+    }
+
+    .register-terms {
+        gap: 6px;
+        margin-bottom: 11.19px;
+        font-size: 12.25px;
+    }
+
+    .register-terms__checkbox {
+        width: 12.25px;
+        height: 12.25px;
+        margin-top: 2.4px;
+        border-width: 0.77px;
+        border-radius: 3.06px;
+        background-size: 7.65px 7.65px;
+    }
+
+    .register-login {
+        gap: 7.65px;
+        margin-bottom: 10px;
+        font-size: 12.25px;
+    }
+
+    .register-submit {
+        width: 136.26px;
+        height: 24.5px;
+        border-width: 0.77px;
+        border-radius: 6.12px;
+        font-size: 12.25px;
+    }
+}

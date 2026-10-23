@@ -51,7 +51,7 @@ declare(strict_types=1);
 
             <p class="login-register">
                 <span>¿No tienes cuenta?</span>
-                <a href="#">Regístrate aquí</a>
+                <a href="register.php">Regístrate aquí</a>
             </p>
 
             <button class="login-submit" type="button">Iniciar sesión</button>
