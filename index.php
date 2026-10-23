@@ -17,8 +17,8 @@
             </a>
 
             <nav class="header-actions" aria-label="Cuenta">
-                <a class="button button--small button--account" href="#">Crear Cuenta</a>
-                <a class="button button--small button--login" href="#">Iniciar Sesión</a>
+                <a class="button button--small button--account" href="/pages/register.php">Crear Cuenta</a>
+                <a class="button button--small button--login" href="/pages/login.php">Iniciar Sesión</a>
             </nav>
         </div>
     </header>
@@ -171,8 +171,8 @@
             <div class="cta__inner">
                 <h2 class="cta__title" id="cta-title">¿Qué necesitas?</h2>
                 <div class="cta__actions">
-                    <a class="button button--accent" href="#">Enseñar</a>
-                    <a class="button button--muted" href="#">Aprender</a>
+                    <a class="button button--accent" href="/pages/register.php">Enseñar</a>
+                    <a class="button button--muted" href="/pages/register.php">Aprender</a>
                 </div>
             </div>
         </section>
