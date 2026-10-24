@@ -1,5 +1,43 @@
 <?php
-declare(strict_types=1);
+    declare(strict_types=1);
+
+    try {
+        session_start();
+
+        require_once __DIR__ . '/../database/database.php';
+
+        $name = $_POST['name'] ?? '';
+        $lastname = $_POST['lastname'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $cellphone = $_POST['phone'] ?? '';
+        $id = $_POST['id'] ?? '';
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+        $stmt = $pdo->prepare(
+            'INSERT INTO usuarios (nombre, apellido, correo, telefono, documento, password_hash, rol) 
+            VALUES (:name, :lastname, :email, :cellphone, :id, :passwordHash, "estudiante")'
+        );
+
+        $stmt->execute([
+            ':name' => $name,
+            ':lastname' => $lastname,
+            ':email' => $email,
+            ':cellphone' => $cellphone,
+            ':id' => $id,
+            ':passwordHash' => $passwordHash,
+        ]);
+
+        $_SESSION['registration_success'] = true;
+
+        header('Location: login.php?registro=ok', true, 303);
+        exit;
+    }
+    catch (PDOException $e) {
+        error_log("Error al registrar al usuario: " . $e->getMessage());
+        $_SESSION['registration_error'] = true;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="es">
