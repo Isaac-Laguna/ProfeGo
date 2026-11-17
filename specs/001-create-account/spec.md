@@ -1,5 +1,7 @@
 # Spec 001 - Create Account
 
+**Status:** Draft
+
 ## Context and Objective
 
 ProfeGo is an academic tutoring platform that connects students with tutors. The registration page is currently a static mock-up: the role is printed as a fixed "Estudiante" label, the form has no submission behavior, and the fields do not yet match the account data the platform needs.

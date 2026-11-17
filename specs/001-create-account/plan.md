@@ -1,8 +1,5 @@
 # Plan 001 - Create Account
 
-**Specification:** `specs/001-create-account/spec.md` (Approved)
-**Status:** Approved — implementation in progress
-
 ## Objective and constraints
 
 Implement the create-account capability and the approved homepage tutor-preselection revision without changing the database schema, adding dependencies, or reinterpreting requirements. The stack is fixed: USBWebServer 8.6.5, Apache, PHP 8.1.3 (`pdo_mysql`, `session`, `mbstring`, `curl`), MySQL 5.7.36 with `utf8mb4_unicode_ci` and `STRICT_TRANS_TABLES`, and Node v24.21.0 with the built-in `node --test` runner. User-facing copy is Spanish; identifiers, filenames, comments, and technical documentation are English.
