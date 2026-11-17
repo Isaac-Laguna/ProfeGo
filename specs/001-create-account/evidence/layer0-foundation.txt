@@ -1,0 +1,133 @@
+Layer 0 (foundation) transcript - Task T2.1
+Spec: 001-create-account
+Date: 2026-11-17
+Machine: USBWebServer 8.6.5 (Apache + MySQL running), Windows, PowerShell
+
+PHP binary used
+---------------
+`php` is not on PATH. Located the USBWebServer PHP CLI:
+
+    PS> Get-Command php
+    Get-Command : The term 'php' is not recognized ... (not found)
+
+    PHP binary found at:
+    C:\Users\isaac\Documents\USBWebServer\php\php.exe
+
+    PS> & "C:\Users\isaac\Documents\USBWebServer\php\php.exe" -v
+    PHP 8.1.3 (cli) (built: Feb 16 2022 08:20:41) (ZTS Visual C++ 2019 x86)
+    Copyright (c) The PHP Group
+    Zend Engine v4.1.3, Copyright (c) Zend Technologies
+
+    Loaded extensions relevant to this task (php -m | findstr PDO/mysql/mbstring):
+    mbstring, mysqli, mysqlnd, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite
+
+Pre-existing environment noise: every PHP CLI invocation on this machine
+prints a startup warning about a missing php_gd2.dll extension file
+(USBWebServer php.ini references a DLL absent from the ext folder). It is
+unrelated to this task and does not affect exit codes.
+
+Abbreviation below: PHP = C:\Users\isaac\Documents\USBWebServer\php\php.exe
+(The gd2 startup warning is omitted from the per-command outputs for
+readability; it appears on every invocation.)
+
+Test-first: RED state (before includes/config.php and includes/database.php
+existed; tests/php/assert_foundation.php was the only new file)
+---------------------------------------------------------------------------
+Command:
+
+    PS> & PHP tests/php/assert_foundation.php
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Output:
+
+    FAIL: includes/database.php does not exist yet.
+    EXITCODE=1
+
+Expected reason: the foundation factory files did not exist yet, so the
+assertion script exited 1 immediately. No assertion could run because
+includes/database.php is the entry requirement of the script.
+
+Test-first: GREEN state (after adding includes/config.php,
+includes/database.php, and converting database/database.php)
+---------------------------------------------------------------------------
+Command:
+
+    PS> & PHP tests/php/assert_foundation.php
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Output:
+
+    PASS: profego_pdo() is defined
+    PASS: profego_pdo() returns a PDO instance
+    PASS: profego_pdo() reuses the same static connection
+    PASS: includes/config.php returns an array
+    PASS: config exposes dsn, user, password, and options keys
+    PASS: config DSN keeps the profeGo database name
+    PASS: config DSN forces charset=utf8mb4
+    PASS: character_set_client is utf8mb4
+    PASS: character_set_connection is utf8mb4
+    PASS: connection uses PDO::ERRMODE_EXCEPTION
+    PASS: connection defaults to PDO::FETCH_ASSOC
+    PASS: connection disables emulated prepares
+    PASS: SELECT 1 executes successfully
+    PASS: including database/database.php still yields $pdo
+    PASS: the adapter $pdo is the same profego_pdo() connection
+
+    Assertions: 15, Failures: 0
+    EXITCODE=0
+
+This proves: profego_pdo() returns a PDO connection with charset utf8mb4
+(character_set_client and character_set_connection), SELECT 1 executes, and
+including database/database.php still yields $pdo as the exact same shared
+connection. The script only runs SELECT statements; it writes nothing and
+modifies nothing in the database.
+
+One intermediate finding (fixed before the green run): the first green run
+reported "FAIL: connection disables emulated prepares". Diagnosis with a
+probe script showed pdo_mysql reports getAttribute(PDO::ATTR_EMULATE_PREPARES)
+as int 0/1, not bool:
+
+    connection with  [PDO::ATTR_EMULATE_PREPARES => false] -> int(0)
+    connection without the option                    -> int(1)
+
+The factory was configured correctly (0 = emulation off); the assertion
+itself compared against boolean false. The assertion was corrected to
+compare === 0. No product file changed for this; only the test.
+
+Syntax checks (php -l) on every touched PHP file
+------------------------------------------------
+Command (per file):
+
+    PS> & PHP -l <file>
+
+Results:
+
+    tests/php/assert_foundation.php => No syntax errors detected in tests/php/assert_foundation.php (exit 0)
+    includes/config.php            => No syntax errors detected in includes/config.php (exit 0)
+    includes/database.php          => No syntax errors detected in includes/database.php (exit 0)
+    database/database.php          => No syntax errors detected in database/database.php (exit 0)
+
+CLI/404 guard
+-------------
+The guard is present in tests/php/assert_foundation.php:
+
+    if (PHP_SAPI !== 'cli') {
+        header('HTTP/1.1 404 Not Found');
+        exit;
+    }
+
+Additional real-HTTP verification (Apache is running; document root is the
+project folder). This is an extra check; the mandated Layer 4 HTTP sweep of
+all tests/php/*.php scripts belongs to a later task.
+
+    PS> curl.exe -s -o NUL -w "HTTP %{http_code}" http://localhost/tests/php/assert_foundation.php
+    HTTP 404
+
+Summary
+-------
+- Red state recorded: exit 1, "includes/database.php does not exist yet."
+- Green state recorded: exit 0, 15 assertions, 0 failures.
+- php -l passed (exit 0, "No syntax errors detected") for all four touched
+  PHP files.
+- CLI/404 guard present and proven over real HTTP (404).
+- No data written; no database modification; ProfeGo.sql untouched.
