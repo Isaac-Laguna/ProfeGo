@@ -7,7 +7,7 @@
 - RF-2 is atomized into RF-2.1 (role control), RF-2.2 (hidden value / no-JS), RF-2.3 (GET preselection allow-list), RF-2.4 (POST allow-list). The spec's edge cases are illustrative and non-normative; acceptance criteria reference RF IDs instead of restating behavior.
 - CSRF policy (session-stable, non-expiring, non-rotating) is documented with its accepted trade-off under RF-9; test-write and residue risks are documented under Documented limitations.
 - Implementation per `tasks.md` has not started (all tasks unchecked); `tests/`, `includes/`, and the evidence directory do not exist yet. First task when resumed: T1.1 baseline captures.
-- `docs/constitution.md` is empty; drafting it is deferred until after spec 001 re-approval.
+- `docs/constitution.md` defines the six non-negotiable principles (C1-C6: stack simplicity, specification primacy, logic/interface separation, testing policy, user data protection, languages), approved Nov 2026.
 
 ## Main page
 
