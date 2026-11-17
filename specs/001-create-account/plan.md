@@ -68,7 +68,10 @@ Dependency direction is one-way: `pages` → `register_controller` → `register
 | Requirement | Implementation | Verification |
 | --- | --- | --- |
 | RF-1 successful registration | `register_controller` (PRG 303), `registration_service` (insert), `register_view` (`method="post"`, submit button, `name` fields) | Layers 2 and 3 |
-| RF-2 role selection | `register_view` (`type="button"`, hidden `rol`, default `estudiante`, preselected signals), `register-role.js`, `register-form.js`, controller GET preselection and POST allow-list | Layer 3 for DOM/name/announcement and the GET preselection allow-list; Layers 1 and 4 for the submitted-role allow-list and missing-role rejection |
+| RF-2.1 role control | `register_view` (`type="button"`, accessible name), `register-role.js`, `register-form.js` | Layer 3 for DOM/name/announcement |
+| RF-2.2 hidden value and no-JavaScript semantics | `register_view` hidden `rol` (default `estudiante`), controller native POST path using the rendered hidden value | Layers 3 and 4 |
+| RF-2.3 GET preselection allow-list | controller GET preselection (single scalar, repeated/unknown/empty defaults to student), `register_view` preselected signals, `index.php` "Enseñar" link | Layer 3 |
+| RF-2.4 submitted-role allow-list | controller POST allow-list and missing-role rejection | Layers 1 and 4 |
 | RF-3 tutor profile and atomicity | `registration_service` transaction, explicit `pendiente`/`0.00`/`0`; CLI-only seam | Layer 2; gating in Layers 0 and 4 |
 | RF-4 mandatory data and required state | `register_view` (`*` markers, `required`, `aria-required`, `novalidate`), `validation.php`, `register-validation.js` | Layers 1, 3, 4 |
 | RF-5 client-side validation and focus | `register-validation.js` + `register-form.js` | Layers 1 (logic) and 3 (DOM) |
@@ -343,7 +346,7 @@ if show: unset(session.registration_notice)
 
 9. **GET preselection through a single allow-listed query value.**
    The homepage "Enseñar" link uses `?rol=docente`; the controller accepts only a single scalar `docente` or `estudiante`, treats repeated/unknown/empty values as student, and renders the role signals server-side. The preselection is not persisted in the session, never auto-submits, and is overridden by the POST role before validation and persistence.
-   *Rejected:* a session flag (would persist stale state and complicate concurrent tabs), a JavaScript-only default (breaks the no-JS path and gives no server-rendered preselection), or trusting the query value without an allow-list (violates RF-2/RNF-1).
+   *Rejected:* a session flag (would persist stale state and complicate concurrent tabs), a JavaScript-only default (breaks the no-JS path and gives no server-rendered preselection), or trusting the query value without an allow-list (violates RF-2.3/RNF-1).
 
 10. **Password messages keep "caracteres" while enforcing UTF-8 bytes.**
     "Caracteres" is the readable Spanish term for users; both validators still enforce the 8–72 UTF-8 byte bound and test byte boundaries. The wording change does not weaken the rule.
@@ -359,7 +362,7 @@ None. `fecha_registro` is produced by the database default `CURRENT_TIMESTAMP`; 
 
 ## Testing strategy
 
-All writing tests use the RNF-7 per-run token: `getmypid() . '-' . time() . '-' . bin2hex(random_bytes(4))`, encoded as a unique email local part, digits only for phone, and an allowed-character Cédula/ID. Names receive a short suffix that stays within 30 characters. Every script captures the generated identifiers, deletes `perfiles_docente` rows before `usuarios` rows in a `finally` block, and asserts zero residue by those identifiers. Tables are never truncated and separate test scripts never run in parallel. The two concurrent requests in the Layer 4 duplicate scenario are one controlled scenario inside a single script, not parallel test execution. Every script under `tests/php/` carries a CLI guard that returns HTTP 404 when `PHP_SAPI !== 'cli'`; a real HTTP check of that guard is part of Layer 4 verification.
+All writing tests use the RNF-7 per-run token: `getmypid() . '-' . time() . '-' . bin2hex(random_bytes(4))`, encoded as a unique email local part, digits only for phone, and an allowed-character Cédula/ID. Names receive a short suffix that stays within 30 characters. The 26-character SQL-injection payload used by the literal-storage test is exempt from tokenization because uniqueness is carried by the accompanying email, phone, and Cédula/ID test values; cleanup still uses captured identifiers. Every script captures the generated identifiers, deletes `perfiles_docente` rows before `usuarios` rows in a `finally` block, and asserts zero residue by those identifiers. Tables are never truncated and separate test scripts never run in parallel. The two concurrent requests in the Layer 4 duplicate scenario are one controlled scenario inside a single script, not parallel test execution. Every script under `tests/php/` carries a CLI guard that returns HTTP 404 when `PHP_SAPI !== 'cli'`; a real HTTP check of that guard is part of Layer 4 verification.
 
 Evidence is written to `specs/001-create-account/evidence/`:
 
