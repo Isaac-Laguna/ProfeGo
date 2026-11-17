@@ -98,6 +98,16 @@ When finishing a task:
 * Do not duplicate documentation unnecessarily.
 * Never store passwords, tokens, credentials, or other sensitive information in MEMORY.md.
 
+## Commits
+
+* Use atomic commits: each commit covers one logical change with a single purpose. Never mix unrelated changes in one commit.
+* Whenever possible, each commit should leave the project in a coherent and functional state. It does not need to be release-ready, but it should be a reasonable checkpoint that does not break existing behavior.
+* Commit frequently. Do not wait until a large feature is finished to save all changes together; commit when you complete a logical unit of work.
+* Follow the Conventional Commits format: `<type>(<optional scope>): <description>`. Common types include `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
+* Write descriptive messages. A commit message must allow understanding what changed without immediately examining the code. Explain the why, not only the what.
+* When the change is not self-evident, use the commit body to explain the motivation, the trade-offs, and any relevant context.
+* Before running `git commit`, review exactly what is being included. Check for accidental modifications, temporary files, sensitive information, or changes unrelated to the commit's purpose.
+
 ## Instructions and conflicts
 
 * Follow all applicable higher-priority instructions.
