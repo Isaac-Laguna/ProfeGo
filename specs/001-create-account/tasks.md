@@ -2,7 +2,7 @@
 
 ## Phase 1: Baseline Evidence (Before Any Source Change)
 
-- [ ] **T1.1 Capture the pre-change baseline at both widths**
+- [x] **T1.1 Capture the pre-change baseline at both widths**
   - **RF:** RF-12; **RNF:** RNF-5; **AC:** AC-11
   - Capture `http://localhost/pages/register.php` at 1440x900 and 402x874 through Chrome DevTools/CDP before editing any source file.
   - Done when: `specs/001-create-account/evidence/baseline-1440.png` and `baseline-402.png` exist, `evidence/baseline-notes.md` records the date, viewport, URL, and that no source file had been modified, and both images show the current static page.
