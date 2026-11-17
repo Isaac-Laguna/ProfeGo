@@ -82,6 +82,97 @@ check(
 $one = $factoryConnection->query('SELECT 1')->fetchColumn();
 check((int) $one === 1, 'SELECT 1 executes successfully');
 
+if (!is_file($root . '/includes/csrf.php')) {
+    fwrite(STDERR, "FAIL: includes/csrf.php does not exist yet.\n");
+    exit(1);
+}
+
+require_once $root . '/includes/csrf.php';
+
+// Session-bound CSRF primitive (RF-9). The session is a simulated in-memory
+// array: no real cookies are used and no database data is involved, because
+// the token is session-bound only.
+
+check(function_exists('ensure_csrf_token'), 'ensure_csrf_token() is defined');
+check(function_exists('submitted_csrf_is_valid'), 'submitted_csrf_is_valid() is defined');
+
+$session = [];
+$token = ensure_csrf_token($session);
+check(
+    is_string($token) && preg_match('/^[0-9a-f]{64}$/', $token) === 1,
+    'token is exactly 64 lowercase hex characters'
+);
+check(
+    isset($session['csrf_token']) && $session['csrf_token'] === $token,
+    'token is stored under the fixed session key'
+);
+check(ensure_csrf_token($session) === $token, 'token is stable across repeated calls');
+check(ensure_csrf_token($session) === $token, 'token is unchanged after repeated issuance');
+
+// A malformed stored value (missing key or garbage) must be regenerated.
+$emptySession = [];
+check(
+    preg_match('/^[0-9a-f]{64}$/', ensure_csrf_token($emptySession)) === 1,
+    'a missing stored value is regenerated as a valid token'
+);
+$corruptedSession = ['csrf_token' => 'garbage'];
+$regenerated = ensure_csrf_token($corruptedSession);
+check(
+    preg_match('/^[0-9a-f]{64}$/', $regenerated) === 1,
+    'a malformed stored value is regenerated as a valid token'
+);
+check(
+    $corruptedSession['csrf_token'] === $regenerated && $regenerated !== 'garbage',
+    'the regenerated value replaces the malformed stored value'
+);
+
+// Acceptance and rejection matrix for submitted_csrf_is_valid().
+check(
+    submitted_csrf_is_valid($session, $token) === true,
+    'a matching token is accepted'
+);
+
+$foreignSession = [];
+$foreignToken = ensure_csrf_token($foreignSession);
+check(
+    submitted_csrf_is_valid($session, $foreignToken) === false,
+    'a token from a foreign session is rejected'
+);
+
+$emptyKeySession = [];
+check(
+    submitted_csrf_is_valid($emptyKeySession, $token) === false,
+    'a submission against a session without a token is rejected'
+);
+check(submitted_csrf_is_valid($session, '') === false, 'an empty string is rejected');
+check(submitted_csrf_is_valid($session, substr($token, 0, 63)) === false, 'a wrong-length token is rejected');
+check(submitted_csrf_is_valid($session, $token . 'a') === false, 'an oversized token is rejected');
+check(
+    submitted_csrf_is_valid($session, str_repeat('g', 64)) === false,
+    'a non-hex token is rejected'
+);
+check(
+    submitted_csrf_is_valid($session, strtoupper($token)) === false,
+    'an uppercase variant of the token is rejected'
+);
+
+// Non-string submissions must be rejected without triggering PHP type errors
+// (strict_types is on; hash_equals would throw on int).
+check(submitted_csrf_is_valid($session, ['token' => $token]) === false, 'an array submission is rejected');
+check(submitted_csrf_is_valid($session, 123) === false, 'an int submission is rejected');
+check(submitted_csrf_is_valid($session, null) === false, 'a null submission is rejected');
+check(submitted_csrf_is_valid($session, true) === false, 'a bool submission is rejected');
+
+// Validation must never mutate the session (no rotation, no re-issuance).
+$sessionBefore = $session;
+submitted_csrf_is_valid($session, 'not-a-token');
+submitted_csrf_is_valid($session, $foreignToken);
+check(submitted_csrf_is_valid($session, $token) === true, 'the token remains valid after rejections');
+check(
+    $session === $sessionBefore,
+    'validation does not mutate the session'
+);
+
 // The legacy include contract: database/database.php still yields $pdo, and
 // it is the exact same shared connection, with no duplicated credentials.
 $pdo = null;

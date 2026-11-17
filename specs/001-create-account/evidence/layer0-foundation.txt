@@ -270,3 +270,117 @@ Summary
 - CLI/404 guard present and proven over real HTTP (404).
 - No rows were written; no database modification; no source files were
   modified; the only new file is tests/php/test_support.php.
+
+===============================================================================
+Task T2.3 - Session-bound CSRF primitive (includes/csrf.php)
+===============================================================================
+Spec: 001-create-account
+Date: 2026-11-17
+Machine: USBWebServer 8.6.5 (Apache + MySQL running), Windows, PowerShell
+
+Abbreviation below: PHP = C:\Users\isaac\Documents\USBWebServer\php\php.exe
+(The gd2 startup warning is omitted from the per-command outputs for
+readability; it appears on every invocation and does not affect exit codes.)
+
+The session used by the assertions is a simulated in-memory array passed by
+reference; no real cookies are involved and no database data is read or
+written, because the CSRF token is session-bound only (RF-9).
+
+Test-first: RED state (before includes/csrf.php existed)
+-------------------------------------------------------
+tests/php/assert_foundation.php was extended first with a CSRF expectations
+section guarded in the same style as the T2.1 foundation check. Command:
+
+    PS> & PHP tests/php/assert_foundation.php
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Output (tail; the 13 T2.1 PDO assertions printed PASS before this):
+
+    FAIL: includes/csrf.php does not exist yet.
+    EXITCODE=1
+
+Expected reason: the CSRF primitive file did not exist yet, so the script
+exited 1 at its guard before any CSRF assertion could run.
+
+Test-first: GREEN state (after adding includes/csrf.php)
+--------------------------------------------------------
+Command:
+
+    PS> & PHP tests/php/assert_foundation.php
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Output (new assertions; the 13 T2.1 PDO assertions printed PASS before):
+
+    PASS: ensure_csrf_token() is defined
+    PASS: submitted_csrf_is_valid() is defined
+    PASS: token is exactly 64 lowercase hex characters
+    PASS: token is stored under the fixed session key
+    PASS: token is stable across repeated calls
+    PASS: token is unchanged after repeated issuance
+    PASS: a missing stored value is regenerated as a valid token
+    PASS: a malformed stored value is regenerated as a valid token
+    PASS: the regenerated value replaces the malformed stored value
+    PASS: a matching token is accepted
+    PASS: a token from a foreign session is rejected
+    PASS: a submission against a session without a token is rejected
+    PASS: an empty string is rejected
+    PASS: a wrong-length token is rejected
+    PASS: an oversized token is rejected
+    PASS: a non-hex token is rejected
+    PASS: an uppercase variant of the token is rejected
+    PASS: an array submission is rejected
+    PASS: an int submission is rejected
+    PASS: a null submission is rejected
+    PASS: a bool submission is rejected
+    PASS: the token remains valid after rejections
+    PASS: validation does not mutate the session
+    PASS: including database/database.php still yields $pdo
+    PASS: the adapter $pdo is the same profego_pdo() connection
+
+    Assertions: 38, Failures: 0
+    EXITCODE=0
+
+This proves (38 assertions total, 0 failures): the token is exactly 64 hex
+characters (32 random bytes via random_bytes(32) rendered with bin2hex), it
+is stable across repeated ensure_csrf_token() calls and unchanged after
+repeated issuance (no rotation, no expiry), a matching submission is
+accepted, and missing-key, empty-string, wrong-length, oversized, non-hex,
+uppercase-variant, and foreign-session submissions are all rejected, as are
+non-string submissions (array, int, null, bool) without triggering PHP type
+errors (strict_types + is_string guard before hash_equals). Validation does
+not mutate the session. A missing or malformed stored value is regenerated.
+
+Syntax checks (php -l) on every touched PHP file
+------------------------------------------------
+Command (per file):
+
+    PS> & PHP -l <file>
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Results:
+
+    tests/php/assert_foundation.php => No syntax errors detected in tests\php\assert_foundation.php (exit 0)
+    includes/csrf.php               => No syntax errors detected in includes\csrf.php (exit 0)
+
+CLI/404 guard
+-------------
+The guard in tests/php/assert_foundation.php is unchanged and still present:
+
+    if (PHP_SAPI !== 'cli') {
+        header('HTTP/1.1 404 Not Found');
+        exit;
+    }
+
+Summary
+-------
+- Red state recorded: exit 1, "includes/csrf.php does not exist yet."
+- Green state recorded: exit 0, 38 assertions, 0 failures (25 CSRF
+  assertions added on top of the 13 T2.1 assertions).
+- php -l passed (exit 0, "No syntax errors detected") for both touched PHP
+  files.
+- CLI/404 guard preserved.
+- No database access occurred in this task; no rows were written or read
+  for the CSRF assertions (simulated session arrays only; the T2.1
+  assertions still run their read-only SELECTs as before). The only new
+  file is includes/csrf.php; the only modified files are
+  tests/php/assert_foundation.php and this transcript.
