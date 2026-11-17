@@ -131,3 +131,142 @@ Summary
   PHP files.
 - CLI/404 guard present and proven over real HTTP (404).
 - No data written; no database modification; ProfeGo.sql untouched.
+
+===============================================================================
+Task T2.2 - CLI-only test-support helpers (tests/php/test_support.php)
+===============================================================================
+Spec: 001-create-account
+Date: 2026-11-17
+Machine: USBWebServer 8.6.5 (Apache + MySQL running), Windows, PowerShell
+
+Abbreviation below: PHP = C:\Users\isaac\Documents\USBWebServer\php\php.exe
+(The gd2 startup warning is omitted from the per-command outputs for
+readability; it appears on every invocation and does not affect exit codes.)
+
+Syntax check (php -l)
+---------------------
+Command:
+
+    PS> & PHP -l tests/php/test_support.php
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Output:
+
+    No syntax errors detected in tests/php/test_support.php
+    EXITCODE=0
+
+CLI smoke check of per_run_token() and its field encodings
+----------------------------------------------------------
+Command:
+
+    PS> & PHP tests/php/test_support.php smoke
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Output:
+
+    Per-run token smoke check (pure computation; no database use)
+
+    PASS: two successive per_run_token() values differ
+    PASS: token A matches pid-time-hex8
+    PASS: token B matches pid-time-hex8
+    PASS: emails differ for the two tokens
+    PASS: email local part contains its token
+    PASS: email is ASCII-only
+    PASS: email is lowercase
+    PASS: email is at most 150 characters
+    PASS: email passes FILTER_VALIDATE_EMAIL
+    PASS: phones differ for the two tokens
+    PASS: phone is digits-only within 7-20 digits
+    PASS: cedula/ID values differ for the two tokens
+    PASS: cedula/ID is 5-20 chars of letters, digits, hyphens
+    PASS: cedula/ID contains at least one alphanumeric character
+    PASS: cedula/ID is lowercase (stable under case-insensitive uniqueness)
+    PASS: names differ for the two tokens
+    PASS: name uses letters, spaces, hyphens, apostrophes only
+    PASS: default name stays within 30 characters
+    PASS: lastname example stays within 30 characters
+
+    Token A:     18212-1794931570-76d8c754
+    Token B:     18212-1794931570-398c296e
+    Email A:     run.18212-1794931570-76d8c754@example.invalid
+    Phone A:     5060706130812070504
+    Cedula/ID A: id-931570-76d8c754
+    Name A:      Estudiante de Prueba nmdocnlk
+    Lastname A:  Apellido de Prueba nmdocnlk
+
+    Assertions: 19, Failures: 0
+    EXITCODE=0
+
+This proves: two successive per_run_token() values differ (the mandated
+composition getmypid() . '-' . time() . '-' . bin2hex(random_bytes(4))),
+and every encoded field shape satisfies the RF-6 rules it must meet later:
+email ASCII + token in the local part + FILTER_VALIDATE_EMAIL + <= 150
+chars + lowercase (schema VARCHAR(150)); phone digits-only 7-20 digits
+(schema VARCHAR(20)); cedula/ID 5-20 chars of ASCII letters/digits/hyphens,
+lowercase so case-insensitive uniqueness is unaffected (schema
+VARCHAR(20)); names letters/spaces/hyphens/apostrophes only, <= 30 chars
+(schema VARCHAR(30)). The encodings are pure computation; no database
+connection is opened and no row is written by this mode.
+
+Read-only inspect mode smoke run
+--------------------------------
+Command:
+
+    PS> & PHP tests/php/test_support.php inspect --email=run.smoke-nonexistent@example.invalid
+    PS> Write-Host "EXITCODE=$LASTEXITCODE"
+
+Output:
+
+    NOT FOUND: no account matches correo = run.smoke-nonexistent@example.invalid
+    EXITCODE=0
+
+Read-only SELECT through profego_pdo() with a parameterized statement; it
+never selects or prints password_hash (RF-8). The cleanup mode was NOT run
+against the live database in this task (nothing to clean; nothing writes).
+
+CLI/404 guard
+-------------
+The guard is present in tests/php/test_support.php (same style as
+assert_foundation.php):
+
+    if (PHP_SAPI !== 'cli') {
+        header('HTTP/1.1 404 Not Found');
+        exit;
+    }
+
+Additional real-HTTP verification (extra check; the mandated Layer 4 sweep
+of all tests/php/*.php scripts belongs to a later task):
+
+    PS> curl.exe -s -o NUL -w "HTTP %{http_code}" http://localhost/tests/php/test_support.php
+    HTTP 404
+
+Static inspection notes (RNF-7)
+-------------------------------
+- Delete order confirmed by reading delete_captured_rows(): the
+  perfiles_docente DELETE runs as step 1 and the usuarios DELETE as step 2,
+  with comments explaining the foreign-key ordering
+  (perfiles_docente.id_docente -> usuarios.id).
+- Matching is by captured identifiers only (correo/documento/telefono with
+  bound parameters and fixed internal column literals); no universal
+  prefix, no truncation. count_captured_rows() supports the later
+  zero-residue assertions.
+- All cleanup/lookup SQL uses prepare() with bound parameters.
+
+Finding recorded during implementation
+--------------------------------------
+The first php -l run failed with "Cannot redeclare token_name()": the
+planned helper name collides with PHP's built-in token_name() function
+(tokenizer extension). The helper was renamed to token_person_name();
+no other change was needed.
+
+Summary
+-------
+- php -l passed (exit 0, "No syntax errors detected").
+- Smoke check: exit 0, 19 assertions, 0 failures; two tokens differ and
+  every encoded email/phone/cedula/name shape is valid for its later
+  RF-6 rule and schema column.
+- inspect mode smoke-run read-only (NOT FOUND path); cleanup mode not run
+  against the live database in this task.
+- CLI/404 guard present and proven over real HTTP (404).
+- No rows were written; no database modification; no source files were
+  modified; the only new file is tests/php/test_support.php.
