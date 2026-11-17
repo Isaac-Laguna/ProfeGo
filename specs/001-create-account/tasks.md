@@ -1,9 +1,5 @@
 # Tasks 001 - Create Account
 
-**Plan:** `specs/001-create-account/plan.md`
-**Specification:** `specs/001-create-account/spec.md` (Draft for revision; re-approval pending)
-**Status:** Approved — implementation in progress
-
 ## Phase 1: Baseline Evidence (Before Any Source Change)
 
 - [ ] **T1.1 Capture the pre-change baseline at both widths**
