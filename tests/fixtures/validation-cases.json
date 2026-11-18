@@ -251,19 +251,19 @@
       "field": "email",
       "rules": ["length", "format"],
       "valid": true,
-      "input": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com" },
-      "normalized": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com" },
+      "input": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbb.com" },
+      "normalized": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbb.com" },
       "expectedErrors": {},
-      "note": "Exactly 150 characters (138-character local part + @example.com)."
+      "note": "Exactly 150 characters: 64-character ASCII local part, @, and 85-character domain with labels of 63, 17, and 3 characters."
     },
     {
       "id": "email-151-chars",
       "field": "email",
       "rules": ["length", "format"],
       "valid": false,
-      "input": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com" },
+      "input": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbb.com" },
       "expectedErrors": { "email": ["El correo electrónico debe tener como máximo 150 caracteres."] },
-      "note": "Exactly 151 characters; otherwise structurally valid."
+      "note": "Exactly 151 characters: 64-character ASCII local part, @, and 86-character domain with labels of 63, 18, and 3 characters; otherwise structurally valid."
     },
     {
       "id": "email-non-ascii",

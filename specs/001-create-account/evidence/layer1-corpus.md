@@ -1,6 +1,6 @@
 # Layer 1 Evidence: Shared Validation Case Corpus (T3.1)
 
-Date: 2026-11-18
+Date: 2026-11-18 (T3.1); updated 2026-11-18 for the T3.2 email-boundary test-data correction
 Spec: 001-create-account
 Task: T3.1 (RF-4, RF-5, RF-6; RNF-6)
 Artifact: `tests/fixtures/validation-cases.json`
@@ -50,12 +50,20 @@ Three independent checks were run with both runtimes (inline Node scripts and in
 | --- | --- | --- | --- | --- |
 | Password UTF-8 bytes (`expectedBytes`, both fields) | `Buffer.byteLength(v, 'utf8')` | `strlen(v)` | 30 | PASS |
 | Email character length (150/151/multi) | `[...v].length` | `mb_strlen(v)` | 3 | PASS |
+| Email local-part length (64/64) | `v.split('@')[0].length` | `strlen(explode('@', $v)[0])` | 2 | PASS |
+| Email domain length (85/86) | `v.split('@')[1].length` | `strlen(explode('@', $v)[1])` | 2 | PASS |
+| Email `FILTER_VALIDATE_EMAIL` outcome (accept/accept) | not applicable (PHP-only rule) | `filter_var(v, FILTER_VALIDATE_EMAIL)` | 2 | PASS |
 | Name/lastname character length (30/31/multi) | `[...v].length` | `mb_strlen(v)` | 7 | PASS |
 
 Both runtimes printed `ALL ... ASSERTIONS PASS`, exit 0. Accent-boundary cases confirm the
 intended semantics: `name-30-accents` is 30 code points but 60 UTF-8 bytes, while
 `password-accents-7-chars-12-bytes` is 7 characters but 12 bytes and is accepted by the
 byte-based password rule. This pins name length to code points and password length to bytes.
+
+The email boundary values were regenerated in T3.2 (test-data fix only; see section 3.2),
+so the final local parts are 64 characters and the domains 85/86 characters. The
+re-verification recorded in section 3.2 ran 48 checks in each runtime, including the
+three email length checks above, with zero failures.
 
 Additional integrity checks (Node, all passing):
 
@@ -82,6 +90,45 @@ Additional integrity checks (Node, all passing):
 
 No approved message string was reworded. The intentional single-message decisions for
 `phone.digits` and `id.composition` were left unchanged.
+
+Rows 4-6 record what T3.1 changed at that time; they are not the final fixture values.
+The later test-data correction authorized in T3.2 is recorded in section 3.2.
+
+## 3.2 Email boundary correction applied in T3.2
+
+`FILTER_VALIDATE_EMAIL` in PHP 8.1.3 enforces RFC 5321's 64-octet local-part limit. The
+T3.1 values used 138- and 139-character local parts, so PHP rejected both 150/151-character
+emails as invalid format while the corpus expected the opposite outcome. The coordinator
+authorized a test-data-only correction: no requirement, validation rule, or Spanish message
+changed.
+
+| Case | Local part | Domain | Total bytes | Domain labels | `FILTER_VALIDATE_EMAIL` | Expected errors |
+| --- | --- | --- | --- | --- | --- | --- |
+| email-150-chars | 64 `a` | 63 `a` + `.` + 17 `b` + `.com` (85) | 150 | 63, 17, 3 | ACCEPT | none |
+| email-151-chars | 64 `a` | 63 `a` + `.` + 18 `b` + `.com` (86) | 151 | 63, 18, 3 | ACCEPT | length only |
+
+`email-multi-length-format` was re-checked and left unchanged: 151 characters with no `@`,
+so it still produces the length message followed by the format message in that order.
+
+Targeted check output (PHP 8.1.3, exit 0):
+
+    email-150-chars total=150 local=64 domain=85 filter=ACCEPT labels=63,17,3
+    email-151-chars total=151 local=64 domain=86 filter=ACCEPT labels=63,18,3
+
+Full re-verification (inline PHP and Node scripts covering parse, 30 password byte checks,
+3 email length checks, 7 name/lastname length checks, 2 local-part and 2 domain length checks,
+2 `FILTER_VALIDATE_EMAIL` checks, 2 normalized-value checks, and 1 multi-case check):
+
+    PHP:  json_last_error=0 (No error)
+          cases=74
+          checks=48 failures=0
+          ALL BYTE/LENGTH ASSERTIONS PASS
+          EXITCODE=0
+
+    Node: JSON.parse OK; cases=74
+          checks=48 failures=0
+          ALL BYTE/LENGTH ASSERTIONS PASS
+          EXITCODE=0
 
 ## 4. Case inventory
 
@@ -125,8 +172,8 @@ means the case records normalized output values.
 | email-whitespace-only | negative | required | - |
 | email-valid-lowercase | positive | format, length | normalized expected |
 | email-trim-and-lowercase | positive | format, length | normalized expected; lowercase |
-| email-150-chars | positive | length, format | normalized expected; 150 characters |
-| email-151-chars | negative | length, format | 151 characters |
+| email-150-chars | positive | length, format | normalized expected; 150 characters (64-character local part, 85-character domain) |
+| email-151-chars | negative | length, format | 151 characters (64-character local part, 86-character domain) |
 | email-non-ascii | negative | format | - |
 | email-missing-at | negative | format | - |
 | email-double-at | negative | format | - |
