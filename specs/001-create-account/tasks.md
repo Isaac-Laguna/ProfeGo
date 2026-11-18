@@ -36,7 +36,7 @@
   - Write `tests/php/assert_validation.php` first against `tests/fixtures/validation-cases.json` and confirm it fails before `includes/validation.php` exists. Limit the failing-first expectation to the validator rules and the role allow-list. Implement `validate_registration()`, `normalize_phone()`, the rule helpers, non-scalar handling, and the role allow-list; return `field => array of messages` in the fixed rule order. Make the script CLI-only with a guard returning HTTP 404 when `PHP_SAPI !== 'cli'`.
   - Done when: `php tests/php/assert_validation.php` exits 0 and proves every corpus case matches the expected normalized values and messages, the role allow-list accepts only `estudiante`/`docente` and rejects `admin`, unknown, and missing, and the script contains the CLI/404 guard; the transcript is saved as `evidence/layer1-php.txt`.
 
-- [ ] **T3.3 Implement the JS validation module with `node --test`**
+- [x] **T3.3 Implement the JS validation module with `node --test`**
   - **RF:** RF-5, RF-6; **RNF:** RNF-6
   - Write `tests/js/register-validation.test.mjs` first and confirm it fails before the module exists. Add `js/package.json` (`type: module`) and `js/features/register-validation.js`, consuming the same JSON corpus and producing the same normalized values and messages as PHP.
   - Done when: `node --test tests/js/register-validation.test.mjs` reports a non-zero test count, all tests pass, exit code is 0, and the transcript is saved as `evidence/layer1-js.txt`.

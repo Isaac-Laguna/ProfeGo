@@ -1,0 +1,90 @@
+Layer 1 - JS validation unit-test transcript
+Spec: 001-create-account
+Task: T3.3 Implement the JS validation module with node --test (RF-5, RF-6; RNF-6)
+Date: 2026-11-18
+Environment: Windows, Node v24.21.0, built-in node:test runner (no framework, no dependency)
+
+-------------------------------------------------------------------------------
+Environment check
+-------------------------------------------------------------------------------
+$ node --version
+v24.21.0
+
+-------------------------------------------------------------------------------
+Test-first step 1: RED (module absent)
+-------------------------------------------------------------------------------
+The test file was written before the module. Only
+tests/js/register-validation.test.mjs existed; js/features/register-validation.js
+and js/package.json did not exist.
+
+$ node --test tests/js/register-validation.test.mjs
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module
+'...\ProfeGo\js\features\register-validation.js' imported from
+'...\ProfeGo\tests\js\register-validation.test.mjs'
+  code: 'ERR_MODULE_NOT_FOUND'
+Node.js v24.21.0
+(tests 1; pass 0; fail 1)
+EXIT_CODE=1
+
+Expected reason for RED: the test imports the not-yet-created ES module, so
+Node fails at module resolution. This confirms the test is capable of failing.
+
+-------------------------------------------------------------------------------
+Implementation step: module and package marker created
+-------------------------------------------------------------------------------
+Created:
+  js/package.json                       {"type": "module"}
+  js/features/register-validation.js    DOM-free ES module exporting
+                                        validateRegistration(values) and
+                                        normalizePhone(raw)
+
+-------------------------------------------------------------------------------
+Test-first step 2: GREEN (module present)
+-------------------------------------------------------------------------------
+$ node --test tests/js/register-validation.test.mjs
+All 76 individual test lines reported OK. Runner summary (info glyph stripped
+to keep this transcript ASCII):
+
+  tests 76
+  suites 0
+  pass 76
+  fail 0
+  cancelled 0
+  skipped 0
+  todo 0
+  duration_ms 92.063
+EXIT_CODE=0
+
+Non-zero test count: 76. All tests pass. Exit code: 0.
+
+-------------------------------------------------------------------------------
+Notes
+-------------------------------------------------------------------------------
+1. Shared corpus: tests/fixtures/validation-cases.json (74 cases). The harness
+   applies _meta.harnessNote: each case input is merged over baseValidRecord,
+   and only the case fields are under test. Errors are compared as exact
+   arrays (per-field rule order) and Object.keys order is also asserted so the
+   field-grouping order from plan.md is pinned. Normalized values are compared
+   with strict equality. expectedBytes are checked with TextEncoder.
+2. Terms adapter: the corpus models terms as a JSON boolean; the DOM form
+   delivers a checked checkbox as the scalar "on" and omits it when unchecked.
+   The harness maps true -> "on" and false -> absent, mirroring the PHP adapter
+   in tests/php/assert_validation.php.
+3. Skipped cases (serverOnly: true), skipped in JS and asserted only on the
+   server because the shared ASCII structural email pattern is intentionally
+   more permissive than PHP FILTER_VALIDATE_EMAIL:
+     - email-serveronly-double-dot-local
+     - email-serveronly-leading-dot
+     - email-serveronly-double-dot-domain
+   That is 3 skipped; the remaining 71 corpus cases are asserted here.
+4. Name length is counted in code points ([...value].length); email and ID
+   length and password bounds are counted in UTF-8 bytes (TextEncoder).
+   Passwords and confirmation are never trimmed.
+5. Additional tests beyond the corpus: corpus inventory (74 cases / 3
+   serverOnly), exported-function presence, normalizePhone() '+' equivalence,
+   and coercion of non-string/non-scalar inputs without throwing.
+6. No dependency, framework, bundler, or build step was added. No PHP file and
+   no corpus file was modified by this task.
