@@ -41,7 +41,7 @@
   - Write `tests/js/register-validation.test.mjs` first and confirm it fails before the module exists. Add `js/package.json` (`type: module`) and `js/features/register-validation.js`, consuming the same JSON corpus and producing the same normalized values and messages as PHP.
   - Done when: `node --test tests/js/register-validation.test.mjs` reports a non-zero test count, all tests pass, exit code is 0, and the transcript is saved as `evidence/layer1-js.txt`.
 
-- [ ] **T3.4 Implement the DOM-free role state machine with `node --test`**
+- [x] **T3.4 Implement the DOM-free role state machine with `node --test`**
   - **RF:** RF-2.1; **RNF:** RNF-4
   - Write `tests/js/register-role.test.mjs` first and confirm it fails before the module exists. Add `js/features/register-role.js` with the role constants, `nextRole()`, `roleLabel()`, and `roleAccessibleName()` implementing the exact strings from the Definitions section.
   - Done when: `node --test tests/js/register-role.test.mjs` reports a non-zero test count, all tests pass, exit code is 0, and the transcript is appended to `evidence/layer1-js.txt`.

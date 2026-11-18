@@ -88,3 +88,121 @@ Notes
    and coercion of non-string/non-scalar inputs without throwing.
 6. No dependency, framework, bundler, or build step was added. No PHP file and
    no corpus file was modified by this task.
+
+===============================================================================
+Task T3.4 - DOM-free role state machine (appended; T3.3 content above unchanged)
+===============================================================================
+Spec: 001-create-account
+Task: T3.4 Implement the DOM-free role state machine with node --test
+      (RF-2.1; RNF-4)
+Date: 2026-11-18
+Environment: Windows, Node v24.21.0, built-in node:test runner
+             (no framework, no dependency, no build step)
+
+-------------------------------------------------------------------------------
+Environment check
+-------------------------------------------------------------------------------
+$ node --version
+v24.21.0
+
+-------------------------------------------------------------------------------
+Test-first step 1: RED (module absent)
+-------------------------------------------------------------------------------
+The test file was written before the module. Only
+tests/js/register-role.test.mjs existed; js/features/register-role.js did not
+exist. js/package.json from T3.3 already marks js/ as ESM.
+
+$ node --test tests/js/register-role.test.mjs
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module
+'...\ProfeGo\js\features\register-role.js' imported from
+'...\ProfeGo\tests\js\register-role.test.mjs'
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///C:/Users/isaac/Documents/USBWebServer/root/ProfeGo/js/features/register-role.js'
+Node.js v24.21.0
+(tests 1; pass 0; fail 1)
+EXIT_CODE=1
+
+Expected reason for RED: the test imports the not-yet-created ES module, so
+Node fails at module resolution. This confirms the test is capable of failing.
+
+-------------------------------------------------------------------------------
+Implementation step: module created
+-------------------------------------------------------------------------------
+Created:
+  js/features/register-role.js   DOM-free ES module exporting the constants
+                                 ROLE_STUDENT, ROLE_TEACHER, ROLE_ORDER and the
+                                 functions nextRole(), roleLabel(),
+                                 roleAccessibleName().
+
+Documented unsupported-input behavior (pinned by the tests): any value that is
+not exactly one of the supported roles falls back to the default student role
+in every function. nextRole(unsupported) returns ROLE_STUDENT; roleLabel()
+returns 'Estudiante'; roleAccessibleName() returns the student accessible name.
+This keeps the state machine inside the allow-list and never produces `admin`.
+
+During verification one test assertion in the harness used a lexical .sort()
+with the wrong expected order; the module was correct. The assertion was fixed
+to compare against [...ROLE_ORDER].sort() before the GREEN runs below.
+
+-------------------------------------------------------------------------------
+Test-first step 2: GREEN (module present)
+-------------------------------------------------------------------------------
+$ node --test tests/js/register-role.test.mjs
+All 8 individual tests reported OK:
+
+  ✔ module exports the role constants
+  ✔ module exports the role functions
+  ✔ roleLabel returns the exact visible strings
+  ✔ roleAccessibleName returns the exact accessible-name strings
+  ✔ nextRole toggles student -> teacher -> student (full cycle)
+  ✔ role signals stay in sync across a full toggle cycle
+  ✔ unsupported input falls back to the default student role
+  ✔ no function can produce a role outside the allow-list
+
+  tests 8
+  suites 0
+  pass 8
+  fail 0
+  cancelled 0
+  skipped 0
+  todo 0
+EXIT_CODE=0
+
+Non-zero test count: 8. All tests pass. Exit code: 0.
+
+-------------------------------------------------------------------------------
+Combined Layer 1 run (plan.md Layer 1 / T9.1 command)
+-------------------------------------------------------------------------------
+$ node --test tests/js/register-validation.test.mjs tests/js/register-role.test.mjs
+  tests 84
+  suites 0
+  pass 84
+  fail 0
+  cancelled 0
+  skipped 0
+  todo 0
+EXIT_CODE=0
+
+The 8 new role tests and the 76 T3.3 validation tests all pass together.
+
+-------------------------------------------------------------------------------
+Notes
+-------------------------------------------------------------------------------
+1. Exact strings are normative product copy from spec.md "Definitions"
+   (role control) and plan.md "Role control and accessibility": visible labels
+   'Estudiante' / 'Docente'; accessible names
+   'Tipo de cuenta: Estudiante, cambiar a Docente' and
+   'Tipo de cuenta: Docente, cambiar a Estudiante'; supported roles
+   'estudiante' / 'docente' (never 'admin').
+2. Tests assert every exact string, a full toggle cycle
+   (student -> teacher -> student via nextRole), the documented unsupported-
+   input fallback, and that no function can produce a role outside the
+   allow-list.
+3. This module is DOM-free with no globals, no imports, and no side effects.
+   It is the stable interface the browser enhancement (T7.1) will import.
+4. No PHP file, no corpus file, and no T3.3 file was modified by this task.
+   No dependency, framework, bundler, or build step was added.
