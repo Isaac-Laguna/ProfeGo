@@ -9,17 +9,17 @@
 
 ## Phase 2: Persistence Foundation (Server Configuration, PDO, Test Helpers, CSRF)
 
-- [ ] **T2.1 Centralize database configuration and build the PDO factory**
+- [x] **T2.1 Centralize database configuration and build the PDO factory**
   - **RF:** RF-1 (persistence support); **RNF:** RNF-3
   - Write `tests/php/assert_foundation.php` first and confirm it fails because the foundation files do not exist. Add `includes/config.php`, `includes/database.php` with `profego_pdo()`, and convert `database/database.php` into the compatibility adapter (`require_once` the factory; assign `$pdo = profego_pdo()`). Make `assert_foundation.php` CLI-only with a guard returning HTTP 404 when `PHP_SAPI !== 'cli'`.
   - Done when: `php tests/php/assert_foundation.php` exits 0 and proves `profego_pdo()` returns a PDO connection with `utf8mb4`, executes `SELECT 1`, and the existing `database/database.php` include still yields the same connection; `php -l` passes for every touched PHP file; the script contains the CLI/404 guard; the transcript is saved as `evidence/layer0-foundation.txt`.
 
-- [ ] **T2.2 Build the CLI-only test-support helpers**
+- [x] **T2.2 Build the CLI-only test-support helpers**
   - **RF:** RF-1, RF-8 (verification support); **RNF:** RNF-7
   - Add `tests/php/test_support.php` with the RNF-7 per-run token generator, assertion counter, captured-identifier cleanup (profiles before accounts), account lookup, and `inspect`/`cleanup` CLI modes used after browser runs. Guard the file so direct HTTP access returns 404.
   - Done when: `php -l tests/php/test_support.php` passes; a recorded CLI smoke check shows two `per_run_token()` values differ and encode valid email/phone/Cédula shapes; static inspection confirms cleanup deletes `perfiles_docente` before `usuarios`; the HTTP guard is present; no rows are written.
 
-- [ ] **T2.3 Implement the session-bound CSRF primitive**
+- [x] **T2.3 Implement the session-bound CSRF primitive**
   - **RF:** RF-9; **RNF:** RNF-1
   - Extend `tests/php/assert_foundation.php` first with CSRF expectations and confirm it fails before `includes/csrf.php` exists. Add `ensure_csrf_token()` and `submitted_csrf_is_valid()` using 32 random bytes rendered as 64 hex characters, `hash_equals`, non-string rejection, and no rotation. Keep the CLI/404 guard on the assertion script.
   - Done when: `php tests/php/assert_foundation.php` exits 0 and proves the token is 64 hex characters, stable across calls, accepted when matching, rejected when missing/malformed/foreign/non-string, and unchanged after repeated issuance; the transcript updates `evidence/layer0-foundation.txt`.
