@@ -26,7 +26,7 @@
 
 ## Phase 3: Shared Validation and Role Logic (PHP and JS)
 
-- [ ] **T3.1 Create the shared validation corpus**
+- [x] **T3.1 Create the shared validation corpus**
   - **RF:** RF-4, RF-5, RF-6; **RNF:** RNF-6
   - Add `tests/fixtures/validation-cases.json` covering empty and whitespace values; name accents, ñ, punctuation-only, 30/31 characters, and a name containing digits; email formats, non-ASCII, 150/151; phone normalization, `+` equivalence, a `+` in a non-leading position (rejected), 6/7/20/21 digits; Cédula 4/5/20/21, spaces, underscores, hyphen-only; password 7/8/72/73 UTF-8 bytes, letters-only, digits-only, and accented characters counted as UTF-8 bytes at a boundary; confirmation mismatch; terms.
   - Done when: the JSON parses with both PHP and Node, every rule in the spec table has at least one positive and one negative case, expected normalized values and Spanish messages are recorded, and the case inventory is saved in `evidence/layer1-corpus.md`.

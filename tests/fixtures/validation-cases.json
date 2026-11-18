@@ -1,0 +1,758 @@
+{
+  "_meta": {
+    "spec": "001-create-account",
+    "purpose": "Shared validation case corpus for client (RF-5) and server (RF-6) rule and message parity (plan decision 6).",
+    "messageSource": "plan.md, section 'Validation and messages'; the Spanish message strings below are exact approved copy and must not be reworded.",
+    "classification": {
+      "valid": "positive case: a validator must report no errors for the fields under test",
+      "invalid": "negative case: a validator must report exactly expectedErrors for the fields under test, one message per failing rule, in the recorded order"
+    },
+    "scope": "Format and composition rules only. Uniqueness (RF-6/RFC-7 duplicates) is a Layer 2 server concern and is intentionally not covered here.",
+    "baseValidRecord": {
+      "name": "Ana",
+      "lastname": "Pérez",
+      "email": "ana.perez@example.com",
+      "phone": "88887777",
+      "id": "8-1234-5678",
+      "password": "Contrasena1",
+      "password_confirm": "Contrasena1",
+      "terms": true
+    },
+    "harnessNote": "Each case input is merged over baseValidRecord; only the fields present in a case's input are under test, and expectedErrors covers only those fields.",
+    "ruleOrder": "One message per failing rule, grouped by field, in the fixed order from plan.md: required/empty, length/bytes, character composition/content, format, confirmation.",
+    "fieldRuleOrder": {
+      "name": ["required", "length", "composition", "content"],
+      "lastname": ["required", "length", "composition", "content"],
+      "email": ["required", "length", "format"],
+      "phone": ["required", "digits"],
+      "id": ["required", "length", "composition"],
+      "password": ["required", "bytes", "composition"],
+      "password_confirm": ["required", "confirmation"],
+      "terms": ["required"]
+    },
+    "ruleNotes": {
+      "phone.digits": "Single approved rule: after removing an optional single leading '+', spaces, hyphens, and parentheses, the remainder must be 7-20 ASCII digits. Disallowed characters (for example a non-leading '+') and out-of-range counts share the single approved phone message.",
+      "id.composition": "Single approved rule covering 'ASCII letters, digits, and hyphens only' AND 'at least one alphanumeric character'; both share the one approved id composition message in the plan message table, so hyphen-only values expect that message.",
+      "email.format": "Covers the shared ASCII structural pattern; the server additionally applies FILTER_VALIDATE_EMAIL. Cases marked serverOnly are asserted on the server only.",
+      "email.lengthOrder": "Per plan.md's fixed rule order, the 150-character length check precedes the format check for multi-failure values.",
+      "password.bytes": "The user-facing message says 'caracteres' while the rule enforces UTF-8 bytes (plan decision 10)."
+    },
+    "byteLengths": "Password-bearing cases record the expected UTF-8 byte length per value in expectedBytes; both validators must enforce these byte counts.",
+    "normalization": {
+      "name": "trim surrounding whitespace; length counted in code points after trim",
+      "lastname": "trim surrounding whitespace; length counted in code points after trim",
+      "email": "trim surrounding whitespace and lowercase",
+      "phone": "remove optional single leading '+', spaces, hyphens, and parentheses; store ASCII digits only",
+      "id": "trim surrounding whitespace; store as typed (case preserved)",
+      "password": "never trimmed; validated and stored as typed",
+      "password_confirm": "never trimmed"
+    },
+    "serverOnly": "When true, the shared structural email pattern may accept the value while PHP FILTER_VALIDATE_EMAIL rejects it; client-side assertions skip the case and only the server outcome (expectedErrors) is asserted. Such cases are not dropped from the corpus."
+  },
+  "cases": [
+    {
+      "id": "name-empty",
+      "field": "name",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "name": "" },
+      "expectedErrors": { "name": ["Ingresa tu nombre."] }
+    },
+    {
+      "id": "name-whitespace-only",
+      "field": "name",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "name": "   " },
+      "expectedErrors": { "name": ["Ingresa tu nombre."] }
+    },
+    {
+      "id": "name-valid-accents-enye",
+      "field": "name",
+      "rules": ["composition", "content", "length"],
+      "valid": true,
+      "input": { "name": "Ángel Muñoz-O'Bryan" },
+      "normalized": { "name": "Ángel Muñoz-O'Bryan" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "name-trimmed",
+      "field": "name",
+      "rules": ["required"],
+      "valid": true,
+      "input": { "name": "  Ana  " },
+      "normalized": { "name": "Ana" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "name-30-chars",
+      "field": "name",
+      "rules": ["length"],
+      "valid": true,
+      "input": { "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "normalized": { "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "name-31-chars",
+      "field": "name",
+      "rules": ["length"],
+      "valid": false,
+      "input": { "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "expectedErrors": { "name": ["El nombre debe tener entre 1 y 30 caracteres."] }
+    },
+    {
+      "id": "name-30-accents",
+      "field": "name",
+      "rules": ["length"],
+      "valid": true,
+      "input": { "name": "áááááááááááááááááááááááááááááá" },
+      "normalized": { "name": "áááááááááááááááááááááááááááááá" },
+      "expectedErrors": {},
+      "note": "Thirty U+00E1 characters: 30 code points but 60 UTF-8 bytes. Pins that name length is counted in code points, not bytes."
+    },
+    {
+      "id": "name-31-accents",
+      "field": "name",
+      "rules": ["length"],
+      "valid": false,
+      "input": { "name": "ááááááááááááááááááááááááááááááá" },
+      "expectedErrors": { "name": ["El nombre debe tener entre 1 y 30 caracteres."] }
+    },
+    {
+      "id": "name-punctuation-only",
+      "field": "name",
+      "rules": ["content"],
+      "valid": false,
+      "input": { "name": "-'-" },
+      "expectedErrors": { "name": ["El nombre debe incluir al menos una letra."] }
+    },
+    {
+      "id": "name-contains-digits",
+      "field": "name",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "name": "Carlos99" },
+      "expectedErrors": { "name": ["El nombre solo puede contener letras, espacios, guiones y apóstrofes."] }
+    },
+    {
+      "id": "name-multi-length-composition",
+      "field": "name",
+      "rules": ["length", "composition"],
+      "valid": false,
+      "input": { "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1" },
+      "expectedErrors": {
+        "name": [
+          "El nombre debe tener entre 1 y 30 caracteres.",
+          "El nombre solo puede contener letras, espacios, guiones y apóstrofes."
+        ]
+      },
+      "note": "Multi-failure order pin: length before composition."
+    },
+    {
+      "id": "name-multi-length-content",
+      "field": "name",
+      "rules": ["length", "content"],
+      "valid": false,
+      "input": { "name": "-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-" },
+      "expectedErrors": {
+        "name": [
+          "El nombre debe tener entre 1 y 30 caracteres.",
+          "El nombre debe incluir al menos una letra."
+        ]
+      },
+      "note": "31 characters of hyphens and apostrophes; multi-failure order pin: length before content."
+    },
+    {
+      "id": "lastname-empty",
+      "field": "lastname",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "lastname": "" },
+      "expectedErrors": { "lastname": ["Ingresa tu apellido."] }
+    },
+    {
+      "id": "lastname-whitespace-only",
+      "field": "lastname",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "lastname": "  " },
+      "expectedErrors": { "lastname": ["Ingresa tu apellido."] }
+    },
+    {
+      "id": "lastname-valid-accents",
+      "field": "lastname",
+      "rules": ["composition", "content", "length"],
+      "valid": true,
+      "input": { "lastname": "Núñez-García" },
+      "normalized": { "lastname": "Núñez-García" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "lastname-31-chars",
+      "field": "lastname",
+      "rules": ["length"],
+      "valid": false,
+      "input": { "lastname": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+      "expectedErrors": { "lastname": ["El apellido debe tener entre 1 y 30 caracteres."] }
+    },
+    {
+      "id": "lastname-contains-digits",
+      "field": "lastname",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "lastname": "García2" },
+      "expectedErrors": { "lastname": ["El apellido solo puede contener letras, espacios, guiones y apóstrofes."] }
+    },
+    {
+      "id": "lastname-punctuation-only",
+      "field": "lastname",
+      "rules": ["content"],
+      "valid": false,
+      "input": { "lastname": "-" },
+      "expectedErrors": { "lastname": ["El apellido debe incluir al menos una letra."] }
+    },
+    {
+      "id": "email-empty",
+      "field": "email",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "email": "" },
+      "expectedErrors": { "email": ["Ingresa tu correo electrónico."] }
+    },
+    {
+      "id": "email-whitespace-only",
+      "field": "email",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "email": "   " },
+      "expectedErrors": { "email": ["Ingresa tu correo electrónico."] }
+    },
+    {
+      "id": "email-valid-lowercase",
+      "field": "email",
+      "rules": ["format", "length"],
+      "valid": true,
+      "input": { "email": "ana@example.com" },
+      "normalized": { "email": "ana@example.com" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "email-trim-and-lowercase",
+      "field": "email",
+      "rules": ["format", "length"],
+      "valid": true,
+      "input": { "email": "  Ana.Mailer@Example.COM  " },
+      "normalized": { "email": "ana.mailer@example.com" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "email-150-chars",
+      "field": "email",
+      "rules": ["length", "format"],
+      "valid": true,
+      "input": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com" },
+      "normalized": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com" },
+      "expectedErrors": {},
+      "note": "Exactly 150 characters (138-character local part + @example.com)."
+    },
+    {
+      "id": "email-151-chars",
+      "field": "email",
+      "rules": ["length", "format"],
+      "valid": false,
+      "input": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com" },
+      "expectedErrors": { "email": ["El correo electrónico debe tener como máximo 150 caracteres."] },
+      "note": "Exactly 151 characters; otherwise structurally valid."
+    },
+    {
+      "id": "email-non-ascii",
+      "field": "email",
+      "rules": ["format"],
+      "valid": false,
+      "input": { "email": "usuário@example.com" },
+      "expectedErrors": { "email": ["El correo electrónico no es válido."] }
+    },
+    {
+      "id": "email-missing-at",
+      "field": "email",
+      "rules": ["format"],
+      "valid": false,
+      "input": { "email": "usuario.example.com" },
+      "expectedErrors": { "email": ["El correo electrónico no es válido."] }
+    },
+    {
+      "id": "email-double-at",
+      "field": "email",
+      "rules": ["format"],
+      "valid": false,
+      "input": { "email": "usu@ario@example.com" },
+      "expectedErrors": { "email": ["El correo electrónico no es válido."] }
+    },
+    {
+      "id": "email-multi-length-format",
+      "field": "email",
+      "rules": ["length", "format"],
+      "valid": false,
+      "input": { "email": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaexample.com" },
+      "expectedErrors": {
+        "email": [
+          "El correo electrónico debe tener como máximo 150 caracteres.",
+          "El correo electrónico no es válido."
+        ]
+      },
+      "note": "151 characters with no '@'; multi-failure order pin: length before format."
+    },
+    {
+      "id": "email-serveronly-double-dot-local",
+      "field": "email",
+      "rules": ["format"],
+      "valid": false,
+      "serverOnly": true,
+      "input": { "email": "usu..ario@example.com" },
+      "expectedErrors": { "email": ["El correo electrónico no es válido."] },
+      "note": "Consecutive dots in the local part: PHP FILTER_VALIDATE_EMAIL rejects; the permissive shared pattern may accept. Asserted on the server only."
+    },
+    {
+      "id": "email-serveronly-leading-dot",
+      "field": "email",
+      "rules": ["format"],
+      "valid": false,
+      "serverOnly": true,
+      "input": { "email": ".usuario@example.com" },
+      "expectedErrors": { "email": ["El correo electrónico no es válido."] },
+      "note": "Leading dot in the local part: PHP FILTER_VALIDATE_EMAIL rejects; the permissive shared pattern may accept. Asserted on the server only."
+    },
+    {
+      "id": "email-serveronly-double-dot-domain",
+      "field": "email",
+      "rules": ["format"],
+      "valid": false,
+      "serverOnly": true,
+      "input": { "email": "usuario@example..com" },
+      "expectedErrors": { "email": ["El correo electrónico no es válido."] },
+      "note": "Consecutive dots in the domain: PHP FILTER_VALIDATE_EMAIL rejects; the permissive shared pattern may accept. Asserted on the server only."
+    },
+    {
+      "id": "phone-empty",
+      "field": "phone",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "phone": "" },
+      "expectedErrors": { "phone": ["Ingresa tu teléfono."] }
+    },
+    {
+      "id": "phone-whitespace-only",
+      "field": "phone",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "phone": "   " },
+      "expectedErrors": { "phone": ["Ingresa tu teléfono."] }
+    },
+    {
+      "id": "phone-plain-digits",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": true,
+      "input": { "phone": "88887777" },
+      "normalized": { "phone": "88887777" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "phone-plus-space-hyphen",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": true,
+      "input": { "phone": "+506 8888-7777" },
+      "normalized": { "phone": "50688887777" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "phone-leading-plus-equivalent",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": true,
+      "input": { "phone": "+50688887777" },
+      "normalized": { "phone": "50688887777" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "phone-plain-equivalent",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": true,
+      "input": { "phone": "50688887777" },
+      "normalized": { "phone": "50688887777" },
+      "expectedErrors": {},
+      "note": "Together with phone-leading-plus-equivalent: both raw forms normalize to the same value."
+    },
+    {
+      "id": "phone-parentheses",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": true,
+      "input": { "phone": "(506) 8888-7777" },
+      "normalized": { "phone": "50688887777" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "phone-7-digits",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": true,
+      "input": { "phone": "1234567" },
+      "normalized": { "phone": "1234567" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "phone-20-digits",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": true,
+      "input": { "phone": "01234567890123456789" },
+      "normalized": { "phone": "01234567890123456789" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "phone-6-digits",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": false,
+      "input": { "phone": "123456" },
+      "expectedErrors": { "phone": ["El teléfono debe tener entre 7 y 20 dígitos."] }
+    },
+    {
+      "id": "phone-21-digits",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": false,
+      "input": { "phone": "012345678901234567890" },
+      "expectedErrors": { "phone": ["El teléfono debe tener entre 7 y 20 dígitos."] }
+    },
+    {
+      "id": "phone-plus-non-leading",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": false,
+      "input": { "phone": "506+88887777" },
+      "expectedErrors": { "phone": ["El teléfono debe tener entre 7 y 20 dígitos."] },
+      "note": "A '+' in a non-leading position is not removable, so the normalized remainder is not ASCII digits only."
+    },
+    {
+      "id": "phone-letters",
+      "field": "phone",
+      "rules": ["digits"],
+      "valid": false,
+      "input": { "phone": "8888ABCD" },
+      "expectedErrors": { "phone": ["El teléfono debe tener entre 7 y 20 dígitos."] }
+    },
+    {
+      "id": "id-empty",
+      "field": "id",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "id": "" },
+      "expectedErrors": { "id": ["Ingresa tu cédula o ID."] }
+    },
+    {
+      "id": "id-whitespace-only",
+      "field": "id",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "id": "   " },
+      "expectedErrors": { "id": ["Ingresa tu cédula o ID."] }
+    },
+    {
+      "id": "id-valid-hyphens",
+      "field": "id",
+      "rules": ["length", "composition"],
+      "valid": true,
+      "input": { "id": "8-1234-5678" },
+      "normalized": { "id": "8-1234-5678" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "id-trimmed-case-preserved",
+      "field": "id",
+      "rules": ["required"],
+      "valid": true,
+      "input": { "id": "  AB-1234cd  " },
+      "normalized": { "id": "AB-1234cd" },
+      "expectedErrors": {},
+      "note": "Trimmed, stored as typed with letter case preserved."
+    },
+    {
+      "id": "id-4-chars",
+      "field": "id",
+      "rules": ["length"],
+      "valid": false,
+      "input": { "id": "1234" },
+      "expectedErrors": { "id": ["La cédula o ID debe tener entre 5 y 20 caracteres."] }
+    },
+    {
+      "id": "id-5-chars",
+      "field": "id",
+      "rules": ["length", "composition"],
+      "valid": true,
+      "input": { "id": "12345" },
+      "normalized": { "id": "12345" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "id-20-chars",
+      "field": "id",
+      "rules": ["length", "composition"],
+      "valid": true,
+      "input": { "id": "A123456789B123456789" },
+      "normalized": { "id": "A123456789B123456789" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "id-21-chars",
+      "field": "id",
+      "rules": ["length"],
+      "valid": false,
+      "input": { "id": "A123456789B123456789C" },
+      "expectedErrors": { "id": ["La cédula o ID debe tener entre 5 y 20 caracteres."] }
+    },
+    {
+      "id": "id-internal-spaces",
+      "field": "id",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "id": "8 1234 5678" },
+      "expectedErrors": { "id": ["La cédula o ID solo puede contener letras, números y guiones."] }
+    },
+    {
+      "id": "id-underscore",
+      "field": "id",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "id": "8_123456" },
+      "expectedErrors": { "id": ["La cédula o ID solo puede contener letras, números y guiones."] }
+    },
+    {
+      "id": "id-hyphen-only",
+      "field": "id",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "id": "-----" },
+      "expectedErrors": { "id": ["La cédula o ID solo puede contener letras, números y guiones."] },
+      "note": "Hyphen-only passes the allowed-character half of the rule but has no alphanumeric character; the plan message table provides one composition message for the whole id character rule."
+    },
+    {
+      "id": "id-non-ascii",
+      "field": "id",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "id": "cédula1" },
+      "expectedErrors": { "id": ["La cédula o ID solo puede contener letras, números y guiones."] },
+      "note": "ASCII letters only; an accented character is rejected."
+    },
+    {
+      "id": "id-multi-length-composition",
+      "field": "id",
+      "rules": ["length", "composition"],
+      "valid": false,
+      "input": { "id": "11111111111111111111_" },
+      "expectedErrors": {
+        "id": [
+          "La cédula o ID debe tener entre 5 y 20 caracteres.",
+          "La cédula o ID solo puede contener letras, números y guiones."
+        ]
+      },
+      "note": "21 characters containing an underscore; multi-failure order pin: length before composition."
+    },
+    {
+      "id": "password-empty",
+      "field": "password",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "password": "", "password_confirm": "" },
+      "expectedBytes": { "password": 0, "password_confirm": 0 },
+      "expectedErrors": {
+        "password": ["Ingresa una contraseña."],
+        "password_confirm": ["Confirma tu contraseña."]
+      }
+    },
+    {
+      "id": "password-whitespace-not-trimmed",
+      "field": "password",
+      "rules": ["bytes", "composition"],
+      "valid": false,
+      "input": { "password": "          ", "password_confirm": "          " },
+      "expectedBytes": { "password": 10, "password_confirm": 10 },
+      "expectedErrors": {
+        "password": ["La contraseña debe incluir al menos una letra y un número."],
+        "password_confirm": ["La contraseña debe incluir al menos una letra y un número."]
+      },
+      "note": "Ten spaces: 10 bytes (length passes), no ASCII letter or digit. Passwords are never trimmed, so this is not the required message."
+    },
+    {
+      "id": "password-7-bytes",
+      "field": "password",
+      "rules": ["bytes"],
+      "valid": false,
+      "input": { "password": "Aa1bcde", "password_confirm": "Aa1bcde" },
+      "expectedBytes": { "password": 7, "password_confirm": 7 },
+      "expectedErrors": {
+        "password": ["La contraseña debe tener entre 8 y 72 caracteres."],
+        "password_confirm": ["La contraseña debe tener entre 8 y 72 caracteres."]
+      }
+    },
+    {
+      "id": "password-8-bytes",
+      "field": "password",
+      "rules": ["bytes", "composition"],
+      "valid": true,
+      "input": { "password": "Aa1bcdef", "password_confirm": "Aa1bcdef" },
+      "expectedBytes": { "password": 8, "password_confirm": 8 },
+      "normalized": { "password": "Aa1bcdef", "password_confirm": "Aa1bcdef" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "password-72-bytes",
+      "field": "password",
+      "rules": ["bytes", "composition"],
+      "valid": true,
+      "input": { "password": "Aa1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "password_confirm": "Aa1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+      "expectedBytes": { "password": 72, "password_confirm": 72 },
+      "normalized": { "password": "Aa1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "password_confirm": "Aa1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "password-73-bytes",
+      "field": "password",
+      "rules": ["bytes"],
+      "valid": false,
+      "input": { "password": "Aa1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "password_confirm": "Aa1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+      "expectedBytes": { "password": 73, "password_confirm": 73 },
+      "expectedErrors": {
+        "password": ["La contraseña debe tener entre 8 y 72 caracteres."],
+        "password_confirm": ["La contraseña debe tener entre 8 y 72 caracteres."]
+      }
+    },
+    {
+      "id": "password-accents-7-chars-12-bytes",
+      "field": "password",
+      "rules": ["bytes", "composition"],
+      "valid": true,
+      "input": { "password": "áéíóúA1", "password_confirm": "áéíóúA1" },
+      "expectedBytes": { "password": 12, "password_confirm": 12 },
+      "normalized": { "password": "áéíóúA1", "password_confirm": "áéíóúA1" },
+      "expectedErrors": {},
+      "note": "Seven characters but 12 UTF-8 bytes; the byte-based rule accepts what a naive character-count rule would reject."
+    },
+    {
+      "id": "password-accents-72-bytes",
+      "field": "password",
+      "rules": ["bytes", "composition"],
+      "valid": true,
+      "input": { "password": "ññññññññññññññññññññññññññññññññññña1", "password_confirm": "ññññññññññññññññññññññññññññññññññña1" },
+      "expectedBytes": { "password": 72, "password_confirm": 72 },
+      "normalized": { "password": "ññññññññññññññññññññññññññññññññññña1", "password_confirm": "ññññññññññññññññññññññññññññññññññña1" },
+      "expectedErrors": {},
+      "note": "Thirty-five U+00F1 characters (70 bytes) plus 'a1' (2 bytes): exactly 72 UTF-8 bytes with 37 characters."
+    },
+    {
+      "id": "password-accents-73-bytes",
+      "field": "password",
+      "rules": ["bytes"],
+      "valid": false,
+      "input": { "password": "ññññññññññññññññññññññññññññññññññña1x", "password_confirm": "ññññññññññññññññññññññññññññññññññña1x" },
+      "expectedBytes": { "password": 73, "password_confirm": 73 },
+      "expectedErrors": {
+        "password": ["La contraseña debe tener entre 8 y 72 caracteres."],
+        "password_confirm": ["La contraseña debe tener entre 8 y 72 caracteres."]
+      },
+      "note": "Accented characters counted as UTF-8 bytes push the value one byte over the 72-byte bound; composition still passes, so the only message is the length one."
+    },
+    {
+      "id": "password-accents-7-bytes",
+      "field": "password",
+      "rules": ["bytes", "composition"],
+      "valid": false,
+      "input": { "password": "áéí1", "password_confirm": "áéí1" },
+      "expectedBytes": { "password": 7, "password_confirm": 7 },
+      "expectedErrors": {
+        "password": [
+          "La contraseña debe tener entre 8 y 72 caracteres.",
+          "La contraseña debe incluir al menos una letra y un número."
+        ],
+        "password_confirm": [
+          "La contraseña debe tener entre 8 y 72 caracteres.",
+          "La contraseña debe incluir al menos una letra y un número."
+        ]
+      },
+      "note": "Four accented/digit characters = 7 UTF-8 bytes (under the byte bound) and no ASCII letter; multi-failure order pin: bytes before composition. Both fields carry the same invalid value, so both report the same two messages."
+    },
+    {
+      "id": "password-letters-only",
+      "field": "password",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "password": "abcdefghij", "password_confirm": "abcdefghij" },
+      "expectedBytes": { "password": 10, "password_confirm": 10 },
+      "expectedErrors": {
+        "password": ["La contraseña debe incluir al menos una letra y un número."],
+        "password_confirm": ["La contraseña debe incluir al menos una letra y un número."]
+      }
+    },
+    {
+      "id": "password-digits-only",
+      "field": "password",
+      "rules": ["composition"],
+      "valid": false,
+      "input": { "password": "12345678", "password_confirm": "12345678" },
+      "expectedBytes": { "password": 8, "password_confirm": 8 },
+      "expectedErrors": {
+        "password": ["La contraseña debe incluir al menos una letra y un número."],
+        "password_confirm": ["La contraseña debe incluir al menos una letra y un número."]
+      }
+    },
+    {
+      "id": "password-confirm-match",
+      "field": "password_confirm",
+      "rules": ["confirmation"],
+      "valid": true,
+      "input": { "password": "Contrasena1", "password_confirm": "Contrasena1" },
+      "expectedBytes": { "password": 11, "password_confirm": 11 },
+      "normalized": { "password": "Contrasena1", "password_confirm": "Contrasena1" },
+      "expectedErrors": {}
+    },
+    {
+      "id": "password-confirm-mismatch",
+      "field": "password_confirm",
+      "rules": ["confirmation"],
+      "valid": false,
+      "input": { "password": "Contrasena1", "password_confirm": "Contrasena2" },
+      "expectedBytes": { "password": 11, "password_confirm": 11 },
+      "expectedErrors": { "password_confirm": ["Las contraseñas no coinciden."] }
+    },
+    {
+      "id": "password-confirm-empty",
+      "field": "password_confirm",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "password": "Contrasena1", "password_confirm": "" },
+      "expectedBytes": { "password": 11, "password_confirm": 0 },
+      "expectedErrors": { "password_confirm": ["Confirma tu contraseña."] }
+    },
+    {
+      "id": "terms-unchecked",
+      "field": "terms",
+      "rules": ["required"],
+      "valid": false,
+      "input": { "terms": false },
+      "expectedErrors": { "terms": ["Debes aceptar los términos y condiciones."] }
+    },
+    {
+      "id": "terms-checked",
+      "field": "terms",
+      "rules": ["required"],
+      "valid": true,
+      "input": { "terms": true },
+      "expectedErrors": {}
+    }
+  ]
+}
