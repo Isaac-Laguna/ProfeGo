@@ -1,0 +1,354 @@
+Layer 1 (PHP validator) transcript - Task T3.2
+Spec: 001-create-account
+Date: 2026-11-18
+Machine: USBWebServer 8.6.5, Windows, PowerShell; PHP 8.1.3 CLI
+
+PHP binary used
+---------------
+`php` is not on PATH. The USBWebServer CLI binary was used:
+
+    C:\Users\isaac\Documents\USBWebServer\php\php.exe
+
+The known php_gd2.dll startup warning is filtered from the per-command outputs
+below; it appears on every invocation and does not affect exit codes.
+Abbreviation: PHP = the binary above.
+
+Test-first: RED state (before includes/validation.php existed)
+-------------------------------------------------------------
+Only tests/php/assert_validation.php existed; the validator module did not.
+
+Command:
+
+    PS> & PHP tests/php/assert_validation.php
+    PS> Write-Output "EXITCODE=$LASTEXITCODE"
+
+Output:
+
+    FAIL: includes/validation.php does not exist yet (validator rules and role allow-list cannot be asserted).
+    Assertions: 0, Failures: 1
+    EXITCODE=1
+
+Expected reason: the validator module was absent, so the assertion script exited
+1 at its guard before any validator rule or role allow-list assertion could run.
+The failing-first expectation was deliberately limited to the validator rules and
+the role allow-list; the corpus and the CLI/404 guard were not the cause.
+
+First GREEN attempt against the original corpus (224 assertions, 2 failures)
+---------------------------------------------------------------------------
+After adding includes/validation.php, the script ran all 74 cases but two email
+boundary cases failed:
+
+    FAIL: [email-150-chars] errors match expectedErrors exactly and in order
+        expected: []
+        actual:   {"email":["El correo electrónico no es válido."]}
+    FAIL: [email-151-chars] errors match expectedErrors exactly and in order
+        expected: {"email":["El correo electrónico debe tener como máximo 150 caracteres."]}
+        actual:   {"email":["El correo electrónico debe tener como máximo 150 caracteres.","El correo electrónico no es válido."]}
+
+    Assertions: 224, Failures: 2
+    EXITCODE=1
+
+Root cause probe (PHP 8.1.3 FILTER_VALIDATE_EMAIL vs local-part length):
+
+    local= 63 total= 75 filter=ACCEPT
+    local= 64 total= 76 filter=ACCEPT
+    local= 65 total= 77 filter=REJECT
+    local= 66 total= 78 filter=REJECT
+    local=138 total=150 filter=REJECT
+    local=139 total=151 filter=REJECT
+
+FILTER_VALIDATE_EMAIL enforces RFC 5321's 64-octet local-part limit. The corpus
+values used 138/139-character local parts, so both boundary emails were rejected
+as invalid format while the corpus expected acceptance. This was a fixture defect,
+not a validator defect; no requirement or message string was changed.
+
+Corpus fix reference
+--------------------
+Commit 4382263c14293b2d945a8eed3f161bcb66b91959
+    test(core): fix email boundary corpus values
+
+Both boundary values were regenerated with a 64-character ASCII local part and an
+85/86-character domain, accepted by FILTER_VALIDATE_EMAIL, keeping totals of exactly
+150 and 151 characters. The evidence file specs/001-create-account/evidence/
+layer1-corpus.md records the new lengths, the filter outcomes, and the re-run parse
+and byte/length checks (48 checks, 0 failures in each runtime).
+
+Final GREEN state (after the corpus fix; validator code unchanged)
+-----------------------------------------------------------------
+Command:
+
+    PS> & PHP tests/php/assert_validation.php
+    PS> Write-Output "EXITCODE=$LASTEXITCODE"
+
+Output:
+
+    PASS: validate_registration() is defined
+    PASS: normalize_phone() is defined
+    PASS: is_allowed_registration_role() is defined
+    PASS: corpus contains the 74 expected cases
+    PASS: [name-empty] validate_registration() returns values and errors
+    PASS: [name-empty] errors match expectedErrors exactly and in order
+    PASS: [name-whitespace-only] validate_registration() returns values and errors
+    PASS: [name-whitespace-only] errors match expectedErrors exactly and in order
+    PASS: [name-valid-accents-enye] validate_registration() returns values and errors
+    PASS: [name-valid-accents-enye] errors match expectedErrors exactly and in order
+    PASS: [name-valid-accents-enye] normalized name is the expected value
+    PASS: [name-trimmed] validate_registration() returns values and errors
+    PASS: [name-trimmed] errors match expectedErrors exactly and in order
+    PASS: [name-trimmed] normalized name is the expected value
+    PASS: [name-30-chars] validate_registration() returns values and errors
+    PASS: [name-30-chars] errors match expectedErrors exactly and in order
+    PASS: [name-30-chars] normalized name is the expected value
+    PASS: [name-31-chars] validate_registration() returns values and errors
+    PASS: [name-31-chars] errors match expectedErrors exactly and in order
+    PASS: [name-30-accents] validate_registration() returns values and errors
+    PASS: [name-30-accents] errors match expectedErrors exactly and in order
+    PASS: [name-30-accents] normalized name is the expected value
+    PASS: [name-31-accents] validate_registration() returns values and errors
+    PASS: [name-31-accents] errors match expectedErrors exactly and in order
+    PASS: [name-punctuation-only] validate_registration() returns values and errors
+    PASS: [name-punctuation-only] errors match expectedErrors exactly and in order
+    PASS: [name-contains-digits] validate_registration() returns values and errors
+    PASS: [name-contains-digits] errors match expectedErrors exactly and in order
+    PASS: [name-multi-length-composition] validate_registration() returns values and errors
+    PASS: [name-multi-length-composition] errors match expectedErrors exactly and in order
+    PASS: [name-multi-length-content] validate_registration() returns values and errors
+    PASS: [name-multi-length-content] errors match expectedErrors exactly and in order
+    PASS: [lastname-empty] validate_registration() returns values and errors
+    PASS: [lastname-empty] errors match expectedErrors exactly and in order
+    PASS: [lastname-whitespace-only] validate_registration() returns values and errors
+    PASS: [lastname-whitespace-only] errors match expectedErrors exactly and in order
+    PASS: [lastname-valid-accents] validate_registration() returns values and errors
+    PASS: [lastname-valid-accents] errors match expectedErrors exactly and in order
+    PASS: [lastname-valid-accents] normalized lastname is the expected value
+    PASS: [lastname-31-chars] validate_registration() returns values and errors
+    PASS: [lastname-31-chars] errors match expectedErrors exactly and in order
+    PASS: [lastname-contains-digits] validate_registration() returns values and errors
+    PASS: [lastname-contains-digits] errors match expectedErrors exactly and in order
+    PASS: [lastname-punctuation-only] validate_registration() returns values and errors
+    PASS: [lastname-punctuation-only] errors match expectedErrors exactly and in order
+    PASS: [email-empty] validate_registration() returns values and errors
+    PASS: [email-empty] errors match expectedErrors exactly and in order
+    PASS: [email-whitespace-only] validate_registration() returns values and errors
+    PASS: [email-whitespace-only] errors match expectedErrors exactly and in order
+    PASS: [email-valid-lowercase] validate_registration() returns values and errors
+    PASS: [email-valid-lowercase] errors match expectedErrors exactly and in order
+    PASS: [email-valid-lowercase] normalized email is the expected value
+    PASS: [email-trim-and-lowercase] validate_registration() returns values and errors
+    PASS: [email-trim-and-lowercase] errors match expectedErrors exactly and in order
+    PASS: [email-trim-and-lowercase] normalized email is the expected value
+    PASS: [email-150-chars] validate_registration() returns values and errors
+    PASS: [email-150-chars] errors match expectedErrors exactly and in order
+    PASS: [email-150-chars] normalized email is the expected value
+    PASS: [email-151-chars] validate_registration() returns values and errors
+    PASS: [email-151-chars] errors match expectedErrors exactly and in order
+    PASS: [email-non-ascii] validate_registration() returns values and errors
+    PASS: [email-non-ascii] errors match expectedErrors exactly and in order
+    PASS: [email-missing-at] validate_registration() returns values and errors
+    PASS: [email-missing-at] errors match expectedErrors exactly and in order
+    PASS: [email-double-at] validate_registration() returns values and errors
+    PASS: [email-double-at] errors match expectedErrors exactly and in order
+    PASS: [email-multi-length-format] validate_registration() returns values and errors
+    PASS: [email-multi-length-format] errors match expectedErrors exactly and in order
+    PASS: [email-serveronly-double-dot-local] validate_registration() returns values and errors
+    PASS: [email-serveronly-double-dot-local] errors match expectedErrors exactly and in order
+    PASS: [email-serveronly-leading-dot] validate_registration() returns values and errors
+    PASS: [email-serveronly-leading-dot] errors match expectedErrors exactly and in order
+    PASS: [email-serveronly-double-dot-domain] validate_registration() returns values and errors
+    PASS: [email-serveronly-double-dot-domain] errors match expectedErrors exactly and in order
+    PASS: [phone-empty] validate_registration() returns values and errors
+    PASS: [phone-empty] errors match expectedErrors exactly and in order
+    PASS: [phone-whitespace-only] validate_registration() returns values and errors
+    PASS: [phone-whitespace-only] errors match expectedErrors exactly and in order
+    PASS: [phone-plain-digits] validate_registration() returns values and errors
+    PASS: [phone-plain-digits] errors match expectedErrors exactly and in order
+    PASS: [phone-plain-digits] normalized phone is the expected value
+    PASS: [phone-plus-space-hyphen] validate_registration() returns values and errors
+    PASS: [phone-plus-space-hyphen] errors match expectedErrors exactly and in order
+    PASS: [phone-plus-space-hyphen] normalized phone is the expected value
+    PASS: [phone-leading-plus-equivalent] validate_registration() returns values and errors
+    PASS: [phone-leading-plus-equivalent] errors match expectedErrors exactly and in order
+    PASS: [phone-leading-plus-equivalent] normalized phone is the expected value
+    PASS: [phone-plain-equivalent] validate_registration() returns values and errors
+    PASS: [phone-plain-equivalent] errors match expectedErrors exactly and in order
+    PASS: [phone-plain-equivalent] normalized phone is the expected value
+    PASS: [phone-parentheses] validate_registration() returns values and errors
+    PASS: [phone-parentheses] errors match expectedErrors exactly and in order
+    PASS: [phone-parentheses] normalized phone is the expected value
+    PASS: [phone-7-digits] validate_registration() returns values and errors
+    PASS: [phone-7-digits] errors match expectedErrors exactly and in order
+    PASS: [phone-7-digits] normalized phone is the expected value
+    PASS: [phone-20-digits] validate_registration() returns values and errors
+    PASS: [phone-20-digits] errors match expectedErrors exactly and in order
+    PASS: [phone-20-digits] normalized phone is the expected value
+    PASS: [phone-6-digits] validate_registration() returns values and errors
+    PASS: [phone-6-digits] errors match expectedErrors exactly and in order
+    PASS: [phone-21-digits] validate_registration() returns values and errors
+    PASS: [phone-21-digits] errors match expectedErrors exactly and in order
+    PASS: [phone-plus-non-leading] validate_registration() returns values and errors
+    PASS: [phone-plus-non-leading] errors match expectedErrors exactly and in order
+    PASS: [phone-letters] validate_registration() returns values and errors
+    PASS: [phone-letters] errors match expectedErrors exactly and in order
+    PASS: [id-empty] validate_registration() returns values and errors
+    PASS: [id-empty] errors match expectedErrors exactly and in order
+    PASS: [id-whitespace-only] validate_registration() returns values and errors
+    PASS: [id-whitespace-only] errors match expectedErrors exactly and in order
+    PASS: [id-valid-hyphens] validate_registration() returns values and errors
+    PASS: [id-valid-hyphens] errors match expectedErrors exactly and in order
+    PASS: [id-valid-hyphens] normalized id is the expected value
+    PASS: [id-trimmed-case-preserved] validate_registration() returns values and errors
+    PASS: [id-trimmed-case-preserved] errors match expectedErrors exactly and in order
+    PASS: [id-trimmed-case-preserved] normalized id is the expected value
+    PASS: [id-4-chars] validate_registration() returns values and errors
+    PASS: [id-4-chars] errors match expectedErrors exactly and in order
+    PASS: [id-5-chars] validate_registration() returns values and errors
+    PASS: [id-5-chars] errors match expectedErrors exactly and in order
+    PASS: [id-5-chars] normalized id is the expected value
+    PASS: [id-20-chars] validate_registration() returns values and errors
+    PASS: [id-20-chars] errors match expectedErrors exactly and in order
+    PASS: [id-20-chars] normalized id is the expected value
+    PASS: [id-21-chars] validate_registration() returns values and errors
+    PASS: [id-21-chars] errors match expectedErrors exactly and in order
+    PASS: [id-internal-spaces] validate_registration() returns values and errors
+    PASS: [id-internal-spaces] errors match expectedErrors exactly and in order
+    PASS: [id-underscore] validate_registration() returns values and errors
+    PASS: [id-underscore] errors match expectedErrors exactly and in order
+    PASS: [id-hyphen-only] validate_registration() returns values and errors
+    PASS: [id-hyphen-only] errors match expectedErrors exactly and in order
+    PASS: [id-non-ascii] validate_registration() returns values and errors
+    PASS: [id-non-ascii] errors match expectedErrors exactly and in order
+    PASS: [id-multi-length-composition] validate_registration() returns values and errors
+    PASS: [id-multi-length-composition] errors match expectedErrors exactly and in order
+    PASS: [password-empty] validate_registration() returns values and errors
+    PASS: [password-empty] errors match expectedErrors exactly and in order
+    PASS: [password-empty] password uses the recorded UTF-8 byte length
+    PASS: [password-empty] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-whitespace-not-trimmed] validate_registration() returns values and errors
+    PASS: [password-whitespace-not-trimmed] errors match expectedErrors exactly and in order
+    PASS: [password-whitespace-not-trimmed] password uses the recorded UTF-8 byte length
+    PASS: [password-whitespace-not-trimmed] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-7-bytes] validate_registration() returns values and errors
+    PASS: [password-7-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-7-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-7-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-8-bytes] validate_registration() returns values and errors
+    PASS: [password-8-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-8-bytes] normalized password is the expected value
+    PASS: [password-8-bytes] normalized password_confirm is the expected value
+    PASS: [password-8-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-8-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-72-bytes] validate_registration() returns values and errors
+    PASS: [password-72-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-72-bytes] normalized password is the expected value
+    PASS: [password-72-bytes] normalized password_confirm is the expected value
+    PASS: [password-72-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-72-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-73-bytes] validate_registration() returns values and errors
+    PASS: [password-73-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-73-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-73-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-accents-7-chars-12-bytes] validate_registration() returns values and errors
+    PASS: [password-accents-7-chars-12-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-accents-7-chars-12-bytes] normalized password is the expected value
+    PASS: [password-accents-7-chars-12-bytes] normalized password_confirm is the expected value
+    PASS: [password-accents-7-chars-12-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-accents-7-chars-12-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-accents-72-bytes] validate_registration() returns values and errors
+    PASS: [password-accents-72-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-accents-72-bytes] normalized password is the expected value
+    PASS: [password-accents-72-bytes] normalized password_confirm is the expected value
+    PASS: [password-accents-72-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-accents-72-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-accents-73-bytes] validate_registration() returns values and errors
+    PASS: [password-accents-73-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-accents-73-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-accents-73-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-accents-7-bytes] validate_registration() returns values and errors
+    PASS: [password-accents-7-bytes] errors match expectedErrors exactly and in order
+    PASS: [password-accents-7-bytes] password uses the recorded UTF-8 byte length
+    PASS: [password-accents-7-bytes] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-letters-only] validate_registration() returns values and errors
+    PASS: [password-letters-only] errors match expectedErrors exactly and in order
+    PASS: [password-letters-only] password uses the recorded UTF-8 byte length
+    PASS: [password-letters-only] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-digits-only] validate_registration() returns values and errors
+    PASS: [password-digits-only] errors match expectedErrors exactly and in order
+    PASS: [password-digits-only] password uses the recorded UTF-8 byte length
+    PASS: [password-digits-only] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-confirm-match] validate_registration() returns values and errors
+    PASS: [password-confirm-match] errors match expectedErrors exactly and in order
+    PASS: [password-confirm-match] normalized password is the expected value
+    PASS: [password-confirm-match] normalized password_confirm is the expected value
+    PASS: [password-confirm-match] password uses the recorded UTF-8 byte length
+    PASS: [password-confirm-match] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-confirm-mismatch] validate_registration() returns values and errors
+    PASS: [password-confirm-mismatch] errors match expectedErrors exactly and in order
+    PASS: [password-confirm-mismatch] password uses the recorded UTF-8 byte length
+    PASS: [password-confirm-mismatch] password_confirm uses the recorded UTF-8 byte length
+    PASS: [password-confirm-empty] validate_registration() returns values and errors
+    PASS: [password-confirm-empty] errors match expectedErrors exactly and in order
+    PASS: [password-confirm-empty] password uses the recorded UTF-8 byte length
+    PASS: [password-confirm-empty] password_confirm uses the recorded UTF-8 byte length
+    PASS: [terms-unchecked] validate_registration() returns values and errors
+    PASS: [terms-unchecked] errors match expectedErrors exactly and in order
+    PASS: [terms-checked] validate_registration() returns values and errors
+    PASS: [terms-checked] errors match expectedErrors exactly and in order
+    PASS: all 3 serverOnly cases were asserted on the server
+    PASS: allow-list accepts estudiante
+    PASS: allow-list accepts docente
+    PASS: allow-list rejects admin
+    PASS: allow-list rejects an unknown role
+    PASS: allow-list rejects a wrong-case role
+    PASS: allow-list rejects an empty role
+    PASS: allow-list rejects a null/missing role
+    PASS: allow-list rejects a missing rol key
+    PASS: allow-list rejects a non-scalar role
+    PASS: non-scalar field submissions are coerced to empty values without type errors
+    PASS: normalize_phone() coerces a non-scalar to empty
+    PASS: normalize_phone() coerces null to empty
+
+    Assertions: 224, Failures: 0
+    Assertions: 224, Failures: 0
+    EXITCODE=0
+
+This proves all 74 corpus cases match the expected normalized values and the exact
+Spanish messages in the recorded rule order, including all three serverOnly cases,
+the phone normalization and '+' equivalence, the UTF-8 byte boundaries, and
+non-scalar coercion. The role allow-list accepts only estudiante and docente and
+rejects admin, unknown, wrong-case, empty, null/missing, and non-scalar values.
+No database was accessed and no rows were written.
+
+Syntax checks (php -l) on every touched PHP file
+------------------------------------------------
+Command (per file):
+
+    PS> & PHP -l <file>
+    PS> Write-Output "EXITCODE=$LASTEXITCODE"
+
+Results:
+
+    tests/php/assert_validation.php => No syntax errors detected in tests/php/assert_validation.php (exit 0)
+    includes/validation.php         => No syntax errors detected in includes/validation.php (exit 0)
+
+CLI/404 guard
+-------------
+The guard is present in tests/php/assert_validation.php:
+
+    if (PHP_SAPI !== 'cli') {
+        header('HTTP/1.1 404 Not Found');
+        exit;
+    }
+
+Real-HTTP verification of every tests/php/*.php script belongs to the Layer 4
+security harness (task T8.1); it was not part of this task.
+
+Summary
+-------
+- RED state: exit 1, "includes/validation.php does not exist yet".
+- Intermediate state: exit 1, 224 assertions with 2 email fixture failures.
+- Corpus test-data fix: commit 4382263 (no rule, requirement, or message change).
+- GREEN state: exit 0, 224 assertions, 0 failures.
+- php -l passed (exit 0) for both touched PHP files.
+- CLI/404 guard present.
+- No JavaScript was created; no database rows were written; the corpus messages
+  and spec requirements were not modified.
