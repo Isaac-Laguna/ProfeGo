@@ -672,3 +672,132 @@ ran in parallel.
 No login/authentication behavior was implemented; the login form, links, and
 button are unchanged. No other page behavior changed. No controller, view,
 service, JS, corpus, MEMORY.md, or baseline file was modified by this task.
+
+## T7.1 - client role control
+
+Date: 2026-11-19. RF-2.1, RNF-4, AC-03. This section is appended; the T5.1,
+T5.3, T5.4 and T6.1 sections above are unchanged.
+
+### Scope and files
+
+- New `js/features/register-form.js`: DOM enhancement controller. It imports
+  `ROLE_TEACHER`, `nextRole`, `roleLabel` and `roleAccessibleName` from
+  `./register-role.js`; no string owned by that module is duplicated. A click
+  listener on the native `type="button"` reads the current role from the
+  server-rendered hidden `rol` input on each activation, computes `nextRole`,
+  and updates all four signals: button text, `aria-label`, hidden value, and
+  the existing polite live region. Live-region copy is the only local Spanish
+  string (`Tipo de cuenta seleccionado: Docente.` / `...: Estudiante.`).
+- `includes/register_view.php`: exactly one line added, a module script tag
+  immediately before `</body>`. No PHP logic change.
+- No validation code (T7.2), no PHP/controller/CSS/corpus/MEMORY.md change, no
+  `fetch`/AJAX, no secret, and no `aria-pressed` was added.
+
+### Test-first (red) baseline
+
+Before the change, a real browser GET at 1440x900 showed
+`document.querySelectorAll('script').length === 0` and a programmatic
+`document.getElementById('register-role').click()` left all signals at
+`Estudiante` / `estudiante` / `Tipo de cuenta: Estudiante, cambiar a Docente` /
+`Tipo de cuenta seleccionado: Estudiante.` - i.e. no toggle. This is the
+expected failing state that the enhancement fixes.
+
+### Browser environment
+
+- URL: `http://localhost/pages/register.php` (document root is the project
+  folder). Fresh GET each run, no preset cookies or extra headers.
+- Chrome via Chrome DevTools MCP. Viewports `1440x900x1` and
+  `402x874x1,mobile,touch`.
+- Four signals read with `evaluate_script` after every activation: button
+  `textContent`, `aria-label`, hidden `#register-role-value` `value`, and the
+  `[role="status"][aria-live="polite"]` span `textContent`. `aria-pressed` was
+  also read and was `null` in every observation.
+
+### Exact observations - 1440x900
+
+Module loaded: `scripts === 1`,
+`script[type=module].src === '../js/features/register-form.js'`; network also
+shows `GET .../js/features/register-form.js [200]` and
+`GET .../js/features/register-role.js [200]`.
+
+| State | Visible text | Hidden value | Accessible name | Live-region text | aria-pressed |
+| --- | --- | --- | --- | --- | --- |
+| Initial (fresh GET) | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. | null |
+| After Enter (button focused) | Docente | docente | Tipo de cuenta: Docente, cambiar a Estudiante | Tipo de cuenta seleccionado: Docente. | null |
+| After Space | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. | null |
+| After mouse click 1 | Docente | docente | Tipo de cuenta: Docente, cambiar a Estudiante | Tipo de cuenta seleccionado: Docente. | null |
+| After mouse click 2 | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. | null |
+
+Preselected `?rol=docente`: initial state Docente / docente /
+`Tipo de cuenta: Docente, cambiar a Estudiante` /
+`Tipo de cuenta seleccionado: Docente.` (null `aria-pressed`); after one
+activation returned to the four Estudiante signals. The script therefore reads
+the server-rendered hidden value and does not assume `estudiante`.
+
+### Exact observations - 402x874
+
+Same procedure and identical results to 1440x900 for all five rows of the
+table above, including the two mouse clicks and the preselected Docente case.
+Additional mobile observation:
+`document.documentElement.scrollWidth === document.documentElement.clientWidth === 402`
+(no horizontal overflow) in the initial, post-Enter and post-Space states.
+
+### Accessibility tree (take_snapshot)
+
+Student state excerpt (both widths; uid prefixes differ per snapshot):
+
+```text
+uid=1_7 form
+  uid=1_8 button "Tipo de cuenta: Estudiante, cambiar a Docente" focusable focused
+  uid=1_9 status atomic live="polite" relevant="additions text"
+    uid=1_10 "Tipo de cuenta seleccionado: Estudiante."
+```
+
+Docente state excerpt after a toggle (mobile width shown; desktop identical):
+
+```text
+uid=3_8 button "Tipo de cuenta: Docente, cambiar a Estudiante" focusable focused
+uid=3_9 status atomic live="polite" relevant="additions text"
+  uid=5_0 "Tipo de cuenta seleccionado: Docente."
+```
+
+The control is exposed as a `button` with the exact normative accessible name;
+no `pressed` state appears in the tree, and `getAttribute('aria-pressed')`
+returned `null` in every DOM read.
+
+### Console and no-submission proof
+
+- `list_console_messages`: `<no console messages found>` after every run at
+  both widths - no errors and no warnings.
+- `list_network_requests` after all activations at 1440 contained only
+  `GET http://localhost/pages/register.php [200]`, `GET .../css/main.css`,
+  `GET .../css/register.css`, `GET .../assets/images/logo.png`,
+  `GET .../js/features/register-form.js`, `GET .../js/features/register-role.js`,
+  `GET .../assets/fonts/inter-latin.woff2`. No POST and no navigation occurred.
+- The page URL stayed `http://localhost/pages/register.php` (or
+  `...?rol=docente` for the preselected case) across Enter, Space and click.
+- Read-only application-path count before and after the browser runs:
+  `accounts=1 profiles=0` (unchanged). No account or tutor profile was written.
+
+### No-JavaScript server-rendered state (script optional)
+
+A raw HTTP GET (no script execution) still carried all four server-rendered
+signals: default GET showed the button `Estudiante` with
+`aria-label="Tipo de cuenta: Estudiante, cambiar a Docente"`, hidden
+`value="estudiante"`, and live region `Tipo de cuenta seleccionado: Estudiante.`;
+`?rol=docente` showed the Docente equivalents. Exactly one `<script` tag was
+present in each document - the optional module tag. The full no-JS flow belongs
+to later tasks; this check only confirms the rendered state does not depend on
+the script.
+
+### Regression checks
+
+- `php -n -l includes/register_view.php`: exit 0, no syntax errors.
+- `node --test tests/js/register-validation.test.mjs tests/js/register-role.test.mjs`:
+  84 tests, 84 pass, 0 fail, exit 0.
+
+### Scope statement
+
+Validation logic was not added (owned by T7.2); the native POST submission path
+is unchanged. No database row was written by this task. No controller, service,
+CSS, corpus, MEMORY.md, or baseline file was modified.

@@ -84,7 +84,7 @@
 
 ## Phase 7: Progressive Enhancement
 
-- [ ] **T7.1 Implement the client-side role control**
+- [x] **T7.1 Implement the client-side role control**
   - **RF:** RF-2.1; **RNF:** RNF-4; **AC:** AC-03
   - Add `js/features/register-form.js` importing `register-role.js`, and add the module script tag to `includes/register_view.php`. Implement the `type="button"` toggle: visible text, hidden `rol`, exact accessible name, and polite live announcement; never submit on activation and never expose `aria-pressed`.
   - Done when: browser runs at both widths show the initial `Estudiante` state; keyboard activation (Enter and Space) does not submit and updates text, hidden value, accessible name, and live-region text to `Docente`; a second activation returns all signals to `Estudiante`; the accessibility tree shows the button role and no pressed state; the console has no errors or warnings.

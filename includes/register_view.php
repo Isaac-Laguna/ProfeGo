@@ -193,6 +193,7 @@ function render_register_page(array $model): string
         . '            </form>' . "\n"
         . '        </section>' . "\n"
         . '    </main>' . "\n"
+        . '    <script type="module" src="../js/features/register-form.js"></script>' . "\n"
         . '</body>' . "\n"
         . '</html>' . "\n";
 
