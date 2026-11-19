@@ -2,7 +2,7 @@
 
 ## SDD process (spec 001)
 
-- Spec 001 (create-account) is back to `Draft` for revision. The Status line lives only in `spec.md` (lifecycle: Draft → Approved → Implemented); `plan.md` and `tasks.md` carry no status.
+- Spec 001 (create-account) is `Approved`. The Status line lives only in `spec.md` (lifecycle: Draft → Approved → Implemented); `plan.md` and `tasks.md` carry no status.
 - Revision agreement: the spec keeps observable outcomes and approved constraints (no direct SQL client, verification through the application data path and a real browser, 1440/402 widths, no testing framework). Mechanisms (rollback seam, per-run token format, commands, scripts, evidence paths, CDP procedures) live in `plan.md`/`tasks.md`. Migration rule: if a detail can change without changing product behavior, it belongs to the plan.
 - RF-2 is atomized into RF-2.1 (role control), RF-2.2 (hidden value / no-JS), RF-2.3 (GET preselection allow-list), RF-2.4 (POST allow-list). The spec's edge cases are illustrative and non-normative; acceptance criteria reference RF IDs instead of restating behavior.
 - CSRF policy (session-stable, non-expiring, non-rotating) is documented with its accepted trade-off under RF-9; test-write and residue risks are documented under Documented limitations.
