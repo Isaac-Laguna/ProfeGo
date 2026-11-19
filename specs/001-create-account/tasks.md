@@ -55,7 +55,7 @@
 
 ## Phase 5: Server-Rendered Registration Page
 
-- [ ] **T5.1 Implement the server-rendered registration view**
+- [x] **T5.1 Implement the server-rendered registration view**
   - **RF:** RF-2.1, RF-2.2, RF-4, RF-11, RF-14; **RNF:** RNF-3, RNF-4 (server markup); **AC:** AC-13
   - Add `includes/register_view.php` rendering the full document from a model: `method="post"` with a self action, the native submit control labeled "Crear Cuenta", exact labels, the `name`, `lastname`, `email`, `phone`, `id`, `password`, `password_confirm`, and `terms` controls, `*` markers, `required` and `aria-required`, role button with hidden `rol` defaulting to `estudiante`, CSRF hidden input, error containers, form-level `role="alert"`, exact meta description, a server-rendered visually hidden live-region span, and centralized escaping. The module script tag is added by T7.1; do not add it here.
   - Done when: `php -l` passes and a recorded CLI render of the default model contains the POST form and native submit control, all eight control names, all seven labels, the terms label, the role button and hidden `estudiante` value, the token field, the exact meta description, and the eight required states; a rendered test value containing `<script>` appears escaped; the render transcript is saved.
