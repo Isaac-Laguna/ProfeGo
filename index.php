@@ -171,7 +171,7 @@
             <div class="cta__inner">
                 <h2 class="cta__title" id="cta-title">¿Qué necesitas?</h2>
                 <div class="cta__actions">
-                    <a class="button button--accent" href="/pages/register.php">Enseñar</a>
+                    <a class="button button--accent" href="/pages/register.php?rol=docente">Enseñar</a>
                     <a class="button button--muted" href="/pages/register.php">Aprender</a>
                 </div>
             </div>

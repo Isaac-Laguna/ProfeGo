@@ -56,6 +56,44 @@ function registration_live_region(string $role): string
 }
 
 /**
+ * Resolve the GET role preselection for RF-2.3.
+ *
+ * PHP's parsed query ($_GET) is last-value-wins, so a repeated `rol` key or an
+ * injected `rol[]` cannot be detected from $query alone. The raw QUERY_STRING
+ * is the authority for key shape: exactly one literal `rol` key, with no
+ * bracket syntax, must be present before its value is trusted. The value must
+ * then match the allow-list exactly. Repeated, bracketed, unknown, empty,
+ * case-variant or non-string values all resolve to the default student role.
+ * Preselection only seeds initial rendering: it never writes, never submits,
+ * and is always overridden by the POST role (RF-2.4).
+ */
+function preselected_role_from_request(array $server, array $query): string
+{
+    $raw = (isset($server['QUERY_STRING']) && is_string($server['QUERY_STRING']))
+        ? $server['QUERY_STRING']
+        : '';
+    if ($raw !== '') {
+        $rolKeys = 0;
+        foreach (explode('&', $raw) as $pair) {
+            $key = urldecode(explode('=', $pair, 2)[0]);
+            if ($key === 'rol') {
+                $rolKeys++;
+            } elseif (preg_match('/\Arol\[/', $key) === 1) {
+                // Array-style injection such as rol[]=docente.
+                return 'estudiante';
+            }
+        }
+        if ($rolKeys !== 1) {
+            return 'estudiante';
+        }
+    }
+
+    $value = $query['rol'] ?? null;
+
+    return is_allowed_registration_role($value) ? (string) $value : 'estudiante';
+}
+
+/**
  * Build one registration response from simulated request data.
  *
  * @param array $server  server-like array containing REQUEST_METHOD
@@ -76,7 +114,7 @@ function build_registration_response(
 
     if ($method !== 'POST') {
         $token = ensure_csrf_token($session);
-        $role = is_allowed_registration_role($query['rol'] ?? null) ? (string) $query['rol'] : 'estudiante';
+        $role = preselected_role_from_request($server, $query);
 
         return [
             'status' => 200,

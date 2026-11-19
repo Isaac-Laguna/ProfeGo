@@ -354,3 +354,146 @@ No horizontal overflow, clipping, or overlap in either simulated case.
 
 These are distinct from the T1.1 baseline screenshots and from the T9.2 final
 screenshots; the baseline files were not modified.
+
+## T5.4 - homepage preselection
+
+Date: 2026-11-19.
+
+This section is appended; the T5.1 and T5.3 sections above are unchanged.
+
+### Scope and files
+
+- `includes/register_controller.php`: added the pure helper
+  `preselected_role_from_request(array $server, array $query): string` and
+  wired it into the non-POST (GET) branch. The POST branch was not modified.
+- `includes/register_view.php`: NO change. All four role signals already derive
+  from the model role, so no new view logic was needed: visible text from
+  `$roleLabel`, hidden `input[name=rol]` from `e($role)`, accessible name from
+  `$roleName`, and live-region text from the controller-supplied `live_region`
+  (canonical copy via `registration_live_region()`). `git diff` for the view is
+  empty.
+- `index.php`: only the "Enseñar" anchor destination changed; classes, text,
+  styling, and all other homepage actions were untouched.
+
+### Helper allow-list behavior (exact)
+
+`preselected_role_from_request()` inspects the raw `$server['QUERY_STRING']`
+first, because PHP's parsed `$_GET` is last-value-wins and cannot detect
+repetition. The raw query is split on `&`; each key is taken before the first
+`=` and URL-decoded. If any decoded key starts with `rol[` (for example
+`rol[]`), the result is `estudiante`; if the number of literal `rol` keys is
+not exactly one, the result is `estudiante`. When no raw query string is
+provided (CLI render path), the parsed `$query['rol']` is used directly. The
+remaining value must satisfy `is_allowed_registration_role()` (a string equal
+to exactly `estudiante` or `docente`); anything else returns `estudiante`.
+
+### Test-first check (inline harness, no test file written)
+
+Before the change, the assertion harness printed
+`EXPECTED_PRE_FAIL: helper preselected_role_from_request() does not exist yet`
+and exited 2. After the change, the identical 13-case matrix passed
+(`TOTAL_FAILURES 0`, exit 0): fresh/no query, docente, explicit estudiante,
+admin, unknown foo, repeated in both orders, empty, case-variant DOCENTE,
+array injection (`rol[]=docente` and URL-encoded `rol%5B%5D=docente`), the CLI
+render path without QUERY_STRING, and an unrelated query with no rol key.
+
+### Browser click-through from the homepage "Enseñar" action
+
+- Start URL: `http://localhost/`, viewport `1440x900x1`. The accessibility
+  snapshot showed "Enseñar" pointing at `/pages/register.php?rol=docente`
+  while "Crear Cuenta" still pointed at `/pages/register.php`, "Aprender" at
+  `/pages/register.php`, and "Iniciar Sesión" at `/pages/login.php`.
+- Activating the "Enseñar" link navigated to
+  `http://localhost/pages/register.php?rol=docente`.
+- Observed role signals: visible text `Docente`; hidden `docente`; accessible
+  name `Tipo de cuenta: Docente, cambiar a Estudiante`; live-region text
+  `Tipo de cuenta seleccionado: Docente.`; `document.querySelectorAll('script').length === 0`.
+- Network after the click contained only GET requests (document, `main.css`,
+  `register.css`, logo, font). No POST occurred, so there was no auto-submission.
+
+### Browser GET allow-list matrix (each URL navigated directly)
+
+| Requested URL | Visible text | Hidden value | Accessible name | Live-region text |
+| --- | --- | --- | --- | --- |
+| `http://localhost/pages/register.php` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| `http://localhost/pages/register.php?rol=estudiante` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| `http://localhost/pages/register.php?rol=admin` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| `http://localhost/pages/register.php?rol=foo` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| `http://localhost/pages/register.php?rol=docente&rol=estudiante` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| `http://localhost/pages/register.php?rol=` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| `http://localhost/pages/register.php?rol[]=docente` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| `http://localhost/pages/register.php?rol=DOCENTE` | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+
+Every case rendered the student signals; only the two allow-listed docente
+paths (the homepage link and a single `rol=docente`) rendered Docente.
+
+### Browser POST override (non-writing)
+
+- Opened `http://localhost/pages/register.php?rol=docente`, then changed the
+  hidden `rol` value to `estudiante` with `evaluate_script`.
+- Filled name `Carlos99` (invalid: contains digits), lastname `Perez`, email
+  `override.t54@example.com`, phone `88887777`, ID `T54-OVR-AB`, password and
+  confirmation `Clave1234`, checked the terms box, and clicked the native
+  "Crear Cuenta" button.
+- Network: `POST http://localhost/pages/register.php [200]` (no 303 redirect).
+- Re-render at `http://localhost/pages/register.php`: visible text
+  `Estudiante`, hidden `estudiante`, accessible name
+  `Tipo de cuenta: Estudiante, cambiar a Docente`, live-region text
+  `Tipo de cuenta seleccionado: Estudiante.`; name error
+  `El nombre solo puede contener letras, espacios, guiones y apóstrofes.`;
+  name value `Carlos99` and terms checked were preserved.
+- This proves the submitted POST role overrides the GET preselection.
+
+### Browser field-error re-render from the homepage link (non-writing)
+
+- Activated "Enseñar" from `http://localhost/` again; the hidden `rol` was
+  confirmed as `docente` before submission.
+- Filled name `Ana99` (invalid), lastname `Perez`, email
+  `field-error.t54@example.com`, phone `88887777`, ID `T54-FLD-AB`, password
+  and confirmation `Clave1234`, checked the terms box, left the hidden `rol`
+  unchanged at `docente`, and clicked "Crear Cuenta".
+- Network: `POST http://localhost/pages/register.php [200]` (no 303 redirect).
+- Re-render at `http://localhost/pages/register.php`: visible text `Docente`,
+  hidden `docente`, accessible name
+  `Tipo de cuenta: Docente, cambiar a Estudiante`, live-region text
+  `Tipo de cuenta seleccionado: Docente.`; name error
+  `El nombre solo puede contener letras, espacios, guiones y apóstrofes.`;
+  name value `Ana99` and terms checked were preserved.
+
+### No-write proof
+
+- Read-only application-path row count before the browser cases:
+  `BASELINE accounts=1 profiles=0`.
+- Read-only row count after every browser case:
+  `AFTER accounts=1 profiles=0` (unchanged).
+- `php tests/php/test_support.php inspect --email=override.t54@example.com`
+  -> `NOT FOUND: no account matches correo = override.t54@example.com` (exit 0).
+- `php tests/php/test_support.php inspect --email=field-error.t54@example.com`
+  -> `NOT FOUND: no account matches correo = field-error.t54@example.com` (exit 0).
+- Both POSTs were 200 field-error re-renders, never success redirects. No
+  account and no tutor profile was created in any T5.4 scenario.
+
+### Static diff of index.php
+
+`git diff -- index.php` reported exactly one changed line:
+
+```diff
+-                    <a class="button button--accent" href="/pages/register.php">Enseñar</a>
++                    <a class="button button--accent" href="/pages/register.php?rol=docente">Enseñar</a>
+```
+
+No other line changed. Direct href inspection confirmed the header
+"Crear Cuenta" -> `/pages/register.php`, "Aprender" -> `/pages/register.php`,
+and login -> `/pages/login.php` are unchanged, as are the brand, hero, and
+social links. No CSS, JS, view, or baseline file was touched by this task.
+
+### Regression checks
+
+- `php -n -l includes/register_controller.php`: exit 0, no syntax errors.
+- `php -n -l index.php`: exit 0, no syntax errors.
+- `php tests/php/test_support.php render --role=docente`: exit 0; rendered
+  Docente button text, hidden `docente`, and Docente live-region text.
+- `node --test tests/js/register-validation.test.mjs tests/js/register-role.test.mjs`:
+  84 tests, 84 pass, 0 fail, exit 0.
+- `php tests/php/assert_pipeline.php`: 234 assertions, 0 failures, zero
+  residue, exit 0. The POST branch and its precedence are unchanged.
