@@ -41,6 +41,12 @@ declare(strict_types=1);
  *       Read-only account lookup: prints the account columns plus the tutor
  *       profile state. Never prints the password hash (RF-8).
  *
+ *   php tests/php/test_support.php render --role=estudiante
+ *       Prints ONLY the controller-rendered registration document for a
+ *       simulated GET with the requested preselected role (estudiante/docente;
+ *       any other or missing value renders estudiante). No database write.
+ *       Used for recorded evidence of the server-rendered role signals.
+ *
  *   php tests/php/test_support.php cleanup --email=<email> --id=<cedula/ID> [--phone=<phone>]
  *       Deletes the rows created by a test run, matching ONLY the captured
  *       identifiers (never a universal prefix, never a truncation): tutor
@@ -50,8 +56,6 @@ declare(strict_types=1);
  * DELETE before the usuarios DELETE. The foreign key
  * perfiles_docente.id_docente -> usuarios.id forbids removing an account
  * that still has a tutor profile, so the profile delete must come first.
- *
- * (A render mode for recorded CLI renders is added by task T5.2.)
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -325,6 +329,7 @@ function support_usage(): void
     fwrite(STDERR, <<<USAGE
     Usage:
       php tests/php/test_support.php smoke
+      php tests/php/test_support.php render --role=estudiante
       php tests/php/test_support.php inspect --email=<captured email>
       php tests/php/test_support.php cleanup --email=<email> --id=<cedula/ID> [--phone=<phone>]
 
@@ -353,6 +358,20 @@ foreach (array_slice($argv, 2) as $argument) {
 require_once dirname(__DIR__, 2) . '/includes/database.php';
 
 switch ($mode) {
+    case 'render':
+        require_once dirname(__DIR__, 2) . '/includes/register_controller.php';
+        $requestedRole = $flags['role'] ?? 'estudiante';
+        $role = is_allowed_registration_role($requestedRole) ? $requestedRole : 'estudiante';
+        $session = [];
+        $response = build_registration_response(
+            ['REQUEST_METHOD' => 'GET'],
+            [],
+            $session,
+            ['rol' => $role]
+        );
+        echo $response['body'];
+        exit(0);
+
     case 'smoke':
         support_reset_assertions();
         echo "Per-run token smoke check (pure computation; no database use)\n\n";

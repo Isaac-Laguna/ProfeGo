@@ -1,0 +1,441 @@
+Layer 4 - Pipeline / controller harness transcript (spec 001 create-account)
+Date: 2026-11-19
+PHP CLI: C:\Users\isaac\Documents\USBWebServer\php\php.exe (PHP 8.1.3)
+Working directory: C:\Users\isaac\Documents\USBWebServer\root\ProfeGo
+All commands ran sequentially; writing tests were not run in parallel. Tables were never truncated.
+Note: this PHP CLI prints a harmless 'Unable to load dynamic library php_gd2.dll' startup warning; it is stripped from the captured blocks and is not application output.
+
+== TEST-FIRST RED STATE (controller file absent) ==
+COMMAND: php tests/php/assert_pipeline.php
+EXIT CODE: 1
+FAIL: includes/register_controller.php does not exist yet.
+
+
+
+== IMPLEMENTATION NOTE ==
+The domain service returns duplicate errors as field => single message, while the view model expects field => list of messages. The controller normalizes both shapes at the model boundary so duplicate errors render as field-associated messages. No domain or view file was changed.
+
+== php -l: PHP SYNTAX CHECKS ON EVERY TOUCHED FILE ==
+COMMAND: php -l <file> for each touched PHP file
+php -l includes/register_controller.php => EXIT 0 :: No syntax errors detected in includes/register_controller.php
+php -l pages/register.php => EXIT 0 :: No syntax errors detected in pages/register.php
+php -l tests/php/test_support.php => EXIT 0 :: No syntax errors detected in tests/php/test_support.php
+php -l tests/php/assert_pipeline.php => EXIT 0 :: No syntax errors detected in tests/php/assert_pipeline.php
+
+== GREEN RUN: FULL OUTPUT ==
+
+COMMAND: php tests/php/assert_pipeline.php
+EXIT CODE: 0
+
+Layer 4 controller pipeline (single process; writing tests are not run in parallel; tables are never truncated)
+PASS: build_registration_response() is defined by the controller
+Baseline counted rows (empty prototype row excluded): 0 accounts, 0 tutor profiles
+
+PASS: role admin: zero writes
+PASS: role admin: HTTP 200
+PASS: role admin: form-level role=alert region
+PASS: role admin: generic Spanish form error
+PASS: role admin: no field error containers
+PASS: role admin: no field association/invalid markers
+PASS: role admin: plaintext password never in response
+PASS: role admin: name raw value preserved
+PASS: role admin: lastname raw value preserved
+PASS: role admin: email raw value preserved
+PASS: role admin: phone raw value preserved
+PASS: role admin: id raw value preserved
+PASS: role admin: terms checked state preserved
+PASS: role admin: hidden role preserved as estudiante
+PASS: role admin: role accessible name preserved
+PASS: role admin: role visible text preserved
+PASS: role admin: role live-region text preserved
+PASS: role admin: session holds a valid token
+PASS: role admin: valid session token in response
+PASS: role admin: no technical detail (SQLSTATE)
+PASS: role admin: no technical detail (PDO)
+PASS: role admin: no technical detail (Exception)
+PASS: role admin: no technical detail (stack trace)
+PASS: role admin: no technical detail (forced tutor)
+PASS: role admin: no technical detail (password_hash)
+PASS: role admin: no technical detail (C:\)
+PASS: role admin: no technical detail (/ProfeGo)
+PASS: role unknown: zero writes
+PASS: role unknown: HTTP 200
+PASS: role unknown: form-level role=alert region
+PASS: role unknown: generic Spanish form error
+PASS: role unknown: no field error containers
+PASS: role unknown: no field association/invalid markers
+PASS: role unknown: plaintext password never in response
+PASS: role unknown: name raw value preserved
+PASS: role unknown: lastname raw value preserved
+PASS: role unknown: email raw value preserved
+PASS: role unknown: phone raw value preserved
+PASS: role unknown: id raw value preserved
+PASS: role unknown: terms checked state preserved
+PASS: role unknown: hidden role preserved as estudiante
+PASS: role unknown: role accessible name preserved
+PASS: role unknown: role visible text preserved
+PASS: role unknown: role live-region text preserved
+PASS: role unknown: session holds a valid token
+PASS: role unknown: valid session token in response
+PASS: role unknown: no technical detail (SQLSTATE)
+PASS: role unknown: no technical detail (PDO)
+PASS: role unknown: no technical detail (Exception)
+PASS: role unknown: no technical detail (stack trace)
+PASS: role unknown: no technical detail (forced tutor)
+PASS: role unknown: no technical detail (password_hash)
+PASS: role unknown: no technical detail (C:\)
+PASS: role unknown: no technical detail (/ProfeGo)
+PASS: role missing: zero writes
+PASS: role missing: HTTP 200
+PASS: role missing: form-level role=alert region
+PASS: role missing: generic Spanish form error
+PASS: role missing: no field error containers
+PASS: role missing: no field association/invalid markers
+PASS: role missing: plaintext password never in response
+PASS: role missing: name raw value preserved
+PASS: role missing: lastname raw value preserved
+PASS: role missing: email raw value preserved
+PASS: role missing: phone raw value preserved
+PASS: role missing: id raw value preserved
+PASS: role missing: terms checked state preserved
+PASS: role missing: hidden role preserved as estudiante
+PASS: role missing: role accessible name preserved
+PASS: role missing: role visible text preserved
+PASS: role missing: role live-region text preserved
+PASS: role missing: session holds a valid token
+PASS: role missing: valid session token in response
+PASS: role missing: no technical detail (SQLSTATE)
+PASS: role missing: no technical detail (PDO)
+PASS: role missing: no technical detail (Exception)
+PASS: role missing: no technical detail (stack trace)
+PASS: role missing: no technical detail (forced tutor)
+PASS: role missing: no technical detail (password_hash)
+PASS: role missing: no technical detail (C:\)
+PASS: role missing: no technical detail (/ProfeGo)
+PASS: csrf missing: zero writes
+PASS: csrf missing: HTTP 200
+PASS: csrf missing: form-level role=alert region
+PASS: csrf missing: generic Spanish form error
+PASS: csrf missing: no field error containers
+PASS: csrf missing: no field association/invalid markers
+PASS: csrf missing: plaintext password never in response
+PASS: csrf missing: name raw value preserved
+PASS: csrf missing: lastname raw value preserved
+PASS: csrf missing: email raw value preserved
+PASS: csrf missing: phone raw value preserved
+PASS: csrf missing: id raw value preserved
+PASS: csrf missing: terms checked state preserved
+PASS: csrf missing: hidden role preserved as docente
+PASS: csrf missing: role accessible name preserved
+PASS: csrf missing: role visible text preserved
+PASS: csrf missing: role live-region text preserved
+PASS: csrf missing: session holds a valid token
+PASS: csrf missing: valid session token in response
+PASS: csrf missing: no technical detail (SQLSTATE)
+PASS: csrf missing: no technical detail (PDO)
+PASS: csrf missing: no technical detail (Exception)
+PASS: csrf missing: no technical detail (stack trace)
+PASS: csrf missing: no technical detail (forced tutor)
+PASS: csrf missing: no technical detail (password_hash)
+PASS: csrf missing: no technical detail (C:\)
+PASS: csrf missing: no technical detail (/ProfeGo)
+PASS: csrf malformed: zero writes
+PASS: csrf malformed: HTTP 200
+PASS: csrf malformed: form-level role=alert region
+PASS: csrf malformed: generic Spanish form error
+PASS: csrf malformed: no field error containers
+PASS: csrf malformed: no field association/invalid markers
+PASS: csrf malformed: plaintext password never in response
+PASS: csrf malformed: name raw value preserved
+PASS: csrf malformed: lastname raw value preserved
+PASS: csrf malformed: email raw value preserved
+PASS: csrf malformed: phone raw value preserved
+PASS: csrf malformed: id raw value preserved
+PASS: csrf malformed: terms checked state preserved
+PASS: csrf malformed: hidden role preserved as docente
+PASS: csrf malformed: role accessible name preserved
+PASS: csrf malformed: role visible text preserved
+PASS: csrf malformed: role live-region text preserved
+PASS: csrf malformed: session holds a valid token
+PASS: csrf malformed: valid session token in response
+PASS: csrf malformed: no technical detail (SQLSTATE)
+PASS: csrf malformed: no technical detail (PDO)
+PASS: csrf malformed: no technical detail (Exception)
+PASS: csrf malformed: no technical detail (stack trace)
+PASS: csrf malformed: no technical detail (forced tutor)
+PASS: csrf malformed: no technical detail (password_hash)
+PASS: csrf malformed: no technical detail (C:\)
+PASS: csrf malformed: no technical detail (/ProfeGo)
+PASS: csrf foreign: zero writes
+PASS: csrf foreign: HTTP 200
+PASS: csrf foreign: form-level role=alert region
+PASS: csrf foreign: generic Spanish form error
+PASS: csrf foreign: no field error containers
+PASS: csrf foreign: no field association/invalid markers
+PASS: csrf foreign: plaintext password never in response
+PASS: csrf foreign: name raw value preserved
+PASS: csrf foreign: lastname raw value preserved
+PASS: csrf foreign: email raw value preserved
+PASS: csrf foreign: phone raw value preserved
+PASS: csrf foreign: id raw value preserved
+PASS: csrf foreign: terms checked state preserved
+PASS: csrf foreign: hidden role preserved as docente
+PASS: csrf foreign: role accessible name preserved
+PASS: csrf foreign: role visible text preserved
+PASS: csrf foreign: role live-region text preserved
+PASS: csrf foreign: session holds a valid token
+PASS: csrf foreign: valid session token in response
+PASS: csrf foreign: no technical detail (SQLSTATE)
+PASS: csrf foreign: no technical detail (PDO)
+PASS: csrf foreign: no technical detail (Exception)
+PASS: csrf foreign: no technical detail (stack trace)
+PASS: csrf foreign: no technical detail (forced tutor)
+PASS: csrf foreign: no technical detail (password_hash)
+PASS: csrf foreign: no technical detail (C:\)
+PASS: csrf foreign: no technical detail (/ProfeGo)
+PASS: seed account succeeds through the controller (303)
+PASS: seed account is a real stored duplicate value
+PASS: duplicate-only request returns 200
+PASS: duplicate-only request reports the duplicate field error
+PASS: duplicate-only request has no form-level alert
+PASS: duplicate-only request: zero writes
+PASS: invalid field + duplicate returns 200
+PASS: invalid field + duplicate reports the field error
+PASS: invalid field + duplicate reports no duplicate error
+PASS: invalid field + duplicate has no form-level alert
+PASS: invalid field is associated with its error container
+PASS: password is never repopulated after a field error
+PASS: invalid field + duplicate: zero writes
+PASS: forced database failure: HTTP 200
+PASS: forced database failure: form-level role=alert region
+PASS: forced database failure: generic Spanish form error
+PASS: forced database failure: no field error containers
+PASS: forced database failure: no field association/invalid markers
+PASS: forced database failure: plaintext password never in response
+PASS: forced database failure: name raw value preserved
+PASS: forced database failure: lastname raw value preserved
+PASS: forced database failure: email raw value preserved
+PASS: forced database failure: phone raw value preserved
+PASS: forced database failure: id raw value preserved
+PASS: forced database failure: terms checked state preserved
+PASS: forced database failure: hidden role preserved as docente
+PASS: forced database failure: role accessible name preserved
+PASS: forced database failure: role visible text preserved
+PASS: forced database failure: role live-region text preserved
+PASS: forced database failure: session holds a valid token
+PASS: forced database failure: valid session token in response
+PASS: forced database failure: no technical detail (SQLSTATE)
+PASS: forced database failure: no technical detail (PDO)
+PASS: forced database failure: no technical detail (Exception)
+PASS: forced database failure: no technical detail (stack trace)
+PASS: forced database failure: no technical detail (forced tutor)
+PASS: forced database failure: no technical detail (password_hash)
+PASS: forced database failure: no technical detail (C:\)
+PASS: forced database failure: no technical detail (/ProfeGo)
+PASS: forced database failure leaves no partial account or profile
+PASS: forced database failure leaves no surviving account
+PASS: forced database failure leaves no open transaction
+INFO: forced database failure through ['fail_tutor_profile' => true] is VERIFIED through the real controller path (not recorded as unverified)
+PASS: GET with query params returns 200
+PASS: GET with query params performs no write
+PASS: GET preselects docente
+PASS: GET issues a valid token
+PASS: GET has no form-level error
+PASS: GET has no field errors
+PASS: GET render estudiante: complete document
+PASS: GET render estudiante: hidden role signal
+PASS: GET render estudiante: visible role signal
+PASS: GET render estudiante: accessible name signal
+PASS: GET render estudiante: live-region signal
+PASS: GET render estudiante: exact meta description
+PASS: GET render docente: complete document
+PASS: GET render docente: hidden role signal
+PASS: GET render docente: visible role signal
+PASS: GET render docente: accessible name signal
+PASS: GET render docente: live-region signal
+PASS: GET render docente: exact meta description
+PASS: successful registration returns 303
+PASS: success response carries Location: login.php?registro=ok
+PASS: token unchanged after successful registration
+PASS: success sets the one-time registration notice flag
+PASS: success created a real stored account
+
+Cleanup (captured identifiers only; tutor profiles before accounts):
+  set 1: profiles=0, accounts=1, residue=0
+PASS: cleanup set 1 leaves zero residue
+  set 2: profiles=0, accounts=0, residue=0
+PASS: cleanup set 2 leaves zero residue
+  set 3: profiles=0, accounts=1, residue=0
+PASS: cleanup set 3 leaves zero residue
+PASS: final zero-residue assertion by captured identifiers
+PASS: row counts restored to baseline after cleanup
+PASS: no open transaction after cleanup
+
+Assertions: 234, Failures: 0
+
+== RENDER MODE: php tests/php/test_support.php render --role=estudiante ==
+COMMAND: php tests/php/test_support.php render --role=estudiante
+EXIT CODE: 0
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta | ProfeGo</title>
+    <meta name="description" content="Reg├¡strate en ProfeGo como estudiante o docente.">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body class="register-page">
+    <header class="register-header">
+        <a class="brand register-logo" href="../index.php" aria-label="ProfeGo, volver al inicio">
+            <span class="brand__crop">
+                <img src="../assets/images/logo.png" alt="ProfeGo" width="1254" height="1254">
+            </span>
+        </a>
+    </header>
+
+    <main class="register-main">
+        <section class="register-panel" aria-labelledby="register-title">
+            <h1 class="register-panel__title" id="register-title">Crear cuenta</h1>
+
+            <form class="register-form" method="post" action="register.php" novalidate>
+                <button type="button" class="register-role" id="register-role" aria-label="Tipo de cuenta: Estudiante, cambiar a Docente">Estudiante</button>
+                <input type="hidden" name="rol" id="register-role-value" value="estudiante">
+                <input type="hidden" name="csrf_token" value="8efc9d7591f002c49cf2ab17c159bf5f098cece612464ec263962804f42083b9">
+                <span class="register-visually-hidden" role="status" aria-live="polite">Tipo de cuenta seleccionado: Estudiante.</span>
+
+                <div class="register-card">
+                    <div class="register-field">
+                        <label for="register-name">Nombre*</label>
+                        <input id="register-name" name="name" type="text" autocomplete="given-name" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-lastname">Apellido*</label>
+                        <input id="register-lastname" name="lastname" type="text" autocomplete="family-name" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-email">Correo electr├│nico*</label>
+                        <input id="register-email" name="email" type="text" autocomplete="username" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-phone">Tel├⌐fono*</label>
+                        <input id="register-phone" name="phone" type="text" autocomplete="tel" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-id">C├⌐dula/ID*</label>
+                        <input id="register-id" name="id" type="text" autocomplete="off" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-password">Crear contrase├▒a*</label>
+                        <input id="register-password" name="password" type="password" autocomplete="new-password" value="" placeholder="************" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-password-confirm">Confirmar contrase├▒a*</label>
+                        <input id="register-password-confirm" name="password_confirm" type="password" autocomplete="new-password" value="" placeholder="************" required aria-required="true">
+                    </div>
+                </div>
+
+                <div class="register-terms">
+                    <input class="register-terms__checkbox" id="register-terms" name="terms" type="checkbox" required aria-required="true">
+                    <label for="register-terms">Acepto los <a href="#">t├⌐rminos</a> y <a href="#">condiciones</a> y la <a href="#">Pol├¡tica de Privacidad.</a>*</label>
+                </div>
+
+                <p class="register-login">
+                    <span>┬┐Ya tienes una cuenta?</span>
+                    <a href="login.php">Inicia sesi├│n aqu├¡.</a>
+                </p>
+
+                <button type="submit" class="register-submit">Crear Cuenta</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
+
+== RENDER MODE: php tests/php/test_support.php render --role=docente ==
+COMMAND: php tests/php/test_support.php render --role=docente
+EXIT CODE: 0
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta | ProfeGo</title>
+    <meta name="description" content="Reg├¡strate en ProfeGo como estudiante o docente.">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body class="register-page">
+    <header class="register-header">
+        <a class="brand register-logo" href="../index.php" aria-label="ProfeGo, volver al inicio">
+            <span class="brand__crop">
+                <img src="../assets/images/logo.png" alt="ProfeGo" width="1254" height="1254">
+            </span>
+        </a>
+    </header>
+
+    <main class="register-main">
+        <section class="register-panel" aria-labelledby="register-title">
+            <h1 class="register-panel__title" id="register-title">Crear cuenta</h1>
+
+            <form class="register-form" method="post" action="register.php" novalidate>
+                <button type="button" class="register-role" id="register-role" aria-label="Tipo de cuenta: Docente, cambiar a Estudiante">Docente</button>
+                <input type="hidden" name="rol" id="register-role-value" value="docente">
+                <input type="hidden" name="csrf_token" value="fb05304f931d0522030dd5f6c5b79dce72e89ff9789d02677b7fe26aa94ef8f4">
+                <span class="register-visually-hidden" role="status" aria-live="polite">Tipo de cuenta seleccionado: Docente.</span>
+
+                <div class="register-card">
+                    <div class="register-field">
+                        <label for="register-name">Nombre*</label>
+                        <input id="register-name" name="name" type="text" autocomplete="given-name" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-lastname">Apellido*</label>
+                        <input id="register-lastname" name="lastname" type="text" autocomplete="family-name" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-email">Correo electr├│nico*</label>
+                        <input id="register-email" name="email" type="text" autocomplete="username" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-phone">Tel├⌐fono*</label>
+                        <input id="register-phone" name="phone" type="text" autocomplete="tel" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-id">C├⌐dula/ID*</label>
+                        <input id="register-id" name="id" type="text" autocomplete="off" value="" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-password">Crear contrase├▒a*</label>
+                        <input id="register-password" name="password" type="password" autocomplete="new-password" value="" placeholder="************" required aria-required="true">
+                    </div>
+                    <div class="register-field">
+                        <label for="register-password-confirm">Confirmar contrase├▒a*</label>
+                        <input id="register-password-confirm" name="password_confirm" type="password" autocomplete="new-password" value="" placeholder="************" required aria-required="true">
+                    </div>
+                </div>
+
+                <div class="register-terms">
+                    <input class="register-terms__checkbox" id="register-terms" name="terms" type="checkbox" required aria-required="true">
+                    <label for="register-terms">Acepto los <a href="#">t├⌐rminos</a> y <a href="#">condiciones</a> y la <a href="#">Pol├¡tica de Privacidad.</a>*</label>
+                </div>
+
+                <p class="register-login">
+                    <span>┬┐Ya tienes una cuenta?</span>
+                    <a href="login.php">Inicia sesi├│n aqu├¡.</a>
+                </p>
+
+                <button type="submit" class="register-submit">Crear Cuenta</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
+
+== RENDER-MODE ROLE-SIGNAL VERIFICATION (parsed from the exact documents above) ==
+estudiante: hidden rol = estudiante; button text = Estudiante; aria-label = Tipo de cuenta: Estudiante, cambiar a Docente; live region = Tipo de cuenta seleccionado: Estudiante.
+docente:    hidden rol = docente;    button text = Docente;    aria-label = Tipo de cuenta: Docente, cambiar a Estudiante;    live region = Tipo de cuenta seleccionado: Docente.
+Both documents start with <!DOCTYPE html> and end with </html>, contain only their own role signals, and perform no database write.
