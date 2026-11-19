@@ -1,0 +1,215 @@
+Layer 2 evidence - Registration domain and integration (spec 001, task T4.1)
+=============================================================================
+
+Runtime and commands
+--------------------
+PHP CLI: C:\Users\isaac\Documents\USBWebServer\php\php.exe (PHP 8.1.3, pdo_mysql)
+Database: profeGo on localhost, reached only through profego_pdo()
+Commands (run from the repository root, sequentially, never in parallel):
+
+  php -l tests/php/assert_registration.php
+  php tests/php/assert_registration.php            (red state, service absent)
+  php -l includes/registration_service.php
+  php tests/php/assert_registration.php            (green state)
+
+The known php_gd2.dll startup warning is environment noise and does not affect
+these results. USBWebServer was found stopped between the pre-check and the
+green run; the existing, already-provisioned server was restarted, and the
+schema and the single pre-existing prototype row were confirmed unchanged.
+No database, table, or schema change was made at any point.
+
+
+RED STATE - assertion script exists, service file absent
+---------------------------------------------------------
+Command: php tests/php/assert_registration.php
+
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer/php/ext/php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer/php/ext/php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+FAIL: includes/registration_service.php does not exist yet.
+EXIT_CODE=1
+
+The expected red failure was produced: the harness failed solely because the
+service module did not exist yet. No rows were written in the red state.
+
+Syntax check of the harness:
+  php -l tests/php/assert_registration.php
+  No syntax errors detected in tests/php/assert_registration.php
+  EXIT_CODE=0
+
+
+GREEN STATE - service implemented
+---------------------------------
+Command: php tests/php/assert_registration.php
+
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer/php/ext/php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer/php/ext/php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+Layer 2 registration integration (single process; writing tests are not run in parallel)
+PASS: find_duplicate_fields() is defined by the service
+PASS: register_account() is defined by the service
+Baseline counted rows (empty prototype row excluded): 0 accounts, 0 tutor profiles
+
+PASS: student registration returns ok=true
+PASS: student registration returns a positive id
+PASS: student registration adds exactly one account and no profile
+PASS: student account is readable back through the application PDO path
+PASS: read-back id matches the returned id
+PASS: name stored normalized
+PASS: lastname stored normalized
+PASS: email stored in lowercase
+PASS: stored email is lowercase
+PASS: phone stored as digits only
+PASS: stored phone is 7-20 ASCII digits
+PASS: Cedula/ID stored exactly as typed
+PASS: student row has rol=estudiante
+PASS: student row uses the activo default
+PASS: student row has a non-null fecha_registro
+PASS: a password hash is stored
+PASS: stored hash differs from the plaintext password
+PASS: stored hash verifies the correct password
+PASS: stored hash rejects an incorrect password
+PASS: tutor registration returns ok=true
+PASS: tutor registration adds one account and one profile
+PASS: tutor account has rol=docente
+PASS: tutor account uses the activo default
+PASS: tutor account has a non-null fecha_registro
+PASS: tutor profile row exists for the new account
+PASS: tutor profile references the new account id
+PASS: tutor profile state is pendiente
+PASS: tutor profile rating is numeric 0.00
+PASS: tutor profile total_tutoria is 0
+PASS: duplicate email: row counts unchanged
+PASS: duplicate email: exactly one error per duplicated field
+PASS: duplicate email: email duplicate message
+PASS: duplicate phone: row counts unchanged
+PASS: duplicate phone: exactly one error per duplicated field
+PASS: duplicate phone: phone duplicate message
+PASS: duplicate Cedula/ID: row counts unchanged
+PASS: duplicate Cedula/ID: exactly one error per duplicated field
+PASS: duplicate Cedula/ID: id duplicate message
+PASS: combined duplicates: row counts unchanged
+PASS: combined duplicates: exactly one error per duplicated field
+PASS: combined duplicates: email duplicate message
+PASS: combined duplicates: phone duplicate message
+PASS: combined duplicates: id duplicate message
+PASS: case-insensitive email duplicate: row counts unchanged
+PASS: case-insensitive email duplicate: exactly one error per duplicated field
+PASS: case-insensitive email duplicate: email duplicate message
+PASS: account with uppercase Cedula/ID is created
+PASS: Cedula/ID is stored exactly as typed (uppercase)
+PASS: case-insensitive Cedula/ID duplicate: row counts unchanged
+PASS: case-insensitive Cedula/ID duplicate: exactly one error per duplicated field
+PASS: case-insensitive Cedula/ID duplicate: id duplicate message
+PASS: SQLSTATE 23000 collision returns ok=false
+PASS: collision result carries a duplicates map
+PASS: collision maps all three duplicated fields
+PASS: collision email message matches
+PASS: collision phone message matches
+PASS: collision Cedula message matches
+PASS: collision leaves row counts unchanged
+PASS: collision leaves no partial account row
+PASS: collision leaves no open transaction
+PASS: CLI seam throws the forced tutor-profile failure
+PASS: CLI rollback seam aborts the registration
+PASS: rollback seam leaves no account and no tutor profile
+PASS: no account survives the forced failure
+PASS: rollback seam leaves no open transaction
+PASS: usuarios.documento uses a utf8mb4 case-insensitive (_ci) collation
+PASS: database default collation is utf8mb4_unicode_ci
+INFO: usuarios.documento collation = utf8mb4_general_ci; database default = utf8mb4_unicode_ci; tables inherit utf8mb4_general_ci from DEFAULT CHARSET=utf8mb4; no schema change was made.
+
+PASS: SQLi payload is 26 characters long
+PASS: SQLi payload stays within the 30-character name bound
+PASS: SQLi payload uses only characters allowed in a name
+PASS: registration with the SQLi payload succeeds
+PASS: SQLi registration adds exactly one account and no profile
+PASS: SQLi payload stored literally in the name column
+PASS: SQLi payload read back through the application data path
+PASS: an unrelated account row is unaffected by the SQLi registration
+
+Cleanup (captured identifiers only; tutor profiles before accounts):
+  set 1: profiles=0, accounts=1, residue=0
+PASS: cleanup set 1 leaves zero residue
+  set 2: profiles=1, accounts=1, residue=0
+PASS: cleanup set 2 leaves zero residue
+  set 3: profiles=0, accounts=1, residue=0
+PASS: cleanup set 3 leaves zero residue
+  set 4: profiles=0, accounts=0, residue=0
+PASS: cleanup set 4 leaves zero residue
+  set 5: profiles=0, accounts=1, residue=0
+PASS: cleanup set 5 leaves zero residue
+PASS: final zero-residue assertion by captured identifiers
+PASS: row counts restored to baseline after cleanup
+
+Assertions: 84, Failures: 0
+EXIT_CODE=0
+
+
+Syntax checks after implementation
+-----------------------------------
+  php -l includes/registration_service.php
+  No syntax errors detected in includes/registration_service.php
+  EXIT_CODE=0
+
+  php -l tests/php/assert_registration.php
+  No syntax errors detected in tests/php/assert_registration.php
+  EXIT_CODE=0
+
+
+Scenarios proved
+----------------
+- Student persistence: every column read back through profego_pdo(); rol
+  estudiante, estado activo, non-null fecha_registro, lowercase email,
+  digits-only phone, Cedula/ID as typed, normalized name and lastname.
+- Password confidentiality and round trip: stored hash is non-empty, differs
+  from the plaintext (TEST_PASSWORD), verifies the correct password and rejects
+  a wrong password (WRONG_PASSWORD).
+- Tutor persistence: one account plus one perfiles_docente row with
+  estado_verificacion = pendiente, calificacion_prom numeric 0.00 and
+  total_tutoria 0, in the same transaction.
+- Duplicate pre-checks: email, phone and Cedula/ID separately and all three
+  combined, each returning exactly one exact Spanish message per duplicated
+  field with unchanged row counts.
+- Case-insensitive uniqueness: uppercase email and uppercase/default Cedula/ID
+  variants are detected as duplicates (behavioral proof of RF-6 uniqueness).
+- Unique-collision path: a direct register_account() call bypassing the
+  pre-check raises SQLSTATE 23000; the service rolls back, re-checks and
+  returns the same three duplicate messages with no partial row and no open
+  transaction.
+- Atomicity: the CLI-only fail_tutor_profile seam throws after the account
+  insert; neither the account nor a tutor profile remains, and no transaction
+  is left open.
+- Collation: usuarios.documento uses a utf8mb4 case-insensitive (_ci)
+  collation. The database default is utf8mb4_unicode_ci, while the column's
+  actual value is utf8mb4_general_ci because the shipped tables inherit it
+  from DEFAULT CHARSET=utf8mb4. No schema change was made. This is recorded
+  as an environmental finding; case-insensitive uniqueness is proved
+  behaviorally by the duplicate scenarios above.
+- SQL injection: the allowed-character payload
+  "O'Brien' OR 'a' LIKE 'a'--" (26 characters) is stored literally, read back
+  literally through both the raw application PDO path and the application
+  account helper, and leaves an unrelated account row byte-for-byte
+  unchanged.
+
+
+Cleanup proof
+-------------
+Every writing scenario used a fresh RNF-7 per_run_token() and a unique email,
+phone and Cedula/ID derived from it. All created identifiers were captured.
+Cleanup ran in a finally block, deleting perfiles_docente rows before usuarios
+rows for each captured set (set 2 deleted 1 profile then 1 account). Residue
+was asserted by captured identifiers only: 0 for every set, 0 total, and row
+counts returned to baseline. Tables were never truncated and no universal
+prefix was used.
+
+Independent post-run read-only verification through profego_pdo():
+  total usuarios rows: 1
+  non-empty correo rows: 0
+  perfiles_docente rows: 0
+The single remaining usuarios row is the pre-existing all-empty prototype
+residue row. It was not read for assertions, modified, or deleted.
+
+
+Notes
+-----
+- All writing scenarios ran sequentially in one process; no writing tests
+  were run in parallel.
+- No schema, SQL file, or database configuration was changed.
+- No plaintext password or hash value is reproduced in this transcript.
