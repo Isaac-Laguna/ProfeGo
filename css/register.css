@@ -66,8 +66,15 @@
     border: 1px solid var(--color-primary-600);
     border-radius: var(--radius-sm);
     color: #f5f5f5;
+    font-family: inherit;
     font-size: 16px;
     line-height: 1;
+    cursor: pointer;
+}
+
+.register-role:focus-visible {
+    outline: 3px solid var(--color-primary-800);
+    outline-offset: 2px;
 }
 
 .register-card {
@@ -124,10 +131,33 @@
 }
 
 .register-field__error {
-    color: #ec221f;
+    color: #b3261e;
     font-size: 14px;
     line-height: 1.4;
-    opacity: 0.6;
+    overflow-wrap: break-word;
+}
+
+.register-form-error {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 0 16px;
+    color: #b3261e;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+    overflow-wrap: break-word;
+}
+
+.register-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .register-terms {
@@ -300,7 +330,12 @@
     }
 
     .register-field__error {
-        font-size: 10.72px;
+        font-size: 12px;
+    }
+
+    .register-form-error {
+        max-width: 244.96px;
+        font-size: 12px;
     }
 
     .register-terms {

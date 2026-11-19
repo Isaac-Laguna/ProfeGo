@@ -229,3 +229,128 @@ exit($failures === 0 ? 0 : 1);
 - No `<script type="module">` tag was added (owned by T7.1).
 - No `pages/*`, `css/*`, `js/*`, controller, style, or MEMORY.md file was
   touched by this task.
+
+## T5.3 - error styles
+
+Date: 2026-11-19.
+
+This section records the real-browser verification of `css/register.css`
+(task T5.3). The T5.1 section above is unchanged; this section is appended.
+
+### Environment
+
+- URL: `http://localhost/pages/register.php` (GET form, self-target POST).
+- Browser: Chrome via Chrome DevTools MCP. Viewports: `1440x900x1` and
+  `402x874x1,mobile,touch`.
+- CSS was hard-reloaded (`ignoreCache: true`); the first measurement after a
+  normal navigation still served a cached stylesheet and was discarded.
+- Only `css/register.css` was edited. No PHP, JS, view, or baseline file was
+  touched.
+
+### Test-first baseline (measured before the CSS change)
+
+CSSOM/computed values on the pre-change page at 1440 confirmed the approved
+deviations were needed:
+
+| Property | Before | Required |
+| --- | --- | --- |
+| `font-family` of `.register-role` (`<button>`) | `Arial` (UA default, not inherited) | inherited page font |
+| `cursor` of `.register-role` | `default` | `pointer` |
+| `.register-role:focus-visible` rule | absent | visible 3 px outline |
+| `.register-field__error` color | `rgb(236, 34, 31)` | `#b3261e` / `rgb(179, 38, 30)` |
+| `.register-field__error` opacity | `0.6` | `1` (no opacity) |
+| `.register-field__error` mobile font-size | `10.72px` | ≥ `12px` |
+| `.register-form-error` rule | absent | present, contrast-compliant |
+| `.register-visually-hidden` rule | absent | present |
+| live region geometry | `position: static`, `311.45 x 24 px` (visible text on page) | 1 px clipped, off-flow |
+
+All of the above pass after the change (values below).
+
+### Server-generated field error (real POST, no JavaScript)
+
+Procedure at each width: fresh GET → fill name with `Carlos99` (invalid:
+contains digits), lastname `Pérez`, email `carlos.t53@example.com`, phone
+`88887777`, ID `T5-001-AB`, password and confirmation `Clave1234`, check the
+terms checkbox → click the native `<button type="submit">Crear Cuenta</button>`.
+
+- Network: `POST http://localhost/pages/register.php [200]` at both widths
+  (re-render, no redirect).
+- `document.querySelectorAll('script').length === 0` on the response: the page
+  carries no JavaScript, so the error is produced entirely by the server.
+- Rendered message: `El nombre solo puede contener letras, espacios, guiones y apóstrofes.`
+  in `#register-name-error`, with `aria-invalid="true"` and
+  `aria-describedby="register-name-error"` on the control; `autofocus` left
+  focus on `#register-name`.
+- Re-render preservation: name value `Carlos99`, lastname/email/phone/ID
+  preserved, terms checked, password fields empty, form-level alert absent.
+- Zero writes: `php tests/php/test_support.php inspect --email=carlos.t53@example.com`
+  → `NOT FOUND: no account matches correo = carlos.t53@example.com` (exit 0).
+  No account or tutor profile was created by the invalid POST.
+
+### Exact measurements after the change
+
+| Measured value | 1440x900 | 402x874 |
+| --- | --- | --- |
+| error container class / id | `register-field__error` / `register-name-error` | same |
+| error color (container and `<p>`) | `rgb(179, 38, 30)` | `rgb(179, 38, 30)` |
+| error opacity (container and `<p>`) | `1` | `1` |
+| error font-size | `14px` | `12px` |
+| error line-height | `19.6px` | `16.8px` |
+| `overflow-wrap` | `break-word` | `break-word` |
+| `document.scrollWidth` / `clientWidth` | `1425` / `1425` | `402` / `402` |
+| card width | `320px` | `244.953125px` |
+| error container width | `272px` | `208.234375px` |
+| error inside card (left/right bounds) | yes | yes |
+| `<p>` `scrollWidth` / `clientWidth` | `272` / `272` | `208` / `208` |
+| role button | visible, `Inter...`, `cursor: pointer` | visible, `Inter...`, `cursor: pointer` |
+| all seven `*` label markers plus terms `*` | visible | visible |
+| live region | `absolute`, `1px x 1px`, `clip: rect(0,0,0,0)` | same |
+
+No horizontal overflow, clipping, or overlap was observed at either width;
+the extra live-region text that was previously visible on the page is now
+visually hidden but remains in the accessibility tree (`role="status"`,
+`aria-live="polite"`).
+
+### Focus indicators
+
+- Role button, focused with Tab: `matches(':focus-visible') === true`,
+  `outline: 3px solid rgb(48, 68, 133)`, `outline-offset: 2px` (1440).
+- First invalid control (`#register-name`), focused by server `autofocus`:
+  `matches(':focus-visible') === true`, `outline: 3px solid rgb(48, 68, 133)`,
+  `outline-offset: 1px` (1440 and 402).
+
+### Contrast calculation
+
+Computed error color `#b3261e` = `rgb(179, 38, 30)`; background white.
+
+- Relative luminance of white: `1.0`.
+- Relative luminance of `#b3261e`: `0.1106366969` (sRGB linearization with
+  the WCAG 0.03928 / 0.055 / 2.4 formula: R≈0.4507, G≈0.01941, B≈0.01298;
+  `0.2126*R + 0.7152*G + 0.0722*B`).
+- Ratio: `(1 + 0.05) / (0.1106366969 + 0.05)` = `6.5365 : 1` → **≥ 4.5:1 PASS**
+  (measured identically at both widths).
+
+### Long-error wrapping — SIMULATED MEASUREMENT ONLY
+
+For this measurement only, a long string was injected into the existing error
+`<p>` with `evaluate_script`; it is not server content and not present in the
+screenshots. The page was restored to its real server state afterwards (GET
+navigation at 402, reload at 1440).
+
+| Simulated value | 1440x900 | 402x874 |
+| --- | --- | --- |
+| injected characters | 350 | 490 |
+| `<p>` `scrollWidth` / `clientWidth` | `272` / `272` | `208` / `208` |
+| wrapped lines (height / line-height) | ~11 (215.53px / 19.6px) | ~16 (268.75px / 16.8px) |
+| error within card bounds | yes | yes |
+| document `scrollWidth` / `clientWidth` | `1425` / `1425` | `402` / `402` |
+
+No horizontal overflow, clipping, or overlap in either simulated case.
+
+### Screenshots (real server error state)
+
+- `specs/001-create-account/evidence/layer3-error-1440.png`
+- `specs/001-create-account/evidence/layer3-error-402.png`
+
+These are distinct from the T1.1 baseline screenshots and from the T9.2 final
+screenshots; the baseline files were not modified.
