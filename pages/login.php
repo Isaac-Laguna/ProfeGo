@@ -1,5 +1,14 @@
 <?php
 declare(strict_types=1);
+
+session_start();
+
+$showNotice = isset($_GET['registro']) && $_GET['registro'] === 'ok' && !empty($_SESSION['registration_notice']);
+
+// The one-time flag is consumed only when the notice is actually displayed.
+if ($showNotice) {
+    unset($_SESSION['registration_notice']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -23,6 +32,10 @@ declare(strict_types=1);
     <main class="login-main">
         <section class="login-panel" aria-labelledby="login-title">
             <h1 class="login-panel__title" id="login-title">Iniciar sesión</h1>
+
+            <?php if ($showNotice): ?>
+            <p class="login-notice" role="status">Tu cuenta se creó correctamente. Ya puedes iniciar sesión.</p>
+            <?php endif; ?>
 
             <form class="login-card" novalidate>
                 <div class="login-field">

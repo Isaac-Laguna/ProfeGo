@@ -77,7 +77,7 @@
 
 ## Phase 6: Login Success Notice
 
-- [ ] **T6.1 Implement the one-time login success notice**
+- [x] **T6.1 Implement the one-time login success notice**
   - **RF:** RF-10; **RNF:** RNF-7; **AC:** AC-09
   - Update `pages/login.php` to start the session, require both `registro=ok` and the unconsumed session flag, consume the flag only when the notice is rendered, and output the notice in a `role="status"` region. Add only `.login-notice` to `css/login.css`.
   - Done when: a browser sequence proves parameter plus flag shows the notice and consumes it; parameter without flag shows nothing; no parameter shows nothing and does not consume a present flag; refresh shows nothing and resubmits nothing; the notice is visible at 1440 and 402 px. Use per-run registration data, capture identifiers, clean up profiles before accounts in a failure-safe step, and assert zero residue.
