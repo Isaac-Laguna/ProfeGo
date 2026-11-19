@@ -89,7 +89,7 @@
   - Add `js/features/register-form.js` importing `register-role.js`, and add the module script tag to `includes/register_view.php`. Implement the `type="button"` toggle: visible text, hidden `rol`, exact accessible name, and polite live announcement; never submit on activation and never expose `aria-pressed`.
   - Done when: browser runs at both widths show the initial `Estudiante` state; keyboard activation (Enter and Space) does not submit and updates text, hidden value, accessible name, and live-region text to `Docente`; a second activation returns all signals to `Estudiante`; the accessibility tree shows the button role and no pressed state; the console has no errors or warnings.
 
-- [ ] **T7.2 Implement client-side validation and focus management**
+- [x] **T7.2 Implement client-side validation and focus management**
   - **RF:** RF-5; **RNF:** RNF-4, RNF-8 (support); **AC:** AC-04
   - Extend `js/features/register-form.js` to validate on submit using `register-validation.js`, render one message per failing rule grouped by field, set `aria-invalid` and `aria-describedby`, focus the first invalid control, preserve entered values, flag an unchecked terms checkbox, and allow the native POST when the form is valid. Do not rely on `maxlength`.
   - Done when: browser runs at both widths show empty submit does not navigate, every field is flagged, and the first invalid field receives focus; a mixed invalid form shows one message per failing rule and preserves other values; unchecked terms is flagged and focused; a valid submission proceeds natively; a no-JavaScript submission still posts. Use per-run data, capture and clean up any created rows in `finally`, and assert zero residue.
