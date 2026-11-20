@@ -124,7 +124,7 @@
   - Rerun `php tests/php/assert_pipeline.php` and `php tests/php/assert_http_security.php`. Request every `tests/php/*.php` script over HTTP and assert each returns 404, proving the CLI guard. Inspect every response for plaintext passwords, hashes, SQLSTATE/PDO messages, stack traces, paths, and the CSRF token outside the form response. Locate the PHP error log with `php -i`; inspect it if readable.
   - Done when: both scripts exit 0, every `tests/php/*.php` script returns 404 over real HTTP, response inspection is recorded as passed, cleanup leaves zero residue, and the log outcome is recorded. If the sink is unreadable, the "never logged" clause is recorded as unverified under Documented limitations and is not claimed as satisfied.
 
-- [ ] **T9.5 Compile the final validation report**
+- [x] **T9.5 Compile the final validation report**
   - **RF:** RF-1 through RF-16; **RNF:** RNF-1 through RNF-8; **AC:** AC-01 through AC-15
   - Map every acceptance criterion to its recorded evidence across Layers 0-4 at both widths, list every command and exit code, state any unverified non-AC clause and its reason, and confirm zero test residue and no new dependency, build step, or schema change.
   - Done when: `specs/001-create-account/evidence/validation-report.md` exists, every AC-01 through AC-15 is marked verified with a concrete evidence path from the final runs, no AC is left failed or unverified, all four layers and both viewport widths are represented, and any unverified non-AC clause (for example the log clause) is explicitly listed rather than claimed.
