@@ -3,32 +3,41 @@
 ## SDD process (spec 001)
 
 - Spec 001 (create-account) is `Approved`. The Status line lives only in `spec.md` (lifecycle: Draft → Approved → Implemented); `plan.md` and `tasks.md` carry no status.
-- Revision agreement: the spec keeps observable outcomes and approved constraints (no direct SQL client, verification through the application data path and a real browser, 1440/402 widths, no testing framework). Mechanisms (rollback seam, per-run token format, commands, scripts, evidence paths, CDP procedures) live in `plan.md`/`tasks.md`. Migration rule: if a detail can change without changing product behavior, it belongs to the plan.
-- RF-2 is atomized into RF-2.1 (role control), RF-2.2 (hidden value / no-JS), RF-2.3 (GET preselection allow-list), RF-2.4 (POST allow-list). The spec's edge cases are illustrative and non-normative; acceptance criteria reference RF IDs instead of restating behavior.
-- CSRF policy (session-stable, non-expiring, non-rotating) is documented with its accepted trade-off under RF-9; test-write and residue risks are documented under Documented limitations.
-- Implementation per `tasks.md` has not started (all tasks unchecked); `tests/`, `includes/`, and the evidence directory do not exist yet. First task when resumed: T1.1 baseline captures.
-- `docs/constitution.md` defines the six non-negotiable principles (C1-C6: stack simplicity, specification primacy, logic/interface separation, testing policy, user data protection, languages), approved Nov 2026.
+- Revision agreement: the spec keeps observable outcomes and approved constraints; mechanisms live in `plan.md`/`tasks.md`. Rule: if a detail can change without changing product behavior, it belongs in the plan.
+- RF-2 is atomized into RF-2.1–RF-2.4; edge cases are illustrative; acceptance criteria reference RF IDs.
+- CSRF policy (session-stable, non-expiring, non-rotating) is justified under RF-9; test-write/residue risks are documented under Documented limitations.
+- Implementation: T1.1–T7.2 complete with recorded evidence (Layers 0–3). Remaining: T8.1 (HTTP security harness), T9.1–T9.5 (validation), T10.1 (handoff). Next task: T8.1.
+- `docs/constitution.md` defines principles C1–C6, approved Nov 2026.
+
+## Branch hygiene (feature/create-account)
+
+- User decision: tolerate off-topic historical commits; apply best practices from now on. Moving them requires rewriting already-pushed history (force-push), so do NOT rewrite this branch.
+- When the feature PR is opened, its description MUST disclose the commits that do not honor the branch and explain why they remain:
+  - `22ea314 Readme` (global docs; `origin/chore/readme` already exists as separate work).
+  - `3166faa Git Include` (repository hygiene markers).
+  - `a649e51 docs: add commit conventions to AGENTS.md` (repo-wide governance).
+  - `b07056b docs: adopt project constitution` (project-wide, not feature-specific).
+  - `7666b4b Database connection` (pre-plan prototype, later replaced by T2.1/T5.2).
+  - Non-conventional early messages: `098c445`, `0b9292e`, `b73c6a8`, `7edf0ad`, `208a114`, `8dca53e`.
+- Cleanup branch `chore/remove-unused-placeholders` (`0d9a7f9`) removes empty placeholders; PR to `main` pending.
 
 ## Main page
 
-- `index.php` implements the Figma desktop and mobile homepage as static HTML; styles live in `css/main.css`, raster assets in `assets/images/`, social SVGs in `assets/icons/`, and self-hosted Inter in `assets/fonts/`.
-- Responsive breakpoints: 1100px (hide steps image), 900px (mobile header and layout), 380px (compact CTA buttons).
-- The "Comentarios de estudiantes" section is omitted until real testimonials exist.
-- The "Enseñar" CTA will change to `/pages/register.php?rol=docente` in task T5.4; the other homepage actions keep their current destinations.
-- `api/`, `includes/`, `js/features/`, and `js/shared/` remain placeholders for upcoming work.
+- `index.php` implements the Figma desktop/mobile homepage; styles in `css/main.css`, assets in `assets/`, Inter self-hosted. Breakpoints: 1100/900/380px.
+- "Enseñar" CTA points to `/pages/register.php?rol=docente` (T5.4 done); other homepage actions unchanged.
 
 ## Login page
 
-- `pages/login.php` implements the Figma desktop and mobile login screen as static HTML; styles live in `css/login.css` and reuse tokens/brand from `main.css`.
-- No form functionality yet; the password-recovery link and the submit button are placeholders. Mobile breakpoint is 900px.
+- `pages/login.php` implements the Figma login screen; the form stays inert by design (authentication is out of scope). The one-time `role="status"` notice was added in T6.1; styles in `css/login.css`.
 
 ## Register page
 
-- `pages/register.php` implements the Figma registration screen and now includes a prototype backend from an early commit: a POST insert into `usuarios` with `password_hash`, a session success flag, and a 303 redirect to `login.php?registro=ok`. It predates the approved plan and lacks CSRF, server validation, role handling, tutor-profile creation, and output escaping; task T5.2 rewrites it as a thin controller adapter, so the prototype is left untouched until then.
-- The current form has a combined email/cédula field and no phone field; the spec adds phone and separates email/ID. Error styles in `css/register.css` are present but inactive until backend validation exists.
-- Mobile breakpoint is 900px and keeps the design's scaled proportions.
+- `pages/register.php` is a thin adapter; the prototype INSERT was removed in T5.2. Pipeline: `includes/register_controller.php`, view: `includes/register_view.php`, domain service: `includes/registration_service.php`.
+- Validation (`includes/validation.php`) and CSRF (`includes/csrf.php`) are server-authoritative; browser enhancement: `js/features/register-form.js` with DOM-free modules `register-validation.js` and `register-role.js`.
+- Error styles in `css/register.css` are active and contrast-compliant.
 
 ## Environment
 
-- Served by USBWebServer at `http://localhost/` (document root is the project folder).
-- DB credentials are currently hardcoded in `database/database.php` (`root`/`usbw`); migrating them to `includes/config.php` is part of task T2.1.
+- Served by USBWebServer at `http://localhost/` (document root is the project folder). PHP CLI: `C:\Users\isaac\Documents\USBWebServer\php\php.exe` (not on PATH).
+- DB config centralized in `includes/config.php` with `PROFEGO_DB_*` overrides; `database/database.php` is a compatibility adapter.
+- Local `profeGo` DB has one pre-existing all-empty prototype row in `usuarios`; test cleanup never touches it.
