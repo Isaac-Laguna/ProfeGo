@@ -1,0 +1,204 @@
+Layer 0 evidence - Syntax validation and static inspections
+Spec: 001-create-account
+Task: T9.1 final automated rerun (Layer 0-2)
+Date: 2026-11-20
+Environment: Windows, PowerShell 5.1, Node v24.21.0, PHP 8.1.3 CLI
+PHP CLI: C:\Users\isaac\Documents\USBWebServer\php\php.exe
+Known php_gd2.dll startup warning is environment noise (stderr) and does not affect exit codes.
+All commands below were run IN SEQUENCE in one process; no command was run in parallel.
+
+-------------------------------------------------------------------------------
+1. php -l over every PHP file in the change set (includes/, pages/, database/, tests/, index.php)
+-------------------------------------------------------------------------------
+FILE: database\database.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\database\database.php
+EXIT_CODE=0
+
+FILE: includes\config.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\includes\config.php
+EXIT_CODE=0
+
+FILE: includes\csrf.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\includes\csrf.php
+EXIT_CODE=0
+
+FILE: includes\database.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\includes\database.php
+EXIT_CODE=0
+
+FILE: includes\register_controller.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\includes\register_controller.php
+EXIT_CODE=0
+
+FILE: includes\register_view.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\includes\register_view.php
+EXIT_CODE=0
+
+FILE: includes\registration_service.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\includes\registration_service.php
+EXIT_CODE=0
+
+FILE: includes\validation.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\includes\validation.php
+EXIT_CODE=0
+
+FILE: index.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\index.php
+EXIT_CODE=0
+
+FILE: pages\login.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\pages\login.php
+EXIT_CODE=0
+
+FILE: pages\register.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\pages\register.php
+EXIT_CODE=0
+
+FILE: tests\php\assert_foundation.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\tests\php\assert_foundation.php
+EXIT_CODE=0
+
+FILE: tests\php\assert_http_security.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\tests\php\assert_http_security.php
+EXIT_CODE=0
+
+FILE: tests\php\assert_pipeline.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\tests\php\assert_pipeline.php
+EXIT_CODE=0
+
+FILE: tests\php\assert_registration.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\tests\php\assert_registration.php
+EXIT_CODE=0
+
+FILE: tests\php\assert_validation.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\tests\php\assert_validation.php
+EXIT_CODE=0
+
+FILE: tests\php\test_support.php
+PHP Warning:  PHP Startup: Unable to load dynamic library 'php_gd2.dll' (tried: C:/Users/isaac/Documents/USBWebServer\php\ext\php_gd2.dll (The specified module could not be found), C:/Users/isaac/Documents/USBWebServer\php\ext\php_php_gd2.dll.dll (The specified module could not be found)) in Unknown on line 0
+No syntax errors detected in C:\Users\isaac\Documents\USBWebServer\root\ProfeGo\tests\php\test_support.php
+EXIT_CODE=0
+
+
+-------------------------------------------------------------------------------
+2. Static inspections of the change set
+-------------------------------------------------------------------------------
+All checks below were performed by direct file inspection / git grep on the
+committed change set. Each result is recorded verbatim.
+
+CHECK A - No new dependency or build step
+  Method: read js/package.json; search for lockfiles, manifests, node_modules,
+          vendor and bundler configs.
+  Result: js/package.json contains exactly {"type": "module"}.
+          ABSENT: js/package-lock.json, package-lock.json, package.json (root),
+          composer.json, composer.lock, node_modules, vendor, vite.config.js,
+          webpack.config.js. No external URLs/local-only module script only.
+  VERDICT: PASS (no framework, dependency, or build step introduced; C1/RNF-6).
+
+CHECK B - No database schema change
+  Method: git diff -- database/ProfeGo.sql and git status --porcelain -- database/ProfeGo.sql.
+  Result: both empty; database/ProfeGo.sql is unmodified.
+  VERDICT: PASS (schema authoritative and untouched).
+
+CHECK C - No client-side secrets (CSRF token)
+  Method: grep "csrf_token" in js/features/*.js and inspect every hit; confirm the
+          token VALUE is never present in client-side JavaScript.
+  Result: two hits, both in js/features/register-form.js and both in comments:
+            line 81  - "The hidden `rol` and `csrf_token` inputs are deliberately left in the form..."
+            line 191 - "// csrf_token intact and follows the server's PRG redirect."
+          Neither is executable code; neither contains a token value. The validator's
+          FIELD_ORDER lists only the eight user fields and deliberately excludes
+          `rol` and `csrf_token`; the script never reads, stores, or references a
+          token field in code. Token value in client-side JS: NONE.
+  VERDICT: PASS for the substantive requirement (RNF-1, RF-9, C5: no token/secret
+          exposed in client-side code). NOTE/FINDING: the literal field-name string
+          "csrf_token" does appear in the two comments above. If a literal
+          substring-absence check is required, a separate source cleanup would be
+          needed; this task is evidence-only and did not modify source.
+
+CHECK D - Spanish user-facing copy vs English identifiers/comments/docs
+  Method: inspect rendered strings in includes/register_view.php and role/live
+          copy in js/features/register-role.js and register-form.js; inspect source
+          comments and identifiers.
+  Result: user-facing copy is Spanish, e.g. labels "Nombre", "Apellido",
+          "Correo electrónico", "Teléfono", "Cédula/ID", "Crear contraseña",
+          "Confirmar contraseña"; meta description "Regístrate en ProfeGo como
+          estudiante o docente."; submit "Crear Cuenta"; role "Estudiante"/"Docente";
+          terms "Acepto los ... términos y condiciones y la Política de Privacidad.*";
+          live copy "Tipo de cuenta seleccionado: Docente./Estudiante.".
+          Code identifiers, filenames, comments and technical docs are English.
+  VERDICT: PASS (C6/RNF-6).
+
+CHECK E - Every SQL statement parameterized; no user input concatenated into SQL
+  Method: git grep for SELECT/INSERT/UPDATE/DELETE/prepare/query/exec across all
+          PHP files; inspect each statement and any interpolated fragment.
+  Result: application SQL (includes/registration_service.php): one SELECT with an
+          interpolated {$column} whose only possible values are the three fixed
+          literals 'correo', 'telefono', 'documento' declared in $probes inside
+          find_duplicate_fields() (the explicitly allowed case); value bound via
+          :value. Both INSERT statements use named placeholders bound through
+          execute(). pages/register.php SQL match is a comment only.
+          Test SQL: assert_foundation/assert_validation/assert_pipeline/
+          assert_http_security use fixed literal queries or prepare() with bound
+          parameters (:correo/:id/:email). assert_registration information_schema
+          reads use prepare() with no user input. test_support.php interpolates
+          only fixed column literals from a hardcoded map (correo/documento/
+          telefono) and count-generated "?" placeholders (array_fill by count);
+          all values are passed separately to execute(). No user-controlled data
+          ever enters SQL text.
+  VERDICT: PASS (RNF-3/C5). Only interpolated identifiers are the fixed literals
+          in find_duplicate_fields() (plus fixed literals/count placeholders in
+          the CLI test helper, which carry no user data).
+
+CHECK F - Rollback seam confined to service/tests and CLI-gated
+  Method: git grep "fail_tutor_profile" across the repository.
+  Result: application source: only includes/registration_service.php (docblock
+          line 13, param note line 54, and the gated check at line 83). The check
+          is `if (($options['fail_tutor_profile'] ?? false) === true && PHP_SAPI === 'cli')`.
+          Tests: assert_pipeline.php (passes the option in CLI), assert_registration.php
+          (CLI seam), assert_http_security.php (look-alike HTTP field, proves not
+          reachable). Remaining hits are spec/plan/tasks/evidence documentation only.
+          The option is never read from request data by the controller.
+  VERDICT: PASS (plan technical decision 3; RF-3 atomicity hook unreachable over HTTP).
+
+CHECK G - CSRF primitive: 32 random bytes as 64 hex, hash_equals, no rotation, no client token
+  Method: read includes/csrf.php; confirm generator, format regex, comparison and
+          stability; cross-check CHECK C for the client-side value.
+  Result: includes/csrf.php line 23 uses bin2hex(random_bytes(32)) -> 64 lowercase
+          hex characters; line 19 validates with /^[0-9a-f]{64}$/; line 40 compares
+          with hash_equals(); lines 36-38 reject non-string submissions; an existing
+          well-formed token is returned unchanged (lines 19-21) so it is stable,
+          non-expiring and never rotated. No token value appears in client-side JS
+          (CHECK C). Token is rendered only in the server-produced form markup
+          (includes/register_view.php line 175).
+  VERDICT: PASS (RF-9, RNF-1, C5).
+
+-------------------------------------------------------------------------------
+3. Command result summary (all run in sequence, none in parallel)
+-------------------------------------------------------------------------------
+  1. php -l over 17 PHP files ................... 17/17 clean, all EXIT_CODE=0
+  2. node --test (validation + role) ............ tests 84, pass 84, fail 0, EXIT_CODE=0
+  3. php tests/php/assert_foundation.php ........ Assertions 38, Failures 0, EXIT_CODE=0
+  4. php tests/php/assert_validation.php ........ Assertions 224, Failures 0, EXIT_CODE=0
+  5. php tests/php/assert_registration.php ...... Assertions 84, Failures 0, EXIT_CODE=0,
+                                                  zero residue by captured identifiers
+Full command outputs and exit codes: lint section above; node in layer1-js.txt,
+foundation/validation in layer1-php.txt, integration in layer2.txt.
+
+No source file was modified by T9.1. No test ran in parallel.

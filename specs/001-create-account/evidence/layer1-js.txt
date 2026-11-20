@@ -206,3 +206,107 @@ Notes
    It is the stable interface the browser enhancement (T7.1) will import.
 4. No PHP file, no corpus file, and no T3.3 file was modified by this task.
    No dependency, framework, bundler, or build step was added.
+
+===============================================================================
+T9.1 final rerun - Layer 1 JavaScript (node --test)
+===============================================================================
+Date: 2026-11-20
+Environment: Windows, Node v24.21.0, built-in node:test runner (no framework/dependency)
+Command (exact): node --test tests/js/register-validation.test.mjs tests/js/register-role.test.mjs
+Run in sequence with the other Layer 0-2 commands; no parallel execution.
+
+Exact output:
+✓ module exports the role constants (1.1978ms)
+✓ module exports the role functions (0.6616ms)
+✓ roleLabel returns the exact visible strings (0.1611ms)
+✓ roleAccessibleName returns the exact accessible-name strings (0.1486ms)
+✓ nextRole toggles student -> teacher -> student (full cycle) (0.1296ms)
+✓ role signals stay in sync across a full toggle cycle (0.125ms)
+✓ unsupported input falls back to the default student role (0.1513ms)
+✓ no function can produce a role outside the allow-list (0.1892ms)
+✓ corpus contains 74 cases and 3 serverOnly cases (1.9055ms)
+✓ the module exports validateRegistration() and normalizePhone() (0.1693ms)
+✓ [name-empty] normalized values and exact error arrays (1.4164ms)
+✓ [name-whitespace-only] normalized values and exact error arrays (0.2653ms)
+✓ [name-valid-accents-enye] normalized values and exact error arrays (0.1243ms)
+✓ [name-trimmed] normalized values and exact error arrays (0.1048ms)
+✓ [name-30-chars] normalized values and exact error arrays (0.1198ms)
+✓ [name-31-chars] normalized values and exact error arrays (0.1157ms)
+✓ [name-30-accents] normalized values and exact error arrays (0.1093ms)
+✓ [name-31-accents] normalized values and exact error arrays (0.1612ms)
+✓ [name-punctuation-only] normalized values and exact error arrays (0.1151ms)
+✓ [name-contains-digits] normalized values and exact error arrays (0.0942ms)
+✓ [name-multi-length-composition] normalized values and exact error arrays (0.0674ms)
+✓ [name-multi-length-content] normalized values and exact error arrays (0.0558ms)
+✓ [lastname-empty] normalized values and exact error arrays (0.0687ms)
+✓ [lastname-whitespace-only] normalized values and exact error arrays (0.0572ms)
+✓ [lastname-valid-accents] normalized values and exact error arrays (0.0692ms)
+✓ [lastname-31-chars] normalized values and exact error arrays (0.0525ms)
+✓ [lastname-contains-digits] normalized values and exact error arrays (0.0504ms)
+✓ [lastname-punctuation-only] normalized values and exact error arrays (0.0498ms)
+✓ [email-empty] normalized values and exact error arrays (0.0767ms)
+✓ [email-whitespace-only] normalized values and exact error arrays (0.0601ms)
+✓ [email-valid-lowercase] normalized values and exact error arrays (0.0623ms)
+✓ [email-trim-and-lowercase] normalized values and exact error arrays (0.0572ms)
+✓ [email-150-chars] normalized values and exact error arrays (0.0658ms)
+✓ [email-151-chars] normalized values and exact error arrays (0.0659ms)
+✓ [email-non-ascii] normalized values and exact error arrays (0.0553ms)
+✓ [email-missing-at] normalized values and exact error arrays (0.0667ms)
+✓ [email-double-at] normalized values and exact error arrays (0.0491ms)
+✓ [email-multi-length-format] normalized values and exact error arrays (0.074ms)
+✓ [phone-empty] normalized values and exact error arrays (0.0623ms)
+✓ [phone-whitespace-only] normalized values and exact error arrays (0.0466ms)
+✓ [phone-plain-digits] normalized values and exact error arrays (0.0547ms)
+✓ [phone-plus-space-hyphen] normalized values and exact error arrays (0.0584ms)
+✓ [phone-leading-plus-equivalent] normalized values and exact error arrays (0.0771ms)
+✓ [phone-plain-equivalent] normalized values and exact error arrays (0.0661ms)
+✓ [phone-parentheses] normalized values and exact error arrays (0.0497ms)
+✓ [phone-7-digits] normalized values and exact error arrays (0.0469ms)
+✓ [phone-20-digits] normalized values and exact error arrays (0.0839ms)
+✓ [phone-6-digits] normalized values and exact error arrays (0.0517ms)
+✓ [phone-21-digits] normalized values and exact error arrays (0.0663ms)
+✓ [phone-plus-non-leading] normalized values and exact error arrays (0.047ms)
+✓ [phone-letters] normalized values and exact error arrays (0.0438ms)
+✓ [id-empty] normalized values and exact error arrays (0.0663ms)
+✓ [id-whitespace-only] normalized values and exact error arrays (0.0511ms)
+✓ [id-valid-hyphens] normalized values and exact error arrays (0.0503ms)
+✓ [id-trimmed-case-preserved] normalized values and exact error arrays (0.0476ms)
+✓ [id-4-chars] normalized values and exact error arrays (0.0538ms)
+✓ [id-5-chars] normalized values and exact error arrays (0.0526ms)
+✓ [id-20-chars] normalized values and exact error arrays (0.0546ms)
+✓ [id-21-chars] normalized values and exact error arrays (0.0524ms)
+✓ [id-internal-spaces] normalized values and exact error arrays (0.0437ms)
+✓ [id-underscore] normalized values and exact error arrays (0.0434ms)
+✓ [id-hyphen-only] normalized values and exact error arrays (0.0427ms)
+✓ [id-non-ascii] normalized values and exact error arrays (0.0493ms)
+✓ [id-multi-length-composition] normalized values and exact error arrays (0.0577ms)
+✓ [password-empty] normalized values and exact error arrays (0.0654ms)
+✓ [password-whitespace-not-trimmed] normalized values and exact error arrays (0.0556ms)
+✓ [password-7-bytes] normalized values and exact error arrays (0.048ms)
+✓ [password-8-bytes] normalized values and exact error arrays (0.0441ms)
+✓ [password-72-bytes] normalized values and exact error arrays (0.0481ms)
+✓ [password-73-bytes] normalized values and exact error arrays (0.0436ms)
+✓ [password-accents-7-chars-12-bytes] normalized values and exact error arrays (0.0466ms)
+✓ [password-accents-72-bytes] normalized values and exact error arrays (0.0739ms)
+✓ [password-accents-73-bytes] normalized values and exact error arrays (0.0549ms)
+✓ [password-accents-7-bytes] normalized values and exact error arrays (0.0446ms)
+✓ [password-letters-only] normalized values and exact error arrays (0.5122ms)
+✓ [password-digits-only] normalized values and exact error arrays (0.0552ms)
+✓ [password-confirm-match] normalized values and exact error arrays (0.0582ms)
+✓ [password-confirm-mismatch] normalized values and exact error arrays (0.0623ms)
+✓ [password-confirm-empty] normalized values and exact error arrays (0.0413ms)
+✓ [terms-unchecked] normalized values and exact error arrays (0.0639ms)
+✓ [terms-checked] normalized values and exact error arrays (0.0425ms)
+✓ expectedBytes match TextEncoder UTF-8 byte lengths for byte-bearing cases (0.1824ms)
+✓ phone normalization makes a leading + equivalent (0.0689ms)
+✓ non-string and non-scalar inputs are coerced without throwing (0.2439ms)
+ℹ tests 84
+ℹ suites 0
+ℹ pass 84
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.7885
+EXIT_CODE=0
+

@@ -103,7 +103,7 @@
 
 ## Phase 9: Final Verification (Layers 0-4)
 
-- [ ] **T9.1 Rerun Layers 0-2 and record final automated evidence**
+- [x] **T9.1 Rerun Layers 0-2 and record final automated evidence**
   - **RF:** RF-1 through RF-8; **RNF:** RNF-2, RNF-3, RNF-6, RNF-7; **AC:** AC-01, AC-02, AC-05, AC-08a, AC-12
   - Run `php -l` over every touched PHP file, `node --test tests/js/register-validation.test.mjs tests/js/register-role.test.mjs`, `php tests/php/assert_foundation.php`, `php tests/php/assert_validation.php`, and `php tests/php/assert_registration.php` in sequence, never in parallel. Inspect the change set for new dependencies, build steps, schema edits, client-side secrets including `csrf_token`, and Spanish/English conventions; inspect every SQL statement for parameterization, allowing only the fixed column identifiers in `find_duplicate_fields`; inspect that the rollback seam appears only in the service and tests and is CLI-gated; and inspect the CSRF implementation for 32 random bytes rendered as 64 hex characters, `hash_equals`, no rotation, and no token in client-side JavaScript.
   - Done when: every command exits 0, Node reports a non-zero test count, integration cleanup leaves zero residue, the static inspections pass and are recorded, and final transcripts are saved as `evidence/layer0.txt`, `evidence/layer1-js.txt`, `evidence/layer1-php.txt`, and `evidence/layer2.txt` with commands and exit codes.
