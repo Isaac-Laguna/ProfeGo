@@ -1,0 +1,1273 @@
+Layer 4 - Real HTTP security harness transcript (spec 001 create-account)
+Date: 2026-11-20
+PHP CLI: C:\Users\isaac\Documents\USBWebServer\php\php.exe (PHP 8.1.3, ext-curl loaded)
+Web server: USBWebServer Apache at http://localhost/ (document root = project folder)
+Working directory: C:\Users\isaac\Documents\USBWebServer\root\ProfeGo
+Writing tests were not run in parallel. The only concurrent request pair is the single controlled duplicate-submission scenario (Scenario F) inside assert_http_security.php. Tables were never truncated. The pre-existing all-empty prototype row in usuarios was never touched.
+Note: this PHP CLI prints a harmless 'Unable to load dynamic library php_gd2.dll' startup warning on stderr; it is stripped from the captured blocks and is not application output.
+
+== CURL AVAILABILITY CHECK (done before writing the harness) ==
+COMMAND: php -m
+RESULT: curl is loaded (also mbstring, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, session).
+COMMAND: (cURL probe) GET http://localhost/pages/register.php
+RESULT: HTTP 200, PHPSESSID cookie issued, cURL error empty. ext-curl is usable.
+
+== TEST-FIRST RED STATE (harness file did not exist yet) ==
+COMMAND: php tests/php/assert_http_security.php
+EXIT CODE: 1
+Could not open input file: tests/php/assert_http_security.php
+
+== php -l SYNTAX CHECK ON THE HARNESS ==
+COMMAND: php -l tests/php/assert_http_security.php
+EXIT CODE: 0 :: No syntax errors detected in tests/php/assert_http_security.php
+
+== GREEN RUN: FULL OUTPUT ==
+COMMAND: php tests/php/assert_http_security.php
+EXIT CODE: 0
+Layer 4 - Real HTTP security harness (ext-curl + cookie jar; single controlled concurrency pair)
+PASS: ext-curl is available
+Baseline counted rows (empty prototype row excluded): 0 accounts, 0 tutor profiles
+
+--- Session bootstrap: real GET issues the CSRF token ---
+PASS: bootstrap GET: inspection - no plaintext password
+PASS: bootstrap GET: inspection - no password hash
+PASS: bootstrap GET: inspection - no technical detail (SQLSTATE)
+PASS: bootstrap GET: inspection - no technical detail (PDO)
+PASS: bootstrap GET: inspection - no technical detail (Exception)
+PASS: bootstrap GET: inspection - no technical detail (stack trace)
+PASS: bootstrap GET: inspection - no technical detail (password_hash)
+PASS: bootstrap GET: inspection - no technical detail (C:\)
+PASS: bootstrap GET: inspection - no technical detail (C:/)
+PASS: bootstrap GET: inspection - no technical detail (/ProfeGo)
+PASS: bootstrap GET: inspection - no technical detail (Fatal error)
+PASS: bootstrap GET: inspection - no technical detail (Warning:)
+PASS: bootstrap GET: inspection - CSRF token appears exactly once in the form response
+PASS: bootstrap GET: inspection - CSRF token only inside the hidden form input
+PASS: bootstrap GET: form response contains a CSRF token
+PASS: bootstrap GET: complete HTML document
+PASS: bootstrap token is 64 hex characters
+
+--- Scenario A: direct POST with empty and invalid values ---
+PASS: empty POST: form GET: inspection - no plaintext password
+PASS: empty POST: form GET: inspection - no password hash
+PASS: empty POST: form GET: inspection - no technical detail (SQLSTATE)
+PASS: empty POST: form GET: inspection - no technical detail (PDO)
+PASS: empty POST: form GET: inspection - no technical detail (Exception)
+PASS: empty POST: form GET: inspection - no technical detail (stack trace)
+PASS: empty POST: form GET: inspection - no technical detail (password_hash)
+PASS: empty POST: form GET: inspection - no technical detail (C:\)
+PASS: empty POST: form GET: inspection - no technical detail (C:/)
+PASS: empty POST: form GET: inspection - no technical detail (/ProfeGo)
+PASS: empty POST: form GET: inspection - no technical detail (Fatal error)
+PASS: empty POST: form GET: inspection - no technical detail (Warning:)
+PASS: empty POST: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: empty POST: form GET: inspection - CSRF token only inside the hidden form input
+PASS: empty POST: form GET: form response contains a CSRF token
+PASS: empty POST: form GET: complete HTML document
+PASS: empty POST: inspection - no plaintext password
+PASS: empty POST: inspection - no password hash
+PASS: empty POST: inspection - no technical detail (SQLSTATE)
+PASS: empty POST: inspection - no technical detail (PDO)
+PASS: empty POST: inspection - no technical detail (Exception)
+PASS: empty POST: inspection - no technical detail (stack trace)
+PASS: empty POST: inspection - no technical detail (password_hash)
+PASS: empty POST: inspection - no technical detail (C:\)
+PASS: empty POST: inspection - no technical detail (C:/)
+PASS: empty POST: inspection - no technical detail (/ProfeGo)
+PASS: empty POST: inspection - no technical detail (Fatal error)
+PASS: empty POST: inspection - no technical detail (Warning:)
+PASS: empty POST: inspection - CSRF token appears exactly once in the form response
+PASS: empty POST: inspection - CSRF token only inside the hidden form input
+PASS: empty POST: HTTP 200
+PASS: empty POST: field errors are rendered
+PASS: empty POST: name required error
+PASS: empty POST: email required error
+PASS: empty POST: no terms error when terms accepted
+PASS: empty POST: no form-level alert
+PASS: empty POST: zero writes
+PASS: empty-with-terms POST: form GET: inspection - no plaintext password
+PASS: empty-with-terms POST: form GET: inspection - no password hash
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (SQLSTATE)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (PDO)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (Exception)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (stack trace)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (password_hash)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (C:\)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (C:/)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (/ProfeGo)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (Fatal error)
+PASS: empty-with-terms POST: form GET: inspection - no technical detail (Warning:)
+PASS: empty-with-terms POST: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: empty-with-terms POST: form GET: inspection - CSRF token only inside the hidden form input
+PASS: empty-with-terms POST: form GET: form response contains a CSRF token
+PASS: empty-with-terms POST: form GET: complete HTML document
+PASS: empty-with-terms POST: inspection - no plaintext password
+PASS: empty-with-terms POST: inspection - no password hash
+PASS: empty-with-terms POST: inspection - no technical detail (SQLSTATE)
+PASS: empty-with-terms POST: inspection - no technical detail (PDO)
+PASS: empty-with-terms POST: inspection - no technical detail (Exception)
+PASS: empty-with-terms POST: inspection - no technical detail (stack trace)
+PASS: empty-with-terms POST: inspection - no technical detail (password_hash)
+PASS: empty-with-terms POST: inspection - no technical detail (C:\)
+PASS: empty-with-terms POST: inspection - no technical detail (C:/)
+PASS: empty-with-terms POST: inspection - no technical detail (/ProfeGo)
+PASS: empty-with-terms POST: inspection - no technical detail (Fatal error)
+PASS: empty-with-terms POST: inspection - no technical detail (Warning:)
+PASS: empty-with-terms POST: inspection - CSRF token appears exactly once in the form response
+PASS: empty-with-terms POST: inspection - CSRF token only inside the hidden form input
+PASS: empty-with-terms POST: HTTP 200
+PASS: empty-with-terms POST: required name error
+PASS: empty-with-terms POST: no form-level alert
+PASS: empty-with-terms POST: zero writes
+PASS: invalid POST: form GET: inspection - no plaintext password
+PASS: invalid POST: form GET: inspection - no password hash
+PASS: invalid POST: form GET: inspection - no technical detail (SQLSTATE)
+PASS: invalid POST: form GET: inspection - no technical detail (PDO)
+PASS: invalid POST: form GET: inspection - no technical detail (Exception)
+PASS: invalid POST: form GET: inspection - no technical detail (stack trace)
+PASS: invalid POST: form GET: inspection - no technical detail (password_hash)
+PASS: invalid POST: form GET: inspection - no technical detail (C:\)
+PASS: invalid POST: form GET: inspection - no technical detail (C:/)
+PASS: invalid POST: form GET: inspection - no technical detail (/ProfeGo)
+PASS: invalid POST: form GET: inspection - no technical detail (Fatal error)
+PASS: invalid POST: form GET: inspection - no technical detail (Warning:)
+PASS: invalid POST: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: invalid POST: form GET: inspection - CSRF token only inside the hidden form input
+PASS: invalid POST: form GET: form response contains a CSRF token
+PASS: invalid POST: form GET: complete HTML document
+PASS: invalid POST: inspection - no plaintext password
+PASS: invalid POST: inspection - no password hash
+PASS: invalid POST: inspection - no technical detail (SQLSTATE)
+PASS: invalid POST: inspection - no technical detail (PDO)
+PASS: invalid POST: inspection - no technical detail (Exception)
+PASS: invalid POST: inspection - no technical detail (stack trace)
+PASS: invalid POST: inspection - no technical detail (password_hash)
+PASS: invalid POST: inspection - no technical detail (C:\)
+PASS: invalid POST: inspection - no technical detail (C:/)
+PASS: invalid POST: inspection - no technical detail (/ProfeGo)
+PASS: invalid POST: inspection - no technical detail (Fatal error)
+PASS: invalid POST: inspection - no technical detail (Warning:)
+PASS: invalid POST: inspection - CSRF token appears exactly once in the form response
+PASS: invalid POST: inspection - CSRF token only inside the hidden form input
+PASS: invalid POST: HTTP 200
+PASS: invalid POST: name composition error
+PASS: invalid POST: email format error
+PASS: invalid POST: phone length error
+PASS: invalid POST: cedula composition error
+PASS: invalid POST: password length error
+PASS: invalid POST: no form-level alert
+PASS: invalid POST: zero writes
+
+--- Scenario B: admin / unknown / missing role on direct POST ---
+PASS: role admin: form GET: inspection - no plaintext password
+PASS: role admin: form GET: inspection - no password hash
+PASS: role admin: form GET: inspection - no technical detail (SQLSTATE)
+PASS: role admin: form GET: inspection - no technical detail (PDO)
+PASS: role admin: form GET: inspection - no technical detail (Exception)
+PASS: role admin: form GET: inspection - no technical detail (stack trace)
+PASS: role admin: form GET: inspection - no technical detail (password_hash)
+PASS: role admin: form GET: inspection - no technical detail (C:\)
+PASS: role admin: form GET: inspection - no technical detail (C:/)
+PASS: role admin: form GET: inspection - no technical detail (/ProfeGo)
+PASS: role admin: form GET: inspection - no technical detail (Fatal error)
+PASS: role admin: form GET: inspection - no technical detail (Warning:)
+PASS: role admin: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: role admin: form GET: inspection - CSRF token only inside the hidden form input
+PASS: role admin: form GET: form response contains a CSRF token
+PASS: role admin: form GET: complete HTML document
+PASS: role admin: inspection - no plaintext password
+PASS: role admin: inspection - no password hash
+PASS: role admin: inspection - no technical detail (SQLSTATE)
+PASS: role admin: inspection - no technical detail (PDO)
+PASS: role admin: inspection - no technical detail (Exception)
+PASS: role admin: inspection - no technical detail (stack trace)
+PASS: role admin: inspection - no technical detail (password_hash)
+PASS: role admin: inspection - no technical detail (C:\)
+PASS: role admin: inspection - no technical detail (C:/)
+PASS: role admin: inspection - no technical detail (/ProfeGo)
+PASS: role admin: inspection - no technical detail (Fatal error)
+PASS: role admin: inspection - no technical detail (Warning:)
+PASS: role admin: inspection - CSRF token appears exactly once in the form response
+PASS: role admin: inspection - CSRF token only inside the hidden form input
+PASS: role admin: zero writes
+PASS: role admin: HTTP 200
+PASS: role admin: form-level role=alert region
+PASS: role admin: generic Spanish form error
+PASS: role admin: no field error containers
+PASS: role admin: no field association/invalid markers
+PASS: role admin: plaintext password never in response
+PASS: role admin: name raw value preserved
+PASS: role admin: lastname raw value preserved
+PASS: role admin: email raw value preserved
+PASS: role admin: phone raw value preserved
+PASS: role admin: id raw value preserved
+PASS: role admin: terms checked state preserved
+PASS: role admin: hidden role preserved as estudiante
+PASS: role admin: role accessible name preserved
+PASS: role admin: role visible text preserved
+PASS: role admin: role live-region text preserved
+PASS: role admin: session holds a valid token
+PASS: role admin: valid session token in response
+PASS: role admin: no technical detail (SQLSTATE)
+PASS: role admin: no technical detail (PDO)
+PASS: role admin: no technical detail (Exception)
+PASS: role admin: no technical detail (stack trace)
+PASS: role admin: no technical detail (forced tutor)
+PASS: role admin: no technical detail (password_hash)
+PASS: role admin: no technical detail (C:\)
+PASS: role admin: no technical detail (/ProfeGo)
+PASS: role unknown: form GET: inspection - no plaintext password
+PASS: role unknown: form GET: inspection - no password hash
+PASS: role unknown: form GET: inspection - no technical detail (SQLSTATE)
+PASS: role unknown: form GET: inspection - no technical detail (PDO)
+PASS: role unknown: form GET: inspection - no technical detail (Exception)
+PASS: role unknown: form GET: inspection - no technical detail (stack trace)
+PASS: role unknown: form GET: inspection - no technical detail (password_hash)
+PASS: role unknown: form GET: inspection - no technical detail (C:\)
+PASS: role unknown: form GET: inspection - no technical detail (C:/)
+PASS: role unknown: form GET: inspection - no technical detail (/ProfeGo)
+PASS: role unknown: form GET: inspection - no technical detail (Fatal error)
+PASS: role unknown: form GET: inspection - no technical detail (Warning:)
+PASS: role unknown: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: role unknown: form GET: inspection - CSRF token only inside the hidden form input
+PASS: role unknown: form GET: form response contains a CSRF token
+PASS: role unknown: form GET: complete HTML document
+PASS: role unknown: inspection - no plaintext password
+PASS: role unknown: inspection - no password hash
+PASS: role unknown: inspection - no technical detail (SQLSTATE)
+PASS: role unknown: inspection - no technical detail (PDO)
+PASS: role unknown: inspection - no technical detail (Exception)
+PASS: role unknown: inspection - no technical detail (stack trace)
+PASS: role unknown: inspection - no technical detail (password_hash)
+PASS: role unknown: inspection - no technical detail (C:\)
+PASS: role unknown: inspection - no technical detail (C:/)
+PASS: role unknown: inspection - no technical detail (/ProfeGo)
+PASS: role unknown: inspection - no technical detail (Fatal error)
+PASS: role unknown: inspection - no technical detail (Warning:)
+PASS: role unknown: inspection - CSRF token appears exactly once in the form response
+PASS: role unknown: inspection - CSRF token only inside the hidden form input
+PASS: role unknown: zero writes
+PASS: role unknown: HTTP 200
+PASS: role unknown: form-level role=alert region
+PASS: role unknown: generic Spanish form error
+PASS: role unknown: no field error containers
+PASS: role unknown: no field association/invalid markers
+PASS: role unknown: plaintext password never in response
+PASS: role unknown: name raw value preserved
+PASS: role unknown: lastname raw value preserved
+PASS: role unknown: email raw value preserved
+PASS: role unknown: phone raw value preserved
+PASS: role unknown: id raw value preserved
+PASS: role unknown: terms checked state preserved
+PASS: role unknown: hidden role preserved as estudiante
+PASS: role unknown: role accessible name preserved
+PASS: role unknown: role visible text preserved
+PASS: role unknown: role live-region text preserved
+PASS: role unknown: session holds a valid token
+PASS: role unknown: valid session token in response
+PASS: role unknown: no technical detail (SQLSTATE)
+PASS: role unknown: no technical detail (PDO)
+PASS: role unknown: no technical detail (Exception)
+PASS: role unknown: no technical detail (stack trace)
+PASS: role unknown: no technical detail (forced tutor)
+PASS: role unknown: no technical detail (password_hash)
+PASS: role unknown: no technical detail (C:\)
+PASS: role unknown: no technical detail (/ProfeGo)
+PASS: role missing: form GET: inspection - no plaintext password
+PASS: role missing: form GET: inspection - no password hash
+PASS: role missing: form GET: inspection - no technical detail (SQLSTATE)
+PASS: role missing: form GET: inspection - no technical detail (PDO)
+PASS: role missing: form GET: inspection - no technical detail (Exception)
+PASS: role missing: form GET: inspection - no technical detail (stack trace)
+PASS: role missing: form GET: inspection - no technical detail (password_hash)
+PASS: role missing: form GET: inspection - no technical detail (C:\)
+PASS: role missing: form GET: inspection - no technical detail (C:/)
+PASS: role missing: form GET: inspection - no technical detail (/ProfeGo)
+PASS: role missing: form GET: inspection - no technical detail (Fatal error)
+PASS: role missing: form GET: inspection - no technical detail (Warning:)
+PASS: role missing: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: role missing: form GET: inspection - CSRF token only inside the hidden form input
+PASS: role missing: form GET: form response contains a CSRF token
+PASS: role missing: form GET: complete HTML document
+PASS: role missing: inspection - no plaintext password
+PASS: role missing: inspection - no password hash
+PASS: role missing: inspection - no technical detail (SQLSTATE)
+PASS: role missing: inspection - no technical detail (PDO)
+PASS: role missing: inspection - no technical detail (Exception)
+PASS: role missing: inspection - no technical detail (stack trace)
+PASS: role missing: inspection - no technical detail (password_hash)
+PASS: role missing: inspection - no technical detail (C:\)
+PASS: role missing: inspection - no technical detail (C:/)
+PASS: role missing: inspection - no technical detail (/ProfeGo)
+PASS: role missing: inspection - no technical detail (Fatal error)
+PASS: role missing: inspection - no technical detail (Warning:)
+PASS: role missing: inspection - CSRF token appears exactly once in the form response
+PASS: role missing: inspection - CSRF token only inside the hidden form input
+PASS: role missing: zero writes
+PASS: role missing: HTTP 200
+PASS: role missing: form-level role=alert region
+PASS: role missing: generic Spanish form error
+PASS: role missing: no field error containers
+PASS: role missing: no field association/invalid markers
+PASS: role missing: plaintext password never in response
+PASS: role missing: name raw value preserved
+PASS: role missing: lastname raw value preserved
+PASS: role missing: email raw value preserved
+PASS: role missing: phone raw value preserved
+PASS: role missing: id raw value preserved
+PASS: role missing: terms checked state preserved
+PASS: role missing: hidden role preserved as estudiante
+PASS: role missing: role accessible name preserved
+PASS: role missing: role visible text preserved
+PASS: role missing: role live-region text preserved
+PASS: role missing: session holds a valid token
+PASS: role missing: valid session token in response
+PASS: role missing: no technical detail (SQLSTATE)
+PASS: role missing: no technical detail (PDO)
+PASS: role missing: no technical detail (Exception)
+PASS: role missing: no technical detail (stack trace)
+PASS: role missing: no technical detail (forced tutor)
+PASS: role missing: no technical detail (password_hash)
+PASS: role missing: no technical detail (C:\)
+PASS: role missing: no technical detail (/ProfeGo)
+
+--- Scenario C: missing / malformed / foreign CSRF token ---
+PASS: foreign session: form GET: inspection - no plaintext password
+PASS: foreign session: form GET: inspection - no password hash
+PASS: foreign session: form GET: inspection - no technical detail (SQLSTATE)
+PASS: foreign session: form GET: inspection - no technical detail (PDO)
+PASS: foreign session: form GET: inspection - no technical detail (Exception)
+PASS: foreign session: form GET: inspection - no technical detail (stack trace)
+PASS: foreign session: form GET: inspection - no technical detail (password_hash)
+PASS: foreign session: form GET: inspection - no technical detail (C:\)
+PASS: foreign session: form GET: inspection - no technical detail (C:/)
+PASS: foreign session: form GET: inspection - no technical detail (/ProfeGo)
+PASS: foreign session: form GET: inspection - no technical detail (Fatal error)
+PASS: foreign session: form GET: inspection - no technical detail (Warning:)
+PASS: foreign session: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: foreign session: form GET: inspection - CSRF token only inside the hidden form input
+PASS: foreign session: form GET: form response contains a CSRF token
+PASS: foreign session: form GET: complete HTML document
+PASS: csrf missing: form GET: inspection - no plaintext password
+PASS: csrf missing: form GET: inspection - no password hash
+PASS: csrf missing: form GET: inspection - no technical detail (SQLSTATE)
+PASS: csrf missing: form GET: inspection - no technical detail (PDO)
+PASS: csrf missing: form GET: inspection - no technical detail (Exception)
+PASS: csrf missing: form GET: inspection - no technical detail (stack trace)
+PASS: csrf missing: form GET: inspection - no technical detail (password_hash)
+PASS: csrf missing: form GET: inspection - no technical detail (C:\)
+PASS: csrf missing: form GET: inspection - no technical detail (C:/)
+PASS: csrf missing: form GET: inspection - no technical detail (/ProfeGo)
+PASS: csrf missing: form GET: inspection - no technical detail (Fatal error)
+PASS: csrf missing: form GET: inspection - no technical detail (Warning:)
+PASS: csrf missing: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: csrf missing: form GET: inspection - CSRF token only inside the hidden form input
+PASS: csrf missing: form GET: form response contains a CSRF token
+PASS: csrf missing: form GET: complete HTML document
+PASS: csrf missing: inspection - no plaintext password
+PASS: csrf missing: inspection - no password hash
+PASS: csrf missing: inspection - no technical detail (SQLSTATE)
+PASS: csrf missing: inspection - no technical detail (PDO)
+PASS: csrf missing: inspection - no technical detail (Exception)
+PASS: csrf missing: inspection - no technical detail (stack trace)
+PASS: csrf missing: inspection - no technical detail (password_hash)
+PASS: csrf missing: inspection - no technical detail (C:\)
+PASS: csrf missing: inspection - no technical detail (C:/)
+PASS: csrf missing: inspection - no technical detail (/ProfeGo)
+PASS: csrf missing: inspection - no technical detail (Fatal error)
+PASS: csrf missing: inspection - no technical detail (Warning:)
+PASS: csrf missing: inspection - CSRF token appears exactly once in the form response
+PASS: csrf missing: inspection - CSRF token only inside the hidden form input
+PASS: csrf missing: zero writes
+PASS: csrf missing: HTTP 200
+PASS: csrf missing: form-level role=alert region
+PASS: csrf missing: generic Spanish form error
+PASS: csrf missing: no field error containers
+PASS: csrf missing: no field association/invalid markers
+PASS: csrf missing: plaintext password never in response
+PASS: csrf missing: name raw value preserved
+PASS: csrf missing: lastname raw value preserved
+PASS: csrf missing: email raw value preserved
+PASS: csrf missing: phone raw value preserved
+PASS: csrf missing: id raw value preserved
+PASS: csrf missing: terms checked state preserved
+PASS: csrf missing: hidden role preserved as docente
+PASS: csrf missing: role accessible name preserved
+PASS: csrf missing: role visible text preserved
+PASS: csrf missing: role live-region text preserved
+PASS: csrf missing: session holds a valid token
+PASS: csrf missing: valid session token in response
+PASS: csrf missing: no technical detail (SQLSTATE)
+PASS: csrf missing: no technical detail (PDO)
+PASS: csrf missing: no technical detail (Exception)
+PASS: csrf missing: no technical detail (stack trace)
+PASS: csrf missing: no technical detail (forced tutor)
+PASS: csrf missing: no technical detail (password_hash)
+PASS: csrf missing: no technical detail (C:\)
+PASS: csrf missing: no technical detail (/ProfeGo)
+PASS: csrf malformed: form GET: inspection - no plaintext password
+PASS: csrf malformed: form GET: inspection - no password hash
+PASS: csrf malformed: form GET: inspection - no technical detail (SQLSTATE)
+PASS: csrf malformed: form GET: inspection - no technical detail (PDO)
+PASS: csrf malformed: form GET: inspection - no technical detail (Exception)
+PASS: csrf malformed: form GET: inspection - no technical detail (stack trace)
+PASS: csrf malformed: form GET: inspection - no technical detail (password_hash)
+PASS: csrf malformed: form GET: inspection - no technical detail (C:\)
+PASS: csrf malformed: form GET: inspection - no technical detail (C:/)
+PASS: csrf malformed: form GET: inspection - no technical detail (/ProfeGo)
+PASS: csrf malformed: form GET: inspection - no technical detail (Fatal error)
+PASS: csrf malformed: form GET: inspection - no technical detail (Warning:)
+PASS: csrf malformed: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: csrf malformed: form GET: inspection - CSRF token only inside the hidden form input
+PASS: csrf malformed: form GET: form response contains a CSRF token
+PASS: csrf malformed: form GET: complete HTML document
+PASS: csrf malformed: inspection - no plaintext password
+PASS: csrf malformed: inspection - no password hash
+PASS: csrf malformed: inspection - no technical detail (SQLSTATE)
+PASS: csrf malformed: inspection - no technical detail (PDO)
+PASS: csrf malformed: inspection - no technical detail (Exception)
+PASS: csrf malformed: inspection - no technical detail (stack trace)
+PASS: csrf malformed: inspection - no technical detail (password_hash)
+PASS: csrf malformed: inspection - no technical detail (C:\)
+PASS: csrf malformed: inspection - no technical detail (C:/)
+PASS: csrf malformed: inspection - no technical detail (/ProfeGo)
+PASS: csrf malformed: inspection - no technical detail (Fatal error)
+PASS: csrf malformed: inspection - no technical detail (Warning:)
+PASS: csrf malformed: inspection - CSRF token appears exactly once in the form response
+PASS: csrf malformed: inspection - CSRF token only inside the hidden form input
+PASS: csrf malformed: zero writes
+PASS: csrf malformed: HTTP 200
+PASS: csrf malformed: form-level role=alert region
+PASS: csrf malformed: generic Spanish form error
+PASS: csrf malformed: no field error containers
+PASS: csrf malformed: no field association/invalid markers
+PASS: csrf malformed: plaintext password never in response
+PASS: csrf malformed: name raw value preserved
+PASS: csrf malformed: lastname raw value preserved
+PASS: csrf malformed: email raw value preserved
+PASS: csrf malformed: phone raw value preserved
+PASS: csrf malformed: id raw value preserved
+PASS: csrf malformed: terms checked state preserved
+PASS: csrf malformed: hidden role preserved as docente
+PASS: csrf malformed: role accessible name preserved
+PASS: csrf malformed: role visible text preserved
+PASS: csrf malformed: role live-region text preserved
+PASS: csrf malformed: session holds a valid token
+PASS: csrf malformed: valid session token in response
+PASS: csrf malformed: no technical detail (SQLSTATE)
+PASS: csrf malformed: no technical detail (PDO)
+PASS: csrf malformed: no technical detail (Exception)
+PASS: csrf malformed: no technical detail (stack trace)
+PASS: csrf malformed: no technical detail (forced tutor)
+PASS: csrf malformed: no technical detail (password_hash)
+PASS: csrf malformed: no technical detail (C:\)
+PASS: csrf malformed: no technical detail (/ProfeGo)
+PASS: csrf foreign: form GET: inspection - no plaintext password
+PASS: csrf foreign: form GET: inspection - no password hash
+PASS: csrf foreign: form GET: inspection - no technical detail (SQLSTATE)
+PASS: csrf foreign: form GET: inspection - no technical detail (PDO)
+PASS: csrf foreign: form GET: inspection - no technical detail (Exception)
+PASS: csrf foreign: form GET: inspection - no technical detail (stack trace)
+PASS: csrf foreign: form GET: inspection - no technical detail (password_hash)
+PASS: csrf foreign: form GET: inspection - no technical detail (C:\)
+PASS: csrf foreign: form GET: inspection - no technical detail (C:/)
+PASS: csrf foreign: form GET: inspection - no technical detail (/ProfeGo)
+PASS: csrf foreign: form GET: inspection - no technical detail (Fatal error)
+PASS: csrf foreign: form GET: inspection - no technical detail (Warning:)
+PASS: csrf foreign: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: csrf foreign: form GET: inspection - CSRF token only inside the hidden form input
+PASS: csrf foreign: form GET: form response contains a CSRF token
+PASS: csrf foreign: form GET: complete HTML document
+PASS: csrf foreign: inspection - no plaintext password
+PASS: csrf foreign: inspection - no password hash
+PASS: csrf foreign: inspection - no technical detail (SQLSTATE)
+PASS: csrf foreign: inspection - no technical detail (PDO)
+PASS: csrf foreign: inspection - no technical detail (Exception)
+PASS: csrf foreign: inspection - no technical detail (stack trace)
+PASS: csrf foreign: inspection - no technical detail (password_hash)
+PASS: csrf foreign: inspection - no technical detail (C:\)
+PASS: csrf foreign: inspection - no technical detail (C:/)
+PASS: csrf foreign: inspection - no technical detail (/ProfeGo)
+PASS: csrf foreign: inspection - no technical detail (Fatal error)
+PASS: csrf foreign: inspection - no technical detail (Warning:)
+PASS: csrf foreign: inspection - CSRF token appears exactly once in the form response
+PASS: csrf foreign: inspection - CSRF token only inside the hidden form input
+PASS: csrf foreign: zero writes
+PASS: csrf foreign: HTTP 200
+PASS: csrf foreign: form-level role=alert region
+PASS: csrf foreign: generic Spanish form error
+PASS: csrf foreign: no field error containers
+PASS: csrf foreign: no field association/invalid markers
+PASS: csrf foreign: plaintext password never in response
+PASS: csrf foreign: name raw value preserved
+PASS: csrf foreign: lastname raw value preserved
+PASS: csrf foreign: email raw value preserved
+PASS: csrf foreign: phone raw value preserved
+PASS: csrf foreign: id raw value preserved
+PASS: csrf foreign: terms checked state preserved
+PASS: csrf foreign: hidden role preserved as docente
+PASS: csrf foreign: role accessible name preserved
+PASS: csrf foreign: role visible text preserved
+PASS: csrf foreign: role live-region text preserved
+PASS: csrf foreign: session holds a valid token
+PASS: csrf foreign: valid session token in response
+PASS: csrf foreign: no technical detail (SQLSTATE)
+PASS: csrf foreign: no technical detail (PDO)
+PASS: csrf foreign: no technical detail (Exception)
+PASS: csrf foreign: no technical detail (stack trace)
+PASS: csrf foreign: no technical detail (forced tutor)
+PASS: csrf foreign: no technical detail (password_hash)
+PASS: csrf foreign: no technical detail (C:\)
+PASS: csrf foreign: no technical detail (/ProfeGo)
+
+--- Scenario D: look-alike fail_tutor_profile=1 over HTTP ---
+PASS: seam POST: form GET: inspection - no plaintext password
+PASS: seam POST: form GET: inspection - no password hash
+PASS: seam POST: form GET: inspection - no technical detail (SQLSTATE)
+PASS: seam POST: form GET: inspection - no technical detail (PDO)
+PASS: seam POST: form GET: inspection - no technical detail (Exception)
+PASS: seam POST: form GET: inspection - no technical detail (stack trace)
+PASS: seam POST: form GET: inspection - no technical detail (password_hash)
+PASS: seam POST: form GET: inspection - no technical detail (C:\)
+PASS: seam POST: form GET: inspection - no technical detail (C:/)
+PASS: seam POST: form GET: inspection - no technical detail (/ProfeGo)
+PASS: seam POST: form GET: inspection - no technical detail (Fatal error)
+PASS: seam POST: form GET: inspection - no technical detail (Warning:)
+PASS: seam POST: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: seam POST: form GET: inspection - CSRF token only inside the hidden form input
+PASS: seam POST: form GET: form response contains a CSRF token
+PASS: seam POST: form GET: complete HTML document
+PASS: seam POST: inspection - no plaintext password
+PASS: seam POST: inspection - no password hash
+PASS: seam POST: inspection - no technical detail (SQLSTATE)
+PASS: seam POST: inspection - no technical detail (PDO)
+PASS: seam POST: inspection - no technical detail (Exception)
+PASS: seam POST: inspection - no technical detail (stack trace)
+PASS: seam POST: inspection - no technical detail (password_hash)
+PASS: seam POST: inspection - no technical detail (C:\)
+PASS: seam POST: inspection - no technical detail (C:/)
+PASS: seam POST: inspection - no technical detail (/ProfeGo)
+PASS: seam POST: inspection - no technical detail (Fatal error)
+PASS: seam POST: inspection - no technical detail (Warning:)
+PASS: seam POST: normal registration returns 303 (seam not reachable)
+PASS: seam POST: 303 Location header
+PASS: seam POST: one account plus one tutor profile
+PASS: seam POST: stored role is docente
+PASS: seam POST: pending tutor profile
+
+--- Scenario E: same-session token reused for two registrations ---
+PASS: token reuse: form GET: inspection - no plaintext password
+PASS: token reuse: form GET: inspection - no password hash
+PASS: token reuse: form GET: inspection - no technical detail (SQLSTATE)
+PASS: token reuse: form GET: inspection - no technical detail (PDO)
+PASS: token reuse: form GET: inspection - no technical detail (Exception)
+PASS: token reuse: form GET: inspection - no technical detail (stack trace)
+PASS: token reuse: form GET: inspection - no technical detail (password_hash)
+PASS: token reuse: form GET: inspection - no technical detail (C:\)
+PASS: token reuse: form GET: inspection - no technical detail (C:/)
+PASS: token reuse: form GET: inspection - no technical detail (/ProfeGo)
+PASS: token reuse: form GET: inspection - no technical detail (Fatal error)
+PASS: token reuse: form GET: inspection - no technical detail (Warning:)
+PASS: token reuse: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: token reuse: form GET: inspection - CSRF token only inside the hidden form input
+PASS: token reuse: form GET: form response contains a CSRF token
+PASS: token reuse: form GET: complete HTML document
+PASS: token reuse: first POST: inspection - no plaintext password
+PASS: token reuse: first POST: inspection - no password hash
+PASS: token reuse: first POST: inspection - no technical detail (SQLSTATE)
+PASS: token reuse: first POST: inspection - no technical detail (PDO)
+PASS: token reuse: first POST: inspection - no technical detail (Exception)
+PASS: token reuse: first POST: inspection - no technical detail (stack trace)
+PASS: token reuse: first POST: inspection - no technical detail (password_hash)
+PASS: token reuse: first POST: inspection - no technical detail (C:\)
+PASS: token reuse: first POST: inspection - no technical detail (C:/)
+PASS: token reuse: first POST: inspection - no technical detail (/ProfeGo)
+PASS: token reuse: first POST: inspection - no technical detail (Fatal error)
+PASS: token reuse: first POST: inspection - no technical detail (Warning:)
+PASS: token reuse: second POST: inspection - no plaintext password
+PASS: token reuse: second POST: inspection - no password hash
+PASS: token reuse: second POST: inspection - no technical detail (SQLSTATE)
+PASS: token reuse: second POST: inspection - no technical detail (PDO)
+PASS: token reuse: second POST: inspection - no technical detail (Exception)
+PASS: token reuse: second POST: inspection - no technical detail (stack trace)
+PASS: token reuse: second POST: inspection - no technical detail (password_hash)
+PASS: token reuse: second POST: inspection - no technical detail (C:\)
+PASS: token reuse: second POST: inspection - no technical detail (C:/)
+PASS: token reuse: second POST: inspection - no technical detail (/ProfeGo)
+PASS: token reuse: second POST: inspection - no technical detail (Fatal error)
+PASS: token reuse: second POST: inspection - no technical detail (Warning:)
+PASS: token reuse: first registration accepted (303)
+PASS: token reuse: second registration accepted (303) with the same token
+PASS: token reuse: first account stored
+PASS: token reuse: second account stored
+
+--- Scenario F: concurrent identical submissions (only concurrent pair) ---
+PASS: concurrency: form GET: inspection - no plaintext password
+PASS: concurrency: form GET: inspection - no password hash
+PASS: concurrency: form GET: inspection - no technical detail (SQLSTATE)
+PASS: concurrency: form GET: inspection - no technical detail (PDO)
+PASS: concurrency: form GET: inspection - no technical detail (Exception)
+PASS: concurrency: form GET: inspection - no technical detail (stack trace)
+PASS: concurrency: form GET: inspection - no technical detail (password_hash)
+PASS: concurrency: form GET: inspection - no technical detail (C:\)
+PASS: concurrency: form GET: inspection - no technical detail (C:/)
+PASS: concurrency: form GET: inspection - no technical detail (/ProfeGo)
+PASS: concurrency: form GET: inspection - no technical detail (Fatal error)
+PASS: concurrency: form GET: inspection - no technical detail (Warning:)
+PASS: concurrency: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: concurrency: form GET: inspection - CSRF token only inside the hidden form input
+PASS: concurrency: form GET: form response contains a CSRF token
+PASS: concurrency: form GET: complete HTML document
+PASS: concurrency: PHPSESSID read from cookie jar
+PASS: concurrent request 0: inspection - no plaintext password
+PASS: concurrent request 0: inspection - no password hash
+PASS: concurrent request 0: inspection - no technical detail (SQLSTATE)
+PASS: concurrent request 0: inspection - no technical detail (PDO)
+PASS: concurrent request 0: inspection - no technical detail (Exception)
+PASS: concurrent request 0: inspection - no technical detail (stack trace)
+PASS: concurrent request 0: inspection - no technical detail (password_hash)
+PASS: concurrent request 0: inspection - no technical detail (C:\)
+PASS: concurrent request 0: inspection - no technical detail (C:/)
+PASS: concurrent request 0: inspection - no technical detail (/ProfeGo)
+PASS: concurrent request 0: inspection - no technical detail (Fatal error)
+PASS: concurrent request 0: inspection - no technical detail (Warning:)
+PASS: concurrent request 1: inspection - no plaintext password
+PASS: concurrent request 1: inspection - no password hash
+PASS: concurrent request 1: inspection - no technical detail (SQLSTATE)
+PASS: concurrent request 1: inspection - no technical detail (PDO)
+PASS: concurrent request 1: inspection - no technical detail (Exception)
+PASS: concurrent request 1: inspection - no technical detail (stack trace)
+PASS: concurrent request 1: inspection - no technical detail (password_hash)
+PASS: concurrent request 1: inspection - no technical detail (C:\)
+PASS: concurrent request 1: inspection - no technical detail (C:/)
+PASS: concurrent request 1: inspection - no technical detail (/ProfeGo)
+PASS: concurrent request 1: inspection - no technical detail (Fatal error)
+PASS: concurrent request 1: inspection - no technical detail (Warning:)
+PASS: concurrent request 1: inspection - CSRF token appears exactly once in the form response
+PASS: concurrent request 1: inspection - CSRF token only inside the hidden form input
+PASS: concurrency: exactly one 303 success and one 200 rejection
+PASS: concurrency: losing request reports the duplicate field error
+PASS: concurrency: losing request has field errors
+PASS: concurrency: exactly one stored row
+
+--- Scenario G: GET ?rol=docente then native-form-equivalent POST ---
+PASS: no-JS preselection GET: inspection - no plaintext password
+PASS: no-JS preselection GET: inspection - no password hash
+PASS: no-JS preselection GET: inspection - no technical detail (SQLSTATE)
+PASS: no-JS preselection GET: inspection - no technical detail (PDO)
+PASS: no-JS preselection GET: inspection - no technical detail (Exception)
+PASS: no-JS preselection GET: inspection - no technical detail (stack trace)
+PASS: no-JS preselection GET: inspection - no technical detail (password_hash)
+PASS: no-JS preselection GET: inspection - no technical detail (C:\)
+PASS: no-JS preselection GET: inspection - no technical detail (C:/)
+PASS: no-JS preselection GET: inspection - no technical detail (/ProfeGo)
+PASS: no-JS preselection GET: inspection - no technical detail (Fatal error)
+PASS: no-JS preselection GET: inspection - no technical detail (Warning:)
+PASS: no-JS preselection GET: inspection - CSRF token appears exactly once in the form response
+PASS: no-JS preselection GET: inspection - CSRF token only inside the hidden form input
+PASS: no-JS preselection GET: rendered hidden rol=docente
+PASS: no-JS preselection GET: visible Docente text
+PASS: no-JS preselection POST: inspection - no plaintext password
+PASS: no-JS preselection POST: inspection - no password hash
+PASS: no-JS preselection POST: inspection - no technical detail (SQLSTATE)
+PASS: no-JS preselection POST: inspection - no technical detail (PDO)
+PASS: no-JS preselection POST: inspection - no technical detail (Exception)
+PASS: no-JS preselection POST: inspection - no technical detail (stack trace)
+PASS: no-JS preselection POST: inspection - no technical detail (password_hash)
+PASS: no-JS preselection POST: inspection - no technical detail (C:\)
+PASS: no-JS preselection POST: inspection - no technical detail (C:/)
+PASS: no-JS preselection POST: inspection - no technical detail (/ProfeGo)
+PASS: no-JS preselection POST: inspection - no technical detail (Fatal error)
+PASS: no-JS preselection POST: inspection - no technical detail (Warning:)
+PASS: no-JS preselection POST: 303 success
+PASS: no-JS preselection POST: one account plus one profile
+PASS: no-JS preselection POST: docente account stored
+PASS: no-JS preselection POST: pending tutor profile
+
+--- Scenario H: boundary values (150/151, 30/31, 20/21, 72/73) ---
+PASS: boundary email=150: form GET: inspection - no plaintext password
+PASS: boundary email=150: form GET: inspection - no password hash
+PASS: boundary email=150: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary email=150: form GET: inspection - no technical detail (PDO)
+PASS: boundary email=150: form GET: inspection - no technical detail (Exception)
+PASS: boundary email=150: form GET: inspection - no technical detail (stack trace)
+PASS: boundary email=150: form GET: inspection - no technical detail (password_hash)
+PASS: boundary email=150: form GET: inspection - no technical detail (C:\)
+PASS: boundary email=150: form GET: inspection - no technical detail (C:/)
+PASS: boundary email=150: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary email=150: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary email=150: form GET: inspection - no technical detail (Warning:)
+PASS: boundary email=150: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary email=150: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary email=150: form GET: form response contains a CSRF token
+PASS: boundary email=150: form GET: complete HTML document
+PASS: boundary email=150: inspection - no plaintext password
+PASS: boundary email=150: inspection - no password hash
+PASS: boundary email=150: inspection - no technical detail (SQLSTATE)
+PASS: boundary email=150: inspection - no technical detail (PDO)
+PASS: boundary email=150: inspection - no technical detail (Exception)
+PASS: boundary email=150: inspection - no technical detail (stack trace)
+PASS: boundary email=150: inspection - no technical detail (password_hash)
+PASS: boundary email=150: inspection - no technical detail (C:\)
+PASS: boundary email=150: inspection - no technical detail (C:/)
+PASS: boundary email=150: inspection - no technical detail (/ProfeGo)
+PASS: boundary email=150: inspection - no technical detail (Fatal error)
+PASS: boundary email=150: inspection - no technical detail (Warning:)
+PASS: boundary email=150: at-limit value accepted
+PASS: boundary email=150: account stored
+PASS: boundary email=151: form GET: inspection - no plaintext password
+PASS: boundary email=151: form GET: inspection - no password hash
+PASS: boundary email=151: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary email=151: form GET: inspection - no technical detail (PDO)
+PASS: boundary email=151: form GET: inspection - no technical detail (Exception)
+PASS: boundary email=151: form GET: inspection - no technical detail (stack trace)
+PASS: boundary email=151: form GET: inspection - no technical detail (password_hash)
+PASS: boundary email=151: form GET: inspection - no technical detail (C:\)
+PASS: boundary email=151: form GET: inspection - no technical detail (C:/)
+PASS: boundary email=151: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary email=151: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary email=151: form GET: inspection - no technical detail (Warning:)
+PASS: boundary email=151: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary email=151: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary email=151: form GET: form response contains a CSRF token
+PASS: boundary email=151: form GET: complete HTML document
+PASS: boundary email=151: inspection - no plaintext password
+PASS: boundary email=151: inspection - no password hash
+PASS: boundary email=151: inspection - no technical detail (SQLSTATE)
+PASS: boundary email=151: inspection - no technical detail (PDO)
+PASS: boundary email=151: inspection - no technical detail (Exception)
+PASS: boundary email=151: inspection - no technical detail (stack trace)
+PASS: boundary email=151: inspection - no technical detail (password_hash)
+PASS: boundary email=151: inspection - no technical detail (C:\)
+PASS: boundary email=151: inspection - no technical detail (C:/)
+PASS: boundary email=151: inspection - no technical detail (/ProfeGo)
+PASS: boundary email=151: inspection - no technical detail (Fatal error)
+PASS: boundary email=151: inspection - no technical detail (Warning:)
+PASS: boundary email=151: inspection - CSRF token appears exactly once in the form response
+PASS: boundary email=151: inspection - CSRF token only inside the hidden form input
+PASS: boundary email=151: over-limit value rejected
+PASS: boundary email=151: specific length error
+PASS: boundary email=151: no form-level alert
+PASS: boundary email=151: full value preserved (no truncation)
+PASS: boundary email=151: zero writes
+PASS: boundary name=30: form GET: inspection - no plaintext password
+PASS: boundary name=30: form GET: inspection - no password hash
+PASS: boundary name=30: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary name=30: form GET: inspection - no technical detail (PDO)
+PASS: boundary name=30: form GET: inspection - no technical detail (Exception)
+PASS: boundary name=30: form GET: inspection - no technical detail (stack trace)
+PASS: boundary name=30: form GET: inspection - no technical detail (password_hash)
+PASS: boundary name=30: form GET: inspection - no technical detail (C:\)
+PASS: boundary name=30: form GET: inspection - no technical detail (C:/)
+PASS: boundary name=30: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary name=30: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary name=30: form GET: inspection - no technical detail (Warning:)
+PASS: boundary name=30: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary name=30: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary name=30: form GET: form response contains a CSRF token
+PASS: boundary name=30: form GET: complete HTML document
+PASS: boundary name=30: inspection - no plaintext password
+PASS: boundary name=30: inspection - no password hash
+PASS: boundary name=30: inspection - no technical detail (SQLSTATE)
+PASS: boundary name=30: inspection - no technical detail (PDO)
+PASS: boundary name=30: inspection - no technical detail (Exception)
+PASS: boundary name=30: inspection - no technical detail (stack trace)
+PASS: boundary name=30: inspection - no technical detail (password_hash)
+PASS: boundary name=30: inspection - no technical detail (C:\)
+PASS: boundary name=30: inspection - no technical detail (C:/)
+PASS: boundary name=30: inspection - no technical detail (/ProfeGo)
+PASS: boundary name=30: inspection - no technical detail (Fatal error)
+PASS: boundary name=30: inspection - no technical detail (Warning:)
+PASS: boundary name=30: at-limit value accepted
+PASS: boundary name=30: account stored
+PASS: boundary name=31: form GET: inspection - no plaintext password
+PASS: boundary name=31: form GET: inspection - no password hash
+PASS: boundary name=31: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary name=31: form GET: inspection - no technical detail (PDO)
+PASS: boundary name=31: form GET: inspection - no technical detail (Exception)
+PASS: boundary name=31: form GET: inspection - no technical detail (stack trace)
+PASS: boundary name=31: form GET: inspection - no technical detail (password_hash)
+PASS: boundary name=31: form GET: inspection - no technical detail (C:\)
+PASS: boundary name=31: form GET: inspection - no technical detail (C:/)
+PASS: boundary name=31: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary name=31: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary name=31: form GET: inspection - no technical detail (Warning:)
+PASS: boundary name=31: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary name=31: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary name=31: form GET: form response contains a CSRF token
+PASS: boundary name=31: form GET: complete HTML document
+PASS: boundary name=31: inspection - no plaintext password
+PASS: boundary name=31: inspection - no password hash
+PASS: boundary name=31: inspection - no technical detail (SQLSTATE)
+PASS: boundary name=31: inspection - no technical detail (PDO)
+PASS: boundary name=31: inspection - no technical detail (Exception)
+PASS: boundary name=31: inspection - no technical detail (stack trace)
+PASS: boundary name=31: inspection - no technical detail (password_hash)
+PASS: boundary name=31: inspection - no technical detail (C:\)
+PASS: boundary name=31: inspection - no technical detail (C:/)
+PASS: boundary name=31: inspection - no technical detail (/ProfeGo)
+PASS: boundary name=31: inspection - no technical detail (Fatal error)
+PASS: boundary name=31: inspection - no technical detail (Warning:)
+PASS: boundary name=31: inspection - CSRF token appears exactly once in the form response
+PASS: boundary name=31: inspection - CSRF token only inside the hidden form input
+PASS: boundary name=31: over-limit value rejected
+PASS: boundary name=31: specific length error
+PASS: boundary name=31: no form-level alert
+PASS: boundary name=31: full value preserved (no truncation)
+PASS: boundary name=31: zero writes
+PASS: boundary phone=20: form GET: inspection - no plaintext password
+PASS: boundary phone=20: form GET: inspection - no password hash
+PASS: boundary phone=20: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary phone=20: form GET: inspection - no technical detail (PDO)
+PASS: boundary phone=20: form GET: inspection - no technical detail (Exception)
+PASS: boundary phone=20: form GET: inspection - no technical detail (stack trace)
+PASS: boundary phone=20: form GET: inspection - no technical detail (password_hash)
+PASS: boundary phone=20: form GET: inspection - no technical detail (C:\)
+PASS: boundary phone=20: form GET: inspection - no technical detail (C:/)
+PASS: boundary phone=20: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary phone=20: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary phone=20: form GET: inspection - no technical detail (Warning:)
+PASS: boundary phone=20: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary phone=20: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary phone=20: form GET: form response contains a CSRF token
+PASS: boundary phone=20: form GET: complete HTML document
+PASS: boundary phone=20: inspection - no plaintext password
+PASS: boundary phone=20: inspection - no password hash
+PASS: boundary phone=20: inspection - no technical detail (SQLSTATE)
+PASS: boundary phone=20: inspection - no technical detail (PDO)
+PASS: boundary phone=20: inspection - no technical detail (Exception)
+PASS: boundary phone=20: inspection - no technical detail (stack trace)
+PASS: boundary phone=20: inspection - no technical detail (password_hash)
+PASS: boundary phone=20: inspection - no technical detail (C:\)
+PASS: boundary phone=20: inspection - no technical detail (C:/)
+PASS: boundary phone=20: inspection - no technical detail (/ProfeGo)
+PASS: boundary phone=20: inspection - no technical detail (Fatal error)
+PASS: boundary phone=20: inspection - no technical detail (Warning:)
+PASS: boundary phone=20: at-limit value accepted
+PASS: boundary phone=20: account stored
+PASS: boundary phone=21: form GET: inspection - no plaintext password
+PASS: boundary phone=21: form GET: inspection - no password hash
+PASS: boundary phone=21: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary phone=21: form GET: inspection - no technical detail (PDO)
+PASS: boundary phone=21: form GET: inspection - no technical detail (Exception)
+PASS: boundary phone=21: form GET: inspection - no technical detail (stack trace)
+PASS: boundary phone=21: form GET: inspection - no technical detail (password_hash)
+PASS: boundary phone=21: form GET: inspection - no technical detail (C:\)
+PASS: boundary phone=21: form GET: inspection - no technical detail (C:/)
+PASS: boundary phone=21: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary phone=21: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary phone=21: form GET: inspection - no technical detail (Warning:)
+PASS: boundary phone=21: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary phone=21: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary phone=21: form GET: form response contains a CSRF token
+PASS: boundary phone=21: form GET: complete HTML document
+PASS: boundary phone=21: inspection - no plaintext password
+PASS: boundary phone=21: inspection - no password hash
+PASS: boundary phone=21: inspection - no technical detail (SQLSTATE)
+PASS: boundary phone=21: inspection - no technical detail (PDO)
+PASS: boundary phone=21: inspection - no technical detail (Exception)
+PASS: boundary phone=21: inspection - no technical detail (stack trace)
+PASS: boundary phone=21: inspection - no technical detail (password_hash)
+PASS: boundary phone=21: inspection - no technical detail (C:\)
+PASS: boundary phone=21: inspection - no technical detail (C:/)
+PASS: boundary phone=21: inspection - no technical detail (/ProfeGo)
+PASS: boundary phone=21: inspection - no technical detail (Fatal error)
+PASS: boundary phone=21: inspection - no technical detail (Warning:)
+PASS: boundary phone=21: inspection - CSRF token appears exactly once in the form response
+PASS: boundary phone=21: inspection - CSRF token only inside the hidden form input
+PASS: boundary phone=21: over-limit value rejected
+PASS: boundary phone=21: specific length error
+PASS: boundary phone=21: no form-level alert
+PASS: boundary phone=21: full value preserved (no truncation)
+PASS: boundary phone=21: zero writes
+PASS: boundary id=20: form GET: inspection - no plaintext password
+PASS: boundary id=20: form GET: inspection - no password hash
+PASS: boundary id=20: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary id=20: form GET: inspection - no technical detail (PDO)
+PASS: boundary id=20: form GET: inspection - no technical detail (Exception)
+PASS: boundary id=20: form GET: inspection - no technical detail (stack trace)
+PASS: boundary id=20: form GET: inspection - no technical detail (password_hash)
+PASS: boundary id=20: form GET: inspection - no technical detail (C:\)
+PASS: boundary id=20: form GET: inspection - no technical detail (C:/)
+PASS: boundary id=20: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary id=20: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary id=20: form GET: inspection - no technical detail (Warning:)
+PASS: boundary id=20: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary id=20: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary id=20: form GET: form response contains a CSRF token
+PASS: boundary id=20: form GET: complete HTML document
+PASS: boundary id=20: inspection - no plaintext password
+PASS: boundary id=20: inspection - no password hash
+PASS: boundary id=20: inspection - no technical detail (SQLSTATE)
+PASS: boundary id=20: inspection - no technical detail (PDO)
+PASS: boundary id=20: inspection - no technical detail (Exception)
+PASS: boundary id=20: inspection - no technical detail (stack trace)
+PASS: boundary id=20: inspection - no technical detail (password_hash)
+PASS: boundary id=20: inspection - no technical detail (C:\)
+PASS: boundary id=20: inspection - no technical detail (C:/)
+PASS: boundary id=20: inspection - no technical detail (/ProfeGo)
+PASS: boundary id=20: inspection - no technical detail (Fatal error)
+PASS: boundary id=20: inspection - no technical detail (Warning:)
+PASS: boundary id=20: at-limit value accepted
+PASS: boundary id=20: account stored
+PASS: boundary id=21: form GET: inspection - no plaintext password
+PASS: boundary id=21: form GET: inspection - no password hash
+PASS: boundary id=21: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary id=21: form GET: inspection - no technical detail (PDO)
+PASS: boundary id=21: form GET: inspection - no technical detail (Exception)
+PASS: boundary id=21: form GET: inspection - no technical detail (stack trace)
+PASS: boundary id=21: form GET: inspection - no technical detail (password_hash)
+PASS: boundary id=21: form GET: inspection - no technical detail (C:\)
+PASS: boundary id=21: form GET: inspection - no technical detail (C:/)
+PASS: boundary id=21: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary id=21: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary id=21: form GET: inspection - no technical detail (Warning:)
+PASS: boundary id=21: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary id=21: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary id=21: form GET: form response contains a CSRF token
+PASS: boundary id=21: form GET: complete HTML document
+PASS: boundary id=21: inspection - no plaintext password
+PASS: boundary id=21: inspection - no password hash
+PASS: boundary id=21: inspection - no technical detail (SQLSTATE)
+PASS: boundary id=21: inspection - no technical detail (PDO)
+PASS: boundary id=21: inspection - no technical detail (Exception)
+PASS: boundary id=21: inspection - no technical detail (stack trace)
+PASS: boundary id=21: inspection - no technical detail (password_hash)
+PASS: boundary id=21: inspection - no technical detail (C:\)
+PASS: boundary id=21: inspection - no technical detail (C:/)
+PASS: boundary id=21: inspection - no technical detail (/ProfeGo)
+PASS: boundary id=21: inspection - no technical detail (Fatal error)
+PASS: boundary id=21: inspection - no technical detail (Warning:)
+PASS: boundary id=21: inspection - CSRF token appears exactly once in the form response
+PASS: boundary id=21: inspection - CSRF token only inside the hidden form input
+PASS: boundary id=21: over-limit value rejected
+PASS: boundary id=21: specific length error
+PASS: boundary id=21: no form-level alert
+PASS: boundary id=21: full value preserved (no truncation)
+PASS: boundary id=21: zero writes
+PASS: boundary password=72: form GET: inspection - no plaintext password
+PASS: boundary password=72: form GET: inspection - no password hash
+PASS: boundary password=72: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary password=72: form GET: inspection - no technical detail (PDO)
+PASS: boundary password=72: form GET: inspection - no technical detail (Exception)
+PASS: boundary password=72: form GET: inspection - no technical detail (stack trace)
+PASS: boundary password=72: form GET: inspection - no technical detail (password_hash)
+PASS: boundary password=72: form GET: inspection - no technical detail (C:\)
+PASS: boundary password=72: form GET: inspection - no technical detail (C:/)
+PASS: boundary password=72: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary password=72: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary password=72: form GET: inspection - no technical detail (Warning:)
+PASS: boundary password=72: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary password=72: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary password=72: form GET: form response contains a CSRF token
+PASS: boundary password=72: form GET: complete HTML document
+PASS: boundary password=72: inspection - no plaintext password
+PASS: boundary password=72: inspection - no password hash
+PASS: boundary password=72: inspection - no technical detail (SQLSTATE)
+PASS: boundary password=72: inspection - no technical detail (PDO)
+PASS: boundary password=72: inspection - no technical detail (Exception)
+PASS: boundary password=72: inspection - no technical detail (stack trace)
+PASS: boundary password=72: inspection - no technical detail (password_hash)
+PASS: boundary password=72: inspection - no technical detail (C:\)
+PASS: boundary password=72: inspection - no technical detail (C:/)
+PASS: boundary password=72: inspection - no technical detail (/ProfeGo)
+PASS: boundary password=72: inspection - no technical detail (Fatal error)
+PASS: boundary password=72: inspection - no technical detail (Warning:)
+PASS: boundary password=72: at-limit value accepted
+PASS: boundary password=72: account stored
+PASS: boundary password=73: form GET: inspection - no plaintext password
+PASS: boundary password=73: form GET: inspection - no password hash
+PASS: boundary password=73: form GET: inspection - no technical detail (SQLSTATE)
+PASS: boundary password=73: form GET: inspection - no technical detail (PDO)
+PASS: boundary password=73: form GET: inspection - no technical detail (Exception)
+PASS: boundary password=73: form GET: inspection - no technical detail (stack trace)
+PASS: boundary password=73: form GET: inspection - no technical detail (password_hash)
+PASS: boundary password=73: form GET: inspection - no technical detail (C:\)
+PASS: boundary password=73: form GET: inspection - no technical detail (C:/)
+PASS: boundary password=73: form GET: inspection - no technical detail (/ProfeGo)
+PASS: boundary password=73: form GET: inspection - no technical detail (Fatal error)
+PASS: boundary password=73: form GET: inspection - no technical detail (Warning:)
+PASS: boundary password=73: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: boundary password=73: form GET: inspection - CSRF token only inside the hidden form input
+PASS: boundary password=73: form GET: form response contains a CSRF token
+PASS: boundary password=73: form GET: complete HTML document
+PASS: boundary password=73: inspection - no plaintext password
+PASS: boundary password=73: inspection - no password hash
+PASS: boundary password=73: inspection - no technical detail (SQLSTATE)
+PASS: boundary password=73: inspection - no technical detail (PDO)
+PASS: boundary password=73: inspection - no technical detail (Exception)
+PASS: boundary password=73: inspection - no technical detail (stack trace)
+PASS: boundary password=73: inspection - no technical detail (password_hash)
+PASS: boundary password=73: inspection - no technical detail (C:\)
+PASS: boundary password=73: inspection - no technical detail (C:/)
+PASS: boundary password=73: inspection - no technical detail (/ProfeGo)
+PASS: boundary password=73: inspection - no technical detail (Fatal error)
+PASS: boundary password=73: inspection - no technical detail (Warning:)
+PASS: boundary password=73: inspection - CSRF token appears exactly once in the form response
+PASS: boundary password=73: inspection - CSRF token only inside the hidden form input
+PASS: boundary password=73: over-limit value rejected
+PASS: boundary password=73: specific length error
+PASS: boundary password=73: no form-level alert
+PASS: boundary password=73: zero writes
+
+--- Scenario I: POST without terms ---
+PASS: no-terms POST: form GET: inspection - no plaintext password
+PASS: no-terms POST: form GET: inspection - no password hash
+PASS: no-terms POST: form GET: inspection - no technical detail (SQLSTATE)
+PASS: no-terms POST: form GET: inspection - no technical detail (PDO)
+PASS: no-terms POST: form GET: inspection - no technical detail (Exception)
+PASS: no-terms POST: form GET: inspection - no technical detail (stack trace)
+PASS: no-terms POST: form GET: inspection - no technical detail (password_hash)
+PASS: no-terms POST: form GET: inspection - no technical detail (C:\)
+PASS: no-terms POST: form GET: inspection - no technical detail (C:/)
+PASS: no-terms POST: form GET: inspection - no technical detail (/ProfeGo)
+PASS: no-terms POST: form GET: inspection - no technical detail (Fatal error)
+PASS: no-terms POST: form GET: inspection - no technical detail (Warning:)
+PASS: no-terms POST: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: no-terms POST: form GET: inspection - CSRF token only inside the hidden form input
+PASS: no-terms POST: form GET: form response contains a CSRF token
+PASS: no-terms POST: form GET: complete HTML document
+PASS: no-terms POST: inspection - no plaintext password
+PASS: no-terms POST: inspection - no password hash
+PASS: no-terms POST: inspection - no technical detail (SQLSTATE)
+PASS: no-terms POST: inspection - no technical detail (PDO)
+PASS: no-terms POST: inspection - no technical detail (Exception)
+PASS: no-terms POST: inspection - no technical detail (stack trace)
+PASS: no-terms POST: inspection - no technical detail (password_hash)
+PASS: no-terms POST: inspection - no technical detail (C:\)
+PASS: no-terms POST: inspection - no technical detail (C:/)
+PASS: no-terms POST: inspection - no technical detail (/ProfeGo)
+PASS: no-terms POST: inspection - no technical detail (Fatal error)
+PASS: no-terms POST: inspection - no technical detail (Warning:)
+PASS: no-terms POST: inspection - CSRF token appears exactly once in the form response
+PASS: no-terms POST: inspection - CSRF token only inside the hidden form input
+PASS: no-terms POST: HTTP 200
+PASS: no-terms POST: field-specific terms error
+PASS: no-terms POST: terms error container associated
+PASS: no-terms POST: no form-level alert
+PASS: no-terms POST: zero writes
+
+--- Scenario J: SQLi payload stored literally and read back ---
+PASS: SQLi POST: form GET: inspection - no plaintext password
+PASS: SQLi POST: form GET: inspection - no password hash
+PASS: SQLi POST: form GET: inspection - no technical detail (SQLSTATE)
+PASS: SQLi POST: form GET: inspection - no technical detail (PDO)
+PASS: SQLi POST: form GET: inspection - no technical detail (Exception)
+PASS: SQLi POST: form GET: inspection - no technical detail (stack trace)
+PASS: SQLi POST: form GET: inspection - no technical detail (password_hash)
+PASS: SQLi POST: form GET: inspection - no technical detail (C:\)
+PASS: SQLi POST: form GET: inspection - no technical detail (C:/)
+PASS: SQLi POST: form GET: inspection - no technical detail (/ProfeGo)
+PASS: SQLi POST: form GET: inspection - no technical detail (Fatal error)
+PASS: SQLi POST: form GET: inspection - no technical detail (Warning:)
+PASS: SQLi POST: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: SQLi POST: form GET: inspection - CSRF token only inside the hidden form input
+PASS: SQLi POST: form GET: form response contains a CSRF token
+PASS: SQLi POST: form GET: complete HTML document
+PASS: SQLi POST: inspection - no plaintext password
+PASS: SQLi POST: inspection - no password hash
+PASS: SQLi POST: inspection - no technical detail (SQLSTATE)
+PASS: SQLi POST: inspection - no technical detail (PDO)
+PASS: SQLi POST: inspection - no technical detail (Exception)
+PASS: SQLi POST: inspection - no technical detail (stack trace)
+PASS: SQLi POST: inspection - no technical detail (password_hash)
+PASS: SQLi POST: inspection - no technical detail (C:\)
+PASS: SQLi POST: inspection - no technical detail (C:/)
+PASS: SQLi POST: inspection - no technical detail (/ProfeGo)
+PASS: SQLi POST: inspection - no technical detail (Fatal error)
+PASS: SQLi POST: inspection - no technical detail (Warning:)
+PASS: SQLi POST: accepted (allowed characters)
+PASS: SQLi POST: exactly one new row
+PASS: SQLi POST: literal value read back through the application data path
+PASS: SQLi follow-up GET: inspection - no plaintext password
+PASS: SQLi follow-up GET: inspection - no password hash
+PASS: SQLi follow-up GET: inspection - no technical detail (SQLSTATE)
+PASS: SQLi follow-up GET: inspection - no technical detail (PDO)
+PASS: SQLi follow-up GET: inspection - no technical detail (Exception)
+PASS: SQLi follow-up GET: inspection - no technical detail (stack trace)
+PASS: SQLi follow-up GET: inspection - no technical detail (password_hash)
+PASS: SQLi follow-up GET: inspection - no technical detail (C:\)
+PASS: SQLi follow-up GET: inspection - no technical detail (C:/)
+PASS: SQLi follow-up GET: inspection - no technical detail (/ProfeGo)
+PASS: SQLi follow-up GET: inspection - no technical detail (Fatal error)
+PASS: SQLi follow-up GET: inspection - no technical detail (Warning:)
+PASS: SQLi follow-up GET: inspection - CSRF token appears exactly once in the form response
+PASS: SQLi follow-up GET: inspection - CSRF token only inside the hidden form input
+PASS: SQLi follow-up GET: form response contains a CSRF token
+PASS: SQLi follow-up GET: complete HTML document
+PASS: SQLi follow-up GET: application still serves a valid form (queries unchanged)
+PASS: SQLi POST: pre-existing empty prototype row untouched
+
+--- Scenario K: XSS payload rejected and escaped ---
+PASS: XSS POST: form GET: inspection - no plaintext password
+PASS: XSS POST: form GET: inspection - no password hash
+PASS: XSS POST: form GET: inspection - no technical detail (SQLSTATE)
+PASS: XSS POST: form GET: inspection - no technical detail (PDO)
+PASS: XSS POST: form GET: inspection - no technical detail (Exception)
+PASS: XSS POST: form GET: inspection - no technical detail (stack trace)
+PASS: XSS POST: form GET: inspection - no technical detail (password_hash)
+PASS: XSS POST: form GET: inspection - no technical detail (C:\)
+PASS: XSS POST: form GET: inspection - no technical detail (C:/)
+PASS: XSS POST: form GET: inspection - no technical detail (/ProfeGo)
+PASS: XSS POST: form GET: inspection - no technical detail (Fatal error)
+PASS: XSS POST: form GET: inspection - no technical detail (Warning:)
+PASS: XSS POST: form GET: inspection - CSRF token appears exactly once in the form response
+PASS: XSS POST: form GET: inspection - CSRF token only inside the hidden form input
+PASS: XSS POST: form GET: form response contains a CSRF token
+PASS: XSS POST: form GET: complete HTML document
+PASS: XSS POST: inspection - no plaintext password
+PASS: XSS POST: inspection - no password hash
+PASS: XSS POST: inspection - no technical detail (SQLSTATE)
+PASS: XSS POST: inspection - no technical detail (PDO)
+PASS: XSS POST: inspection - no technical detail (Exception)
+PASS: XSS POST: inspection - no technical detail (stack trace)
+PASS: XSS POST: inspection - no technical detail (password_hash)
+PASS: XSS POST: inspection - no technical detail (C:\)
+PASS: XSS POST: inspection - no technical detail (C:/)
+PASS: XSS POST: inspection - no technical detail (/ProfeGo)
+PASS: XSS POST: inspection - no technical detail (Fatal error)
+PASS: XSS POST: inspection - no technical detail (Warning:)
+PASS: XSS POST: inspection - CSRF token appears exactly once in the form response
+PASS: XSS POST: inspection - CSRF token only inside the hidden form input
+PASS: XSS POST: validation rejects with 200
+PASS: XSS POST: name composition error
+PASS: XSS POST: payload repopulated as escaped inert text
+PASS: XSS POST: no raw script payload
+PASS: XSS POST: no raw angle-bracket injection
+PASS: XSS POST: no injected script element
+PASS: XSS POST: no form-level alert
+PASS: XSS POST: zero writes
+
+--- Scenario L: CLI guard proof over real HTTP ---
+PASS: found tests/php scripts to probe
+PASS: 404 assert_foundation.php: inspection - no plaintext password
+PASS: 404 assert_foundation.php: inspection - no password hash
+PASS: 404 assert_foundation.php: inspection - no technical detail (SQLSTATE)
+PASS: 404 assert_foundation.php: inspection - no technical detail (PDO)
+PASS: 404 assert_foundation.php: inspection - no technical detail (Exception)
+PASS: 404 assert_foundation.php: inspection - no technical detail (stack trace)
+PASS: 404 assert_foundation.php: inspection - no technical detail (password_hash)
+PASS: 404 assert_foundation.php: inspection - no technical detail (C:\)
+PASS: 404 assert_foundation.php: inspection - no technical detail (C:/)
+PASS: 404 assert_foundation.php: inspection - no technical detail (/ProfeGo)
+PASS: 404 assert_foundation.php: inspection - no technical detail (Fatal error)
+PASS: 404 assert_foundation.php: inspection - no technical detail (Warning:)
+PASS: HTTP 404 for tests/php/assert_foundation.php
+PASS: 404 assert_http_security.php: inspection - no plaintext password
+PASS: 404 assert_http_security.php: inspection - no password hash
+PASS: 404 assert_http_security.php: inspection - no technical detail (SQLSTATE)
+PASS: 404 assert_http_security.php: inspection - no technical detail (PDO)
+PASS: 404 assert_http_security.php: inspection - no technical detail (Exception)
+PASS: 404 assert_http_security.php: inspection - no technical detail (stack trace)
+PASS: 404 assert_http_security.php: inspection - no technical detail (password_hash)
+PASS: 404 assert_http_security.php: inspection - no technical detail (C:\)
+PASS: 404 assert_http_security.php: inspection - no technical detail (C:/)
+PASS: 404 assert_http_security.php: inspection - no technical detail (/ProfeGo)
+PASS: 404 assert_http_security.php: inspection - no technical detail (Fatal error)
+PASS: 404 assert_http_security.php: inspection - no technical detail (Warning:)
+PASS: HTTP 404 for tests/php/assert_http_security.php
+PASS: 404 assert_pipeline.php: inspection - no plaintext password
+PASS: 404 assert_pipeline.php: inspection - no password hash
+PASS: 404 assert_pipeline.php: inspection - no technical detail (SQLSTATE)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (PDO)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (Exception)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (stack trace)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (password_hash)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (C:\)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (C:/)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (/ProfeGo)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (Fatal error)
+PASS: 404 assert_pipeline.php: inspection - no technical detail (Warning:)
+PASS: HTTP 404 for tests/php/assert_pipeline.php
+PASS: 404 assert_registration.php: inspection - no plaintext password
+PASS: 404 assert_registration.php: inspection - no password hash
+PASS: 404 assert_registration.php: inspection - no technical detail (SQLSTATE)
+PASS: 404 assert_registration.php: inspection - no technical detail (PDO)
+PASS: 404 assert_registration.php: inspection - no technical detail (Exception)
+PASS: 404 assert_registration.php: inspection - no technical detail (stack trace)
+PASS: 404 assert_registration.php: inspection - no technical detail (password_hash)
+PASS: 404 assert_registration.php: inspection - no technical detail (C:\)
+PASS: 404 assert_registration.php: inspection - no technical detail (C:/)
+PASS: 404 assert_registration.php: inspection - no technical detail (/ProfeGo)
+PASS: 404 assert_registration.php: inspection - no technical detail (Fatal error)
+PASS: 404 assert_registration.php: inspection - no technical detail (Warning:)
+PASS: HTTP 404 for tests/php/assert_registration.php
+PASS: 404 assert_validation.php: inspection - no plaintext password
+PASS: 404 assert_validation.php: inspection - no password hash
+PASS: 404 assert_validation.php: inspection - no technical detail (SQLSTATE)
+PASS: 404 assert_validation.php: inspection - no technical detail (PDO)
+PASS: 404 assert_validation.php: inspection - no technical detail (Exception)
+PASS: 404 assert_validation.php: inspection - no technical detail (stack trace)
+PASS: 404 assert_validation.php: inspection - no technical detail (password_hash)
+PASS: 404 assert_validation.php: inspection - no technical detail (C:\)
+PASS: 404 assert_validation.php: inspection - no technical detail (C:/)
+PASS: 404 assert_validation.php: inspection - no technical detail (/ProfeGo)
+PASS: 404 assert_validation.php: inspection - no technical detail (Fatal error)
+PASS: 404 assert_validation.php: inspection - no technical detail (Warning:)
+PASS: HTTP 404 for tests/php/assert_validation.php
+PASS: 404 test_support.php: inspection - no plaintext password
+PASS: 404 test_support.php: inspection - no password hash
+PASS: 404 test_support.php: inspection - no technical detail (SQLSTATE)
+PASS: 404 test_support.php: inspection - no technical detail (PDO)
+PASS: 404 test_support.php: inspection - no technical detail (Exception)
+PASS: 404 test_support.php: inspection - no technical detail (stack trace)
+PASS: 404 test_support.php: inspection - no technical detail (password_hash)
+PASS: 404 test_support.php: inspection - no technical detail (C:\)
+PASS: 404 test_support.php: inspection - no technical detail (C:/)
+PASS: 404 test_support.php: inspection - no technical detail (/ProfeGo)
+PASS: 404 test_support.php: inspection - no technical detail (Fatal error)
+PASS: 404 test_support.php: inspection - no technical detail (Warning:)
+PASS: HTTP 404 for tests/php/test_support.php
+
+Cleanup (captured identifiers only; tutor profiles before accounts):
+  set 1: profiles=1, accounts=1, residue=0
+PASS: cleanup set 1 leaves zero residue
+  set 2: profiles=0, accounts=1, residue=0
+PASS: cleanup set 2 leaves zero residue
+  set 3: profiles=0, accounts=1, residue=0
+PASS: cleanup set 3 leaves zero residue
+  set 4: profiles=0, accounts=1, residue=0
+PASS: cleanup set 4 leaves zero residue
+  set 5: profiles=1, accounts=1, residue=0
+PASS: cleanup set 5 leaves zero residue
+  set 6: profiles=0, accounts=1, residue=0
+PASS: cleanup set 6 leaves zero residue
+  set 7: profiles=0, accounts=1, residue=0
+PASS: cleanup set 7 leaves zero residue
+  set 8: profiles=0, accounts=1, residue=0
+PASS: cleanup set 8 leaves zero residue
+  set 9: profiles=0, accounts=1, residue=0
+PASS: cleanup set 9 leaves zero residue
+  set 10: profiles=0, accounts=1, residue=0
+PASS: cleanup set 10 leaves zero residue
+  set 11: profiles=0, accounts=1, residue=0
+PASS: cleanup set 11 leaves zero residue
+PASS: final zero-residue assertion by captured identifiers
+PASS: row counts restored to baseline after cleanup
+PASS: no open transaction after cleanup
+PASS: pre-existing empty prototype row still present and untouched
+
+Assertions: 1181, Failures: 0
+
+== RESULT SUMMARY (from the green run above) ==
+Scenarios, all passed:
+  Session bootstrap: real GET issues a 64-hex CSRF token.
+  A: direct POST with empty values and with invalid values -> 200, field errors, zero writes.
+  B: role admin / unknown / missing -> 200, full AC-14 presentation set, zero writes.
+  C: CSRF missing / malformed / foreign-session token -> 200, full AC-14 presentation set, zero writes.
+  D: look-alike fail_tutor_profile=1 POST field -> normal docente registration (account + pending profile), proving the CLI seam is not HTTP-reachable.
+  E: one session token reused for two different valid registrations -> both 303, two stored accounts.
+  F: concurrent identical submissions -> exactly one 303 and one duplicate 200 with field errors, exactly one stored row (the only concurrent request pair).
+  G: GET /pages/register.php?rol=docente -> rendered hidden rol=docente parsed -> native-form-equivalent POST creates a docente account plus pending tutor profile (Option A, no JavaScript involved, per-run token).
+  H: boundaries 150/151 email, 30/31 name, 20/21 phone and Cedula/ID, 72/73 password bytes -> at-limit accepted, over-limit rejected with the specific field error, full value preserved (no truncation), no DB detail, zero writes for over-limit.
+  I: POST without terms -> 200, field-specific terms error, zero writes.
+  J: SQLi payload O'Brien' OR 'a' LIKE 'a'-- in name -> stored literally, read back through find_account_by_email() via profego_pdo(), application still serves a valid form, unrelated empty prototype row untouched.
+  K: XSS payload "><script>alert(1)</script> in name -> rejected 200, repopulated escaped, no raw angle brackets or injected script element, zero writes.
+  L: CLI guard proof - real HTTP GET for every tests/php/*.php script -> each returns HTTP 404:
+     assert_foundation.php, assert_http_security.php, assert_pipeline.php, assert_registration.php, assert_validation.php, test_support.php (6 scripts).
+
+Mandatory response inspection ran on every HTTP response: no plaintext password, no password hash, no SQLSTATE/PDO/Exception/stack-trace text, no file paths, and the CSRF token appears exactly once and only inside the hidden form input.
+
+Cleanup proof: 11 captured identifier sets deleted in finally, tutor profiles before accounts (sets 1 and 5 each deleted one profile before its account); every set residue=0; final zero-residue assertion by captured identifiers passed; row counts restored to baseline; no open transaction; pre-existing all-empty prototype row still present and untouched.
+
+Final count: Assertions: 1181, Failures: 0, EXIT CODE: 0.
