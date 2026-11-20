@@ -1261,3 +1261,311 @@ outlines, and a11y trees confirmed; error contrast 6.5365:1 >= 4.5:1; mobile
 error font 12px >= 12px; simulated long errors wrap inside the card without
 horizontal overflow; meta description exact; console clean; zero DB writes.
 AC-11 and AC-13 are verified.
+
+## T9.3 - final functional browser flows
+
+Date: 2026-11-20. RF-1, RF-2.1, RF-2.3, RF-2.4 (POST override), RF-5, RF-7, RF-10,
+RF-11, RF-16; RNF-7, RNF-8; AC-03, AC-04, AC-05 (browser part), AC-08b, AC-09,
+AC-10, AC-15. This section is appended; every earlier section above is unchanged.
+
+### Scope, environment and method
+
+- Evidence only. No source, CSS, JS, PHP, corpus, baseline, screenshot, MEMORY.md,
+  spec, or plan file was changed. No new screenshot was required; the T9.2 final
+  screenshots and `evidence/layer3-a11y.json` remain the visual/a11y record.
+- URL base: `http://localhost/` (project folder is the Apache document root).
+- Real CDP via Chrome DevTools MCP, page 1: `emulate` `1440x900x1` and
+  `402x874x1,mobile,touch`; `navigate_page`, `take_snapshot`, `evaluate_script`,
+  `click`, `press_key`, `list_network_requests`, `list_console_messages`.
+- All browser submissions were the native form POST. No AJAX endpoint was used.
+- PHP CLI `C:\Users\isaac\Documents\USBWebServer\php\php.exe` (run WITHOUT `-n`,
+  because `pdo_mysql` is needed for data-path reads/`cleanup`). Row counts and
+  `inspect` reads use the application's own `profego_pdo()` path.
+- Read-only baseline before any browser flow: `accounts=1 profiles=0`; the single
+  row is the pre-existing all-empty prototype `id=1` (`nombre`, `apellido`,
+  `correo`, `telefono`, `documento` empty; `rol=estudiante`, `estado=activo`).
+  It was never touched. Tests were not run in parallel.
+
+### RNF-7 per-run identifiers (synthetic values, not secrets)
+
+Generated with `tests/php/test_support.php` helpers (`per_run_token`,
+`token_email`, `token_phone`, `token_document`, `token_person_name`). The test
+password is the same non-secret 8-character value used in earlier layers; it and
+the CSRF token are deliberately not recorded here.
+
+| Set | Purpose | Email | Phone | Cédula/ID | Name / Lastname suffix |
+| --- | --- | --- | --- | --- | --- |
+| A | JS valid student; duplicate-email source | run.18396-1795194449-00f28522@example.invalid | 5060000150208050202 | id-194449-00f28522 | ggfiolii |
+| B | no-JS valid student (AC-10) | run.18396-1795194449-524479ab@example.invalid | 5060502040407091011 | id-194449-524479ab | likknpab |
+| C | generated, unused (no row) | run.18396-1795194449-6f87e7ea@example.invalid | 5060615080714071410 | id-194449-6f87e7ea | mfonenea |
+| D | valid Docente + tutor profile | run.18396-1795194449-7bd5c2d9@example.invalid | 5060711130512021309 | id-194449-7bd5c2d9 | nbdlcidp |
+| E | post-submit normalization | run.18396-1795194449-9b1b4db1@example.invalid | 5060911011104131101 | id-194449-9b1b4db1 | pbhbkdbh |
+| F | XSS rejection (no write) | run.18396-1795194449-7205f71f@example.invalid | 5060702000515070115 | id-194449-7205f71f | niglfnhf |
+| G | duplicate-combination values (no write) | run.18396-1795194449-15c9934a@example.invalid | 5060105120909030410 | id-194449-15c9934a | hlcppjka |
+| H | notice "flag intact" (fetch, no write on page) | run.13904-1795194474-0d56abbe@example.invalid | 5060013050610111114 | id-194474-0d56abbe | gdlmabbe |
+| X | no-JS invalid submission (no write) | run.18396-1795194449-0e26578a@example.invalid | 5060014020605070810 | id-194449-0e26578a | geimlnoa |
+
+Created account IDs: A=30, B=31, H=32, D=33, E=34. Sets C, F, G and X wrote
+nothing (verified by `inspect`, below).
+
+### Flow 1 - role toggling (AC-03)
+
+Fresh GET `http://localhost/pages/register.php` at both widths; all four signals
+read after every activation. `aria-pressed` was `null` in every observation.
+
+| State | Visible text | Hidden `rol` | Accessible name | Live-region text |
+| --- | --- | --- | --- | --- |
+| Initial (1440 and 402) | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| After Enter (focused button) | Docente | docente | Tipo de cuenta: Docente, cambiar a Estudiante | Tipo de cuenta seleccionado: Docente. |
+| After Space | Estudiante | estudiante | Tipo de cuenta: Estudiante, cambiar a Docente | Tipo de cuenta seleccionado: Estudiante. |
+| After click 1 / click 2 (1440) | Docente / Estudiante | docente / estudiante | matching Docente / Estudiante names | matching Docente / Estudiante text |
+| After click (402) | Docente | docente | Tipo de cuenta: Docente, cambiar a Estudiante | Tipo de cuenta seleccionado: Docente. |
+
+Module loaded in JS-enabled runs (`script[type=module].src` =
+`http://localhost/js/features/register-form.js`). Network after all activations
+contained no POST; URL stayed `register.php`; `document.scrollWidth === clientWidth`
+at 402. Console: no messages. No account/profile written.
+
+### Flow 2 - empty submit (AC-04)
+
+Both widths, fresh GET, native submit with all eight controls untouched: no
+navigation (URL stayed `register.php`), no POST in network, 8 messages (one per
+field), 8 `aria-invalid="true"` controls, `document.activeElement.id ===
+'register-name'`. Exact messages: `Ingresa tu nombre.`, `Ingresa tu apellido.`,
+`Ingresa tu correo electrónico.`, `Ingresa tu teléfono.`, `Ingresa tu cédula o ID.`,
+`Ingresa una contraseña.`, `Confirma tu contraseña.`,
+`Debes aceptar los términos y condiciones.` Console: no messages.
+
+### Flow 3 - mixed invalid form (AC-04)
+
+Both widths, values `Carlos99` / `Pérez` / `correo-invalido` / `123` / `@@` /
+`abc1` / `xyz99999`, terms checked. Result: 7 messages across 6 fields, focus on
+`register-name`, all values preserved, no POST, URL unchanged. Messages: name
+`El nombre solo puede contener letras, espacios, guiones y apóstrofes.`; email
+`El correo electrónico no es válido.`; phone `El teléfono debe tener entre 7 y 20
+dígitos.`; ID two messages `La cédula o ID debe tener entre 5 y 20 caracteres.`
+and `La cédula o ID solo puede contener letras, números y guiones.` (one per
+failing rule); password `La contraseña debe tener entre 8 y 72 caracteres.`;
+confirmation `Las contraseñas no coinciden.` Lastname and terms had no error.
+
+### Flow 4 - duplicate email with JavaScript enabled (RF-7, RF-11, AC-05)
+
+1. Set A created through the JS-enabled form: native POST
+   `http://localhost/pages/register.php [303]` then
+   `GET http://localhost/pages/login.php?registro=ok [200]`; notice
+   `Tu cuenta se creó correctamente. Ya puedes iniciar sesión.` with `role=status`.
+2. Fresh GET, clicked the role button to Docente, filled set A's email with set
+   G's otherwise-unique values, checked terms, submitted.
+   Network: `POST http://localhost/pages/register.php [200]` (no redirect).
+   Re-render at `http://localhost/pages/register.php`: single associated error
+   `Este correo electrónico ya está registrado.` (`register-email-error`);
+   visible text `Docente`, hidden `docente`, accessible name
+   `Tipo de cuenta: Docente, cambiar a Estudiante`, live region
+   `Tipo de cuenta seleccionado: Docente.`; terms still checked; non-password
+   values preserved; both password values empty; no form-level alert; response
+   body contained none of `SQLSTATE`, `PDO`, `Duplicate entry`, `stack trace`,
+   `Exception`, a project path, or a Windows path. Console: no messages.
+
+### Flow 5 - JavaScript unavailable (RNF-8, AC-10)
+
+No-JS mechanism (see dedicated subsection below): a CSP meta injected from the
+`navigate_page` initScript. With it applied, clicking the role button left the
+hidden value at `estudiante`, proving the enhancement module did not execute.
+
+- **Invalid submission (set X, name `Carlos99`):** native
+  `POST http://localhost/pages/register.php [200]`; server-rendered
+  `#register-name-error` =
+  `El nombre solo puede contener letras, espacios, guiones y apóstrofes.`;
+  `aria-invalid="true"`, `aria-describedby="register-name-error"`, focus on
+  `register-name` (server `autofocus`); name/email/lastname/phone/ID preserved;
+  both passwords empty; terms checked. `inspect` for set X later: NOT FOUND.
+- **Valid student registration (set B):** CSP re-applied and toggle re-confirmed
+  blocked; native `POST http://localhost/pages/register.php [303]` then
+  `GET http://localhost/pages/login.php?registro=ok [200]`; notice shown. This
+  proves student registration completes with JavaScript unavailable.
+- Console during the script-blocking runs: only the two expected CSP notices
+  (recorded separately below). No application errors or warnings.
+
+### Flow 6 - four notice cases (RF-10, AC-09)
+
+1. **Parameter + flag shows and consumes:** the set A and set B native
+   registrations redirected to `login.php?registro=ok`, each rendering one
+   `[role=status]` `.login-notice` with the exact copy. The flag was consumed by
+   that render.
+2. **Refresh hides without resubmit:** `navigate_page type=reload` on
+   `login.php?registro=ok` produced `GET [200]` with `noticePresent: false` and
+   `statusRegions: []`; preserved network after the POST contained only GETs
+   (no second POST), so no registration was resubmitted.
+3. **Parameter without flag shows nothing:** navigating again to
+   `login.php?registro=ok` after consumption gave `noticePresent: false`.
+   `login.php?registro=not-ok` also showed nothing.
+4. **No parameter with a present flag leaves it intact:** set H was submitted
+   with `fetch('/pages/register.php', {method:'POST', body:FormData,
+   redirect:'manual', credentials:'same-origin'})` from a fresh registration GET
+   (`fetchStatus: 0`, `fetchType: 'opaqueredirect'`, no navigation), which set the
+   session flag. `GET http://localhost/pages/login.php` (no parameter) showed no
+   notice; the following `GET http://localhost/pages/login.php?registro=ok`
+   showed the exact notice with `role="status"`, proving the parameterless
+   request did not consume the flag. This final notice was consumed by that render.
+
+### Flow 7 - Docente submission and data-path read (RF-3, RF-16, AC-02 support)
+
+Fresh GET, role toggled to Docente (hidden `docente`, visible `Docente`), set D
+filled, terms checked, native submit: `POST http://localhost/pages/register.php
+[303]` then `GET http://localhost/pages/login.php?registro=ok [200]`; notice
+shown; console no messages. Application data-path read:
+
+```
+php tests/php/test_support.php inspect --email=run.18396-1795194449-7bd5c2d9@example.invalid
+id                   33
+rol                  docente
+estado               activo
+estado_verificacion  pendiente
+calificacion_prom    0.00
+total_tutoria        0
+```
+
+(The full row also matched set D's name, lastname, lowercase email, digits-only
+phone, and Cédula `id-194449-7bd5c2d9`.) This proves `rol=docente` plus one
+pending tutor profile in the same successful registration.
+
+### Flow 8 - duplicate combinations (RF-7, AC-05)
+
+A form carrying set A's email **and** phone **and** Cédula, with otherwise-valid
+set G name/lastname and a valid password, checked terms, was submitted natively.
+Network: `POST http://localhost/pages/register.php [200]` (no redirect).
+Exactly three field errors, one per duplicated field:
+`Este correo electrónico ya está registrado.`, `Este teléfono ya está
+registrado.`, `Esta cédula o ID ya está registrada.` (ids `register-email-error`,
+`register-phone-error`, `register-id-error`). No form-level `role="alert"`.
+Zero new rows (final counts and `inspect` below).
+
+### Flow 9 - post-submit normalization through the data path (RF-6)
+
+Set E was submitted with deliberately transformed inputs:
+email `RUN.18396-1795194449-9B1B4DB1@EXAMPLE.INVALID`, phone
+`+506 0911 0111 0413 1101`, Cédula `ID-194449-9B1B4DB1`. Client validation
+accepted them; native `POST [303]` led to `login.php?registro=ok`. Data-path read:
+
+```
+id        34
+correo    run.18396-1795194449-9b1b4db1@example.invalid   (lowercase)
+telefono  5060911011104131101                             (digits only, +/spaces removed)
+documento ID-194449-9B1B4DB1                              (as typed, case preserved)
+```
+
+A lookup using the uppercase email returned the same row because the `correo`
+column is case-insensitive; the stored value itself is lowercase.
+
+### Flow 10 - XSS payload (AC-08b, RNF-3)
+
+CSP applied and confirmed active before submit (hidden `rol` stayed `estudiante`
+after a click; the CSP meta was the first child of `<head>`; console showed the
+two expected CSP notices). Name was set to `"><script>alert(1)</script>` with the
+rest of set F valid and terms checked. Native
+`POST http://localhost/pages/register.php [200]`; error
+`El nombre solo puede contener letras, espacios, guiones y apóstrofes.` The name
+control was repopulated only as an escaped, inert attribute value:
+
+```html
+<input id="register-name" name="name" type="text" autocomplete="given-name" value="&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;" aria-invalid="true" aria-describedby="register-name-error" autofocus="" required="" aria-required="true">
+```
+
+`document.body.innerHTML` contained no raw `<script>alert(1)</script>`, and no
+script element contained the payload (`scriptWithPayload: 0`). No modal dialog
+was observed and no row was written (set F `inspect` → NOT FOUND). The pre-submit
+page had an `alert()` override installed from the initScript; that override is
+document-scoped and is lost on the POST re-render, so dialog detection here rests
+on the escaped-value/inert-DOM evidence and on the absence of any alert during
+the run, which is recorded as the observed result.
+
+### Flow 11 - homepage "Enseñar" flow and preselection (RF-2.3, RF-16, AC-15)
+
+- At both widths, the homepage snapshot showed
+  `Enseñar` → `http://localhost/pages/register.php?rol=docente`. Clicking it from
+  `http://localhost/` navigated to that URL with visible text `Docente`, hidden
+  `docente`, accessible name `Tipo de cuenta: Docente, cambiar a Estudiante`, and
+  live-region text `Tipo de cuenta seleccionado: Docente.`. Network contained
+  only `GET .../register.php?rol=docente [200]` — no POST and no auto-submission.
+  At 402, `scrollWidth === clientWidth`.
+- Fresh `GET http://localhost/pages/register.php`, `?rol=admin`, and `?rol=foo`
+  each rendered all Estudiante signals (visible `Estudiante`, hidden
+  `estudiante`, `Tipo de cuenta: Estudiante, cambiar a Docente`, live
+  `Tipo de cuenta seleccionado: Estudiante.`).
+- **POST override (RF-2.4):** from `?rol=docente` (hidden `docente`, visible
+  `Docente`), the hidden `rol` was set to `estudiante` and a fully valid form
+  with set A's duplicate email plus set G's phone/Cédula was submitted natively.
+  An initial attempt with an invalid name was stopped by client-side validation
+  (no POST) and is not used as evidence. The real server round trip was
+  `POST http://localhost/pages/register.php [200]` re-rendering at
+  `http://localhost/pages/register.php` with **all** Estudiante signals (visible
+  `Estudiante`, hidden `estudiante`, accessible name
+  `Tipo de cuenta: Estudiante, cambiar a Docente`, live region
+  `Tipo de cuenta seleccionado: Estudiante.`), the email duplicate error, terms
+  checked, and both passwords empty. The submitted POST role therefore overrides
+  the GET preselection; no account was created.
+
+### Console results
+
+- Every JavaScript-enabled run (Flows 1-4, 6-9, 11 and the final fresh GET):
+  `list_console_messages` reported `<no console messages found>` — no errors and
+  no warnings.
+- Script-blocking CSP runs (Flows 5 and 10): exactly the two expected notices,
+  recorded separately:
+  `[error] Loading the script 'http://localhost/js/features/register-form.js'
+  violates the following Content Security Policy directive: "script-src 'none'" ...
+  The action has been blocked.` and
+  `[issue] Content Security Policy of your site blocks some resources (count: 1)`.
+  No other console messages appeared.
+
+### No-JavaScript mechanism used (adaptation, recorded)
+
+The T7.2 mechanism (a `document.write` of the CSP meta from the `navigate_page`
+initScript) was attempted first. In the current Chrome DevTools MCP build it no
+longer works: after such a navigation the document is left as a meta-only shell
+(`<html><head><meta ...></head></html>`, empty body, no server HTML), so it could
+not be used. The equivalent override actually used was a `navigate_page`
+`initScript` that installs a `MutationObserver` which inserts the same
+`<meta http-equiv="Content-Security-Policy" content="script-src 'none'">` as the
+first child of `<head>` as soon as the head is parsed. This still injects the CSP
+meta from the `navigate_page` initScript — the family of mechanism proven in T7.2 —
+and produced the same observable behaviour: the registration module was blocked
+(role button inert), the native POST and server re-render worked, and the same two
+CSP violation notices appeared. It is an environment-driven adaptation of the
+proven mechanism, not a product change; no application source was modified.
+
+### Cleanup proof (RNF-7, failure-safe step)
+
+Read-only application-path inspection before cleanup showed created sets A id=30,
+B id=31, H id=32, D id=33, E id=34, and non-writing sets C, F, G, X as NOT FOUND;
+counts were `accounts=6 profiles=1`. Cleanup then used
+`php tests/php/test_support.php cleanup --email=<...> --id=<...> --phone=<...>`
+for every captured set. The helper matches only the captured identifiers (no
+prefix or truncation) and deletes `perfiles_docente` before `usuarios`:
+
+```
+A: Deleted tutor profiles: 0, accounts: 1. Remaining rows for the captured identifiers: 0 [exit=0]
+B: Deleted tutor profiles: 0, accounts: 1. Remaining rows for the captured identifiers: 0 [exit=0]
+H: Deleted tutor profiles: 0, accounts: 1. Remaining rows for the captured identifiers: 0 [exit=0]
+D: Deleted tutor profiles: 1, accounts: 1. Remaining rows for the captured identifiers: 0 [exit=0]
+E: Deleted tutor profiles: 0, accounts: 1. Remaining rows for the captured identifiers: 0 [exit=0]
+ALL_CLEANUP_OK=True
+```
+
+Set D is the explicit profiles-before-accounts proof: its tutor profile was
+deleted first, then its account. Final application-path counts:
+`FINAL_COUNTS accounts=1 profiles=0`, with the pre-existing prototype intact
+(`id=1`, all identifying fields empty, `rol=estudiante`, `estado=activo`). A
+final `inspect` of all nine captured emails returned `NOT FOUND` for each
+(`ZERO_RESIDUE_ALL_IDENTIFIERS=True`). Tables were never truncated, the prototype
+row was untouched, and no writing tests ran in parallel.
+
+### Result
+
+All eleven flow groups passed at the required viewports, every registration used
+an RNF-7 per-run token, the post-submit reads showed the stored normalized values
+and the pending tutor profile, the four notice cases and the XSS escaping were
+observed, JavaScript-enabled consoles were clean (CSP notices recorded
+separately), and cleanup left zero residue with the prototype row intact.
+AC-03, AC-04, AC-05 (browser part), AC-08b, AC-09, AC-10 and AC-15 are verified
+by this run.
