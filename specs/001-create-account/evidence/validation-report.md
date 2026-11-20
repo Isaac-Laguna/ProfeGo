@@ -167,3 +167,22 @@ Informational / documented limitations recorded for completeness (none is a fail
 ## 7. Conclusion
 
 All acceptance criteria AC-01 through AC-15 are **Verified** with concrete evidence paths from the final runs, with no AC failed or unverified. Layers 0-4 are represented, and every Layer 3 result is recorded at both 1440x900 and 402x874. Zero test residue, no new dependency/build step/schema change, and the "never logged" clause verified are confirmed. The specification may move to `Implemented` in T10.1 after MEMORY.md, task statuses and evidence pointers are finalized; its status remains `Approved` at the time of this report.
+
+---
+
+## 8. Handoff / closure (T10.1)
+
+- **T10.1 completed.** This closes Spec 001. All 23 tasks (T1.1-T10.1) are done; no implementation tasks remain.
+- **Spec status transition.** `spec.md` Status changed from `Approved` to `Implemented` in T10.1, after this report recorded AC-01..AC-15 Verified and the "never logged" clause VERIFIED. Earlier sections of this report retain their T9.5-time status wording and are unchanged.
+- **`MEMORY.md` finalized** with the implemented capability, approved decisions and the non-AC limitations; kept at or below 50 lines and free of credentials, tokens and passwords.
+
+**Final evidence-artifact pointers** (all relative to `specs/001-create-account/`; every artifact was created before T10.1 and is unchanged by it):
+
+- Baseline: `evidence/baseline-notes.md`, `evidence/baseline-1440.png`, `evidence/baseline-402.png`
+- Layers 0-1: `evidence/layer0-foundation.txt`, `evidence/layer0.txt`, `evidence/layer1-corpus.md`, `evidence/layer1-php.txt`, `evidence/layer1-js.txt`
+- Layer 2: `evidence/layer2.txt`
+- Layer 3: `evidence/layer3-notes.md`, `evidence/layer3-a11y.json`, `evidence/layer3-1440.png`, `evidence/layer3-402.png`, `evidence/layer3-error-1440.png`, `evidence/layer3-error-402.png`, `evidence/layer3-notice-1440.png`, `evidence/layer3-notice-402.png`
+- Layer 4: `evidence/layer4-pipeline.txt`, `evidence/layer4-http.txt`
+- Report: `evidence/validation-report.md`
+
+**Branch-hygiene reminder (eventual feature PR).** The `feature/create-account` PR description MUST disclose the off-topic historical commits and explain why they remain (do not rewrite pushed history): `22ea314`, `3166faa`, `a649e51`, `b07056b`, `7666b4b`, and the non-conventional messages `098c445`, `0b9292e`, `b73c6a8`, `7edf0ad`, `208a114`, `8dca53e`. Details are in `MEMORY.md` under Branch hygiene. `README.md` was intentionally not modified by T10.1.

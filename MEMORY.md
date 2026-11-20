@@ -2,11 +2,11 @@
 
 ## SDD process (spec 001)
 
-- Spec 001 (create-account) is `Approved`. The Status line lives only in `spec.md` (lifecycle: Draft → Approved → Implemented); `plan.md` and `tasks.md` carry no status.
+- Spec 001 (create-account) is `Implemented`. All 23 tasks (T1.1-T10.1) are complete; no pending implementation tasks remain. The Status line lives only in `spec.md` (lifecycle: Draft → Approved → Implemented); `plan.md` and `tasks.md` carry no status.
+- Evidence: `specs/001-create-account/evidence/validation-report.md`. All AC-01..AC-15 are Verified with concrete evidence across Layers 0-4 at 1440x900 and 402x874; the "never logged" clause is VERIFIED. Zero test residue, no new dependency/build step/schema change.
 - Revision agreement: the spec keeps observable outcomes and approved constraints; mechanisms live in `plan.md`/`tasks.md`. Rule: if a detail can change without changing product behavior, it belongs in the plan.
 - RF-2 is atomized into RF-2.1–RF-2.4; edge cases are illustrative; acceptance criteria reference RF IDs.
 - CSRF policy (session-stable, non-expiring, non-rotating) is justified under RF-9; test-write/residue risks are documented under Documented limitations.
-- Implementation: T1.1–T7.2 complete with recorded evidence (Layers 0–3). Remaining: T8.1 (HTTP security harness), T9.1–T9.5 (validation), T10.1 (handoff). Next task: T8.1.
 - `docs/constitution.md` defines principles C1–C6, approved Nov 2026.
 
 ## Branch hygiene (feature/create-account)
@@ -34,7 +34,14 @@
 
 - `pages/register.php` is a thin adapter; the prototype INSERT was removed in T5.2. Pipeline: `includes/register_controller.php`, view: `includes/register_view.php`, domain service: `includes/registration_service.php`.
 - Validation (`includes/validation.php`) and CSRF (`includes/csrf.php`) are server-authoritative; browser enhancement: `js/features/register-form.js` with DOM-free modules `register-validation.js` and `register-role.js`.
-- Error styles in `css/register.css` are active and contrast-compliant.
+- Registration works end-to-end for `estudiante` and `docente`: server-authoritative validation, CSRF, PRG 303 + one-time login notice, and JS as progressive enhancement (no-JS native POST still works). Error styles in `css/register.css` are active and contrast-compliant.
+
+## Known limitations (unverified non-AC clauses)
+
+- Figma file not directly consulted (no file key); T1.1 baseline screenshots were the approved visual reference.
+- XSS post-render alert detection relies on escaped-value/inert-DOM evidence; the no-JS `alert()` override is lost on re-render.
+- `csrf_token` literal appears in two JS comments (field name only, no token value); no secret in client-side code.
+- Pre-existing all-empty prototype row in `usuarios` retained as the baseline; never used for assertions or deleted.
 
 ## Environment
 

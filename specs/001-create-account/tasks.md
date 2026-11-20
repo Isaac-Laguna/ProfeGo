@@ -131,7 +131,7 @@
 
 ## Phase 10: Documentation and Handoff
 
-- [ ] **T10.1 Update project state and finalize evidence pointers**
+- [x] **T10.1 Update project state and finalize evidence pointers**
   - **RF:** RF-1 through RF-16 (state reporting); **RNF:** RNF-6
   - Update `MEMORY.md` with the implemented capability, approved decisions, and any unresolved or unverified clauses; keep it at or below 50 lines and free of credentials, tokens, and passwords. Finalize task statuses and evidence pointers in the validation report. After T9.5's report is complete, set `spec.md` status to `Implemented`. Do not modify `README.md` unless separately approved.
   - Done when: `MEMORY.md` reflects the implemented registration capability, the validation report links every evidence artifact, `spec.md` status is `Implemented`, no credential/token/password appears in either file, and no file outside the approved scope was changed by this task.

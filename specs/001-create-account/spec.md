@@ -1,6 +1,6 @@
 # Spec 001 - Create Account
 
-**Status:** Approved
+**Status:** Implemented
 
 ## Context and Objective
 
