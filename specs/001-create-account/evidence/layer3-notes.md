@@ -1021,3 +1021,243 @@ Only `js/features/register-form.js` was modified for behavior; this evidence fil
 and the T7.2 checkbox in `tasks.md` are the only other changed paths. No CSS,
 view, controller, service, PHP, corpus, MEMORY.md, or baseline file was modified.
 No secret was added to client-side code and no residue remains.
+
+## T9.2 - final visual and accessibility verification
+
+Date: 2026-11-20. RF-2.1, RF-2.2 (role surface), RF-4, RF-12, RF-14; RNF-4, RNF-5;
+AC-11, AC-13. This section is appended; every earlier section above is unchanged.
+
+### Scope, environment and method
+
+- This task produced evidence only. No source, CSS, JS, PHP, corpus, baseline, or
+  MEMORY.md file was changed. No database row was written by any step here.
+- URL: `http://localhost/pages/register.php`, fresh GET per run. Chrome DevTools
+  MCP (real CDP): `emulate` `1440x900x1` and `402x874x1,mobile,touch`;
+  `navigate_page`, `take_snapshot` (verbose), `evaluate_script`, `fill_form`,
+  `click`, `press_key`, `list_network_requests`, `list_console_messages`.
+- The genuine server-generated field error was produced with JavaScript ENABLED:
+  the email `usu..ario@example.com` is accepted by the permissive shared ASCII
+  pattern in `js/features/register-validation.js` (the client reported zero
+  errors) but rejected by PHP `FILTER_VALIDATE_EMAIL`. The native POST therefore
+  reached the server and returned HTTP 200 with a server-rendered field error.
+  No script-blocking emulation was needed for this task.
+- Structured a11y capture and the machine-readable assertion list are in
+  `evidence/layer3-a11y.json` (validated with PowerShell `ConvertFrom-Json`).
+
+### Visual comparison against the T1.1 baseline
+
+- Reference used: `evidence/baseline-1440.png` and `evidence/baseline-402.png`
+  (T1.1 pre-change captures). Both baseline files were left untouched.
+- Preserved at both widths: the centered white page, the ProfeGo logo in the
+  header, the "Crear cuenta" heading, the filled blue account-type control, the
+  bordered white field card on desktop / borderless card on mobile, the terms
+  row, the "¿Ya tienes una cuenta?" line, the "Crear Cuenta" submit, the Inter
+  typography, and the primary blue / dark-blue / grey palette.
+- Observable differences are exactly the approved spec changes and no others:
+  the combined "Correo electrónico o cédula/ID*" field was split into separate
+  "Correo electrónico*" and "Cédula/ID*" fields, a "Teléfono*" field was added,
+  all seven labels and the terms label now carry the visible `*` marker, and the
+  account-type control is now an interactive button instead of a static label.
+- At 402 px the terms label wraps onto two lines inside its container and the
+  submit sits below the terms row; both are reachable by vertical scrolling,
+  with no horizontal overflow, clipping, or overlap. This is the intended
+  mobile adaptation, not a scaled-down desktop layout.
+- Result: no visual regression beyond approved deviations; AC-11 PASS at both
+  widths.
+
+### Figma-reference caveat
+
+No Figma file key is available in the repository. AGENTS.md treats Figma as a
+visual reference rather than a strict technical specification, so the T1.1
+baseline screenshots were used as the concrete approved visual reference. The
+Figma file was not directly consulted for this task; this is a recorded
+limitation and was not treated as a blocker.
+
+### Item 1 - control visibility, geometry and scroll reachability
+
+| Measurement | 1440x900 | 402x874 |
+| --- | --- | --- |
+| Viewport (w x h, dpr) | 1440 x 900, 1 | 402 x 874, 1 (mobile,touch) |
+| `document.scrollWidth` / `clientWidth` | 1425 / 1425 | 402 / 402 |
+| Horizontal overflow | no | no |
+| `document.scrollHeight` / viewport height | 1203 / 900 | 1013 / 874 |
+| Controls rendered / labels exact | 7 / 7 | 7 / 7 |
+| Exact labels | Nombre*, Apellido*, Correo electrónico*, Teléfono*, Cédula/ID*, Crear contraseña*, Confirmar contraseña* | identical |
+| Each control `display` / `visibility` / `opacity` | block / visible / 1 | block / visible / 1 |
+| Each control `scrollWidth == clientWidth` | yes (238/238 input content; 272 rendered) | yes (182/182 input content; 208.23 rendered) |
+| Detected pairwise control overlaps | none | none |
+| Role button rendered | `BUTTON type=button`, visible | identical |
+| Terms checkbox + label rendered | visible, exact label | visible, exact label |
+| Submit rendered | `BUTTON type=submit`, "Crear Cuenta", visible | identical |
+| Vertical-scroll reachability | max scroll 303/303; password-confirm, terms and submit fully inside viewport | max scroll 139/139; terms and submit fully inside viewport |
+
+Acts 1-3 of the a11y tree (`banner`, `main`, `region "Crear cuenta"`, `form`)
+were present at both widths, with the expected reading order.
+
+### Item 2 - required markers and programmatic required state
+
+| Measurement | 1440x900 | 402x874 |
+| --- | --- | --- |
+| Labels containing a visible `*` | 8 (seven inputs + terms) | 8 |
+| `[required]` attributes in DOM | 8 | 8 |
+| `[aria-required="true"]` attributes in DOM | 8 | 8 |
+| Exact seven input label strings | PASS | PASS |
+| Terms label string | `Acepto los términos y condiciones y la Política de Privacidad.*` | identical |
+
+A fresh-GET DOM check confirmed the markers are not the only signal: e.g.
+`#register-name` has `required`, `aria-required="true"`, and no `aria-invalid`,
+and `#register-terms` has `required`, `aria-required="true"`, and no
+`aria-invalid` attribute. Chrome's a11y tree shows the unchecked required terms
+box as `invalid="true"`; that is the browser's inferred representation of an
+unsatisfied required control (the DOM has no `aria-invalid`), and after the
+server re-render with terms checked the tree shows `checked`. Recorded as an
+observation, not a failure.
+
+### Item 3 - role control surface and toggle
+
+| Signal | 1440x900 | 402x874 |
+| --- | --- | --- |
+| Visible text / hidden `rol` | Estudiante / estudiante | Estudiante / estudiante |
+| Accessible name | Tipo de cuenta: Estudiante, cambiar a Docente | identical |
+| Role / `aria-pressed` | button / null (absent) | button / null (absent) |
+| Live region | Tipo de cuenta seleccionado: Estudiante. | identical |
+| After Enter | Docente / docente / Tipo de cuenta: Docente, cambiar a Estudiante / live Docente / aria-pressed null | identical |
+| After Space | back to all Estudiante signals | identical |
+| Navigation on activation | none (URL unchanged) | none (URL unchanged) |
+| Horizontal overflow after toggle | none | none |
+
+A11y tree excerpt, student state (1440; 402 identical with different uids):
+
+```text
+uid=1_12 button "Tipo de cuenta: Estudiante, cambiar a Docente"
+  uid=1_13 "Estudiante"
+uid=1_14 status atomic live="polite" relevant="additions text"
+  uid=1_15 "Tipo de cuenta seleccionado: Estudiante."
+```
+
+Docente state (1440; 402 identical with different uids):
+
+```text
+uid=1_12 button "Tipo de cuenta: Docente, cambiar a Estudiante" focusable focused
+  uid=2_0 "Docente"
+uid=1_14 status atomic live="polite" relevant="additions text"
+  uid=2_1 "Tipo de cuenta seleccionado: Docente."
+```
+
+No `pressed` state appears in either tree.
+
+### Items 4-5 - server error, a11y association and focus indicators
+
+Both widths: native POST returned `POST http://localhost/pages/register.php [200]`
+with `scripts=1` (JavaScript enabled) and no redirect. The only field error was
+`register-email-error` = `El correo electrónico no es válido.`; no form-level
+`role="alert"` was present.
+
+| Measurement | 1440x900 | 402x874 |
+| --- | --- | --- |
+| `aria-invalid` / `aria-describedby` on `#register-email` | true / register-email-error | true / register-email-error |
+| Focused element after re-render | register-email | register-email |
+| `:focus-visible` on invalid control | true | true |
+| Invalid-control outline | 3px solid rgb(48, 68, 133), offset 1px | identical |
+| Role-button outline (Tab-focused, fresh GET) | 3px solid rgb(48, 68, 133), offset 2px | identical |
+| `scrollWidth == clientWidth` on error `<p>` | 272 / 272 | 208 / 208 |
+| Error inside card bounds | yes | yes |
+
+Invalid-control a11y tree (1440; 402 is structurally identical with uids 6_x):
+
+```text
+uid=4_30 LabelText
+  uid=4_31 "Correo electrónico*"
+uid=4_32 textbox "Correo electrónico*" description="El correo electrónico no es válido." focusable focused invalid="true" required value="usu..ario@example.com"
+  uid=4_33 generic
+    uid=4_34 "usu..ario@example.com"
+uid=4_35 generic
+  uid=4_36 paragraph
+    uid=4_37 "El correo electrónico no es válido."
+```
+
+The `description` on the textbox is the error text itself, confirming the
+`aria-describedby` association is exposed in the accessibility tree.
+
+Required-control a11y tree (fresh GET, 1440; 402 identical with uids 5_x):
+
+```text
+uid=1_18 ignored
+  uid=1_19 LabelText
+    uid=1_20 "Nombre*"
+  uid=1_21 textbox "Nombre*" required
+    uid=1_22 generic
+```
+
+### Item 6 - error text color, opacity, font size and contrast
+
+| Measurement | 1440x900 | 402x874 |
+| --- | --- | --- |
+| Computed color (container and `<p>`) | rgb(179, 38, 30) | rgb(179, 38, 30) |
+| Computed opacity | 1 | 1 |
+| Font size | 14px | 12px (>= 12px REQUIRED) |
+| Line height | 19.6px | 16.8px |
+| `overflow-wrap` | break-word | break-word |
+
+Contrast calculation (identical at both widths):
+
+```text
+foreground #b3261e = rgb(179, 38, 30)
+linear R = 0.4507857828, G = 0.0193823610, B = 0.0129830323
+L_foreground = 0.2126*R + 0.7152*G + 0.0722*B = 0.1106366969
+L_white = 1.0
+ratio = (1.0 + 0.05) / (0.1106366969 + 0.05) = 6.5365 : 1
+required >= 4.5 : 1  ->  PASS
+```
+
+### Item 6b - simulated long-error wrapping
+
+For measurement only, a long string was injected into the existing error `<p>`
+with `evaluate_script`; it is explicitly simulated, not server content, and is
+not present in the screenshots. The exact real server message was restored
+afterwards and the restoration was asserted.
+
+| Simulated value | 1440x900 | 402x874 |
+| --- | --- | --- |
+| Injected characters | 624 | 624 |
+| `<p>` `scrollWidth` / `clientWidth` | 272 / 272 | 208 / 208 |
+| Wrapped lines (height / line-height) | ~17 (333.09px / 19.6px) | ~19 (319.14px / 16.8px) |
+| Error inside card horizontally | yes | yes |
+| Document `scrollWidth` / `clientWidth` | 1425 / 1425 | 402 / 402 |
+| Horizontal overflow | none | none |
+| Restored to real server message | yes | yes |
+
+### Items 7-8 - meta description and console
+
+- `meta[name=description].content` is exactly
+  `Regístrate en ProfeGo como estudiante o docente.` at both widths (AC-13 PASS).
+- `list_console_messages` on fresh GETs: `<no console messages found>` at both
+  widths (no errors, no warnings). The final screenshots were captured on those
+  same clean fresh-GET states.
+- Environment note: an earlier navigation using `ignoreCache:true` caused the
+  browser to request the missing `/favicon.ico` and log a 404 console error.
+  The specified fresh-GET procedure produced no favicon request and a clean
+  console. The missing favicon is a pre-existing site-wide asset condition,
+  unrelated to the registration page JavaScript.
+
+### No database writes and evidence artifacts
+
+- After each width's invalid POST:
+  `php tests/php/test_support.php inspect --email=usu..ario@example.com`
+  -> `NOT FOUND: no account matches correo = usu..ario@example.com` (exit 0).
+  No account and no tutor profile was created.
+- Final screenshots (fresh GET default state, full-page PNG):
+  `evidence/layer3-1440.png`, `evidence/layer3-402.png`.
+  These are distinct from the baseline and `layer3-error-*.png` files; neither
+  baseline nor error screenshot was modified.
+- Structured a11y capture: `evidence/layer3-a11y.json`.
+
+### Result
+
+Every check passed at both widths: all controls/labels/markers/actions visible
+with no horizontal overflow, clipping, or overlap; role signals and toggle
+correct with button role and no pressed state; error association, focus
+outlines, and a11y trees confirmed; error contrast 6.5365:1 >= 4.5:1; mobile
+error font 12px >= 12px; simulated long errors wrap inside the card without
+horizontal overflow; meta description exact; console clean; zero DB writes.
+AC-11 and AC-13 are verified.

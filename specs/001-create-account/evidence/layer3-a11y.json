@@ -1,0 +1,253 @@
+{
+  "spec": "001-create-account",
+  "task": "T9.2",
+  "date": "2026-11-20",
+  "purpose": "Final Layer 3 visual and accessibility verification at both supported widths (AC-11, AC-13; RF-2.1, RF-2.2, RF-4, RF-12, RF-14; RNF-4, RNF-5).",
+  "url": "http://localhost/pages/register.php",
+  "tool": "Chrome DevTools MCP (real CDP): emulate, navigate_page (fresh GET), take_snapshot (verbose), evaluate_script, fill_form, click, press_key, list_network_requests, list_console_messages",
+  "screenshots": {
+    "desktop": "evidence/layer3-1440.png",
+    "mobile": "evidence/layer3-402.png",
+    "capture": "fullPage PNG of a fresh GET default (student) state; distinct from baseline-*.png and layer3-error-*.png"
+  },
+  "figma_reference": {
+    "consulted_directly": false,
+    "reason": "No Figma file key is available in the repository. AGENTS.md treats Figma as a visual reference rather than a strict technical specification; the approved T1.1 baseline screenshots (evidence/baseline-1440.png, evidence/baseline-402.png) were used as the concrete visual comparison reference. This limitation was recorded, not treated as a blocker."
+  },
+  "error_text_contrast": {
+    "computed_color": "rgb(179, 38, 30)",
+    "hex": "#b3261e",
+    "background": "rgb(255, 255, 255)",
+    "relative_luminance_foreground": 0.11063669692291163,
+    "relative_luminance_background": 1.0,
+    "ratio": 6.5365,
+    "required_ratio": 4.5,
+    "result": "PASS",
+    "note": "Identical computation at both widths because the computed color is the same; WCAG sRGB linearization (0.03928 / 0.055 / 2.4) with 0.2126/0.7152/0.0722 weights."
+  },
+  "server_error_method": {
+    "description": "Native form POST with JavaScript enabled. The email 'usu..ario@example.com' is accepted by the permissive shared ASCII email pattern in js/features/register-validation.js (client reported zero errors) but rejected by PHP FILTER_VALIDATE_EMAIL, so a real server-generated field error is re-rendered at HTTP 200. No JavaScript disabling was used.",
+    "client_errors_before_post": 0,
+    "http_status": 200,
+    "redirect": false,
+    "db_writes": false,
+    "db_inspect_result": "NOT FOUND: no account matches correo = usu..ario@example.com (exit 0) at both widths"
+  },
+  "observations": [
+    "Chrome's accessibility tree represents the unchecked, required terms checkbox as invalid=\"true\" on the fresh GET; the DOM has no aria-invalid attribute (verified: getAttribute('aria-invalid') === null, required=true, aria-required='true'). This is the browser's inferred representation of an unsatisfied required control, not a server/client validation error. With terms checked after the server re-render the tree shows 'checked'.",
+    "An initial navigation with ignoreCache:true caused the browser to request /favicon.ico (404), which appeared as a console error. A plain fresh GET (the specified procedure) produced no favicon request and '<no console messages found>' at both widths. The favicon 404 is a pre-existing site-wide missing asset, unrelated to the registration page JavaScript."
+  ],
+  "viewports": {
+    "1440x900": {
+      "emulation": "1440x900x1",
+      "page_geometry": {
+        "viewport": { "w": 1440, "h": 900, "dpr": 1 },
+        "document": { "scrollWidth": 1425, "clientWidth": 1425, "scrollHeight": 1203, "clientHeight": 900 },
+        "horizontal_overflow": false,
+        "scroll_reachability": "At max scroll (scrollY=303 of 303) the Confirmar contraseña control, terms checkbox and Crear Cuenta submit are fully inside the viewport."
+      },
+      "controls": {
+        "seven_text_password_controls_rendered": true,
+        "exact_labels": ["Nombre*", "Apellido*", "Correo electrónico*", "Teléfono*", "Cédula/ID*", "Crear contraseña*", "Confirmar contraseña*"],
+        "all_labels_exact": true,
+        "all_visible": true,
+        "display": "block (all seven)",
+        "visibility": "visible (all seven)",
+        "opacity": "1 (all seven)",
+        "clipped_horizontally": false,
+        "overlaps_detected": [],
+        "control_width_px": 272,
+        "required_attribute_count": 8,
+        "aria_required_true_count": 8,
+        "visible_asterisk_labels": 8,
+        "terms_label": "Acepto los términos y condiciones y la Política de Privacidad.*",
+        "submit": { "tag": "BUTTON", "type": "submit", "text": "Crear Cuenta", "visible": true }
+      },
+      "role_control": {
+        "tag": "BUTTON",
+        "type": "button",
+        "visible_text": "Estudiante",
+        "hidden_name": "rol",
+        "hidden_value": "estudiante",
+        "accessible_name": "Tipo de cuenta: Estudiante, cambiar a Docente",
+        "aria_pressed": null,
+        "live_region_text": "Tipo de cuenta seleccionado: Estudiante.",
+        "focus_indicator": { "focus_visible": true, "outline": "3px solid rgb(48, 68, 133)", "outline_offset": "2px" },
+        "toggle_enter": { "text": "Docente", "hidden_value": "docente", "accessible_name": "Tipo de cuenta: Docente, cambiar a Estudiante", "live_region_text": "Tipo de cuenta seleccionado: Docente.", "aria_pressed": null, "url_unchanged": true },
+        "toggle_space_back": { "text": "Estudiante", "hidden_value": "estudiante", "accessible_name": "Tipo de cuenta: Estudiante, cambiar a Docente", "live_region_text": "Tipo de cuenta seleccionado: Estudiante.", "aria_pressed": null, "url_unchanged": true },
+        "a11y_tree_student": [
+          "uid=1_12 button \"Tipo de cuenta: Estudiante, cambiar a Docente\"",
+          "  uid=1_13 \"Estudiante\"",
+          "uid=1_14 status atomic live=\"polite\" relevant=\"additions text\"",
+          "  uid=1_15 \"Tipo de cuenta seleccionado: Estudiante.\""
+        ],
+        "a11y_tree_docente": [
+          "uid=1_12 button \"Tipo de cuenta: Docente, cambiar a Estudiante\" focusable focused",
+          "  uid=2_0 \"Docente\"",
+          "uid=1_14 status atomic live=\"polite\" relevant=\"additions text\"",
+          "  uid=2_1 \"Tipo de cuenta seleccionado: Docente.\""
+        ]
+      },
+      "required_control_a11y_tree": [
+        "uid=1_18 ignored",
+        "  uid=1_19 LabelText",
+        "    uid=1_20 \"Nombre*\"",
+        "  uid=1_21 textbox \"Nombre*\" required",
+        "    uid=1_22 generic"
+      ],
+      "invalid_control": {
+        "network": "POST http://localhost/pages/register.php [200]",
+        "scripts_present": 1,
+        "error_id": "register-email-error",
+        "error_text": "El correo electrónico no es válido.",
+        "form_level_alert_present": false,
+        "aria_invalid": "true",
+        "aria_describedby": "register-email-error",
+        "focused_element": "register-email",
+        "focus_visible": true,
+        "focus_outline": { "width": "3px", "style": "solid", "color": "rgb(48, 68, 133)", "offset": "1px" },
+        "error_text_style": { "color": "rgb(179, 38, 30)", "opacity": "1", "font_size": "14px", "line_height": "19.6px", "overflow_wrap": "break-word", "scrollWidth": 272, "clientWidth": 272 },
+        "error_inside_card": true,
+        "card_width_px": 320,
+        "document": { "scrollWidth": 1425, "clientWidth": 1425, "horizontal_overflow": false },
+        "a11y_tree": [
+          "uid=4_30 LabelText",
+          "  uid=4_31 \"Correo electrónico*\"",
+          "uid=4_32 textbox \"Correo electrónico*\" description=\"El correo electrónico no es válido.\" focusable focused invalid=\"true\" required value=\"usu..ario@example.com\"",
+          "  uid=4_33 generic",
+          "    uid=4_34 \"usu..ario@example.com\"",
+          "uid=4_35 generic",
+          "  uid=4_36 paragraph",
+          "    uid=4_37 \"El correo electrónico no es válido.\""
+        ]
+      },
+      "long_error_simulation": {
+        "simulated": true,
+        "injected_characters": 624,
+        "p_scrollWidth": 272,
+        "p_clientWidth": 272,
+        "wrapped_lines_approx": 17,
+        "line_height": "19.6px",
+        "inside_card_horizontally": true,
+        "document_horizontal_overflow": false,
+        "restored_to_real_server_message": true
+      },
+      "meta_description": {
+        "value": "Regístrate en ProfeGo como estudiante o docente.",
+        "exact": true
+      },
+      "console": "<no console messages found> (no errors, no warnings)"
+    },
+    "402x874": {
+      "emulation": "402x874x1,mobile,touch",
+      "page_geometry": {
+        "viewport": { "w": 402, "h": 874, "dpr": 1, "mobile": true, "touch": true },
+        "document": { "scrollWidth": 402, "clientWidth": 402, "scrollHeight": 1013, "clientHeight": 874 },
+        "horizontal_overflow": false,
+        "scroll_reachability": "At max scroll (scrollY=139 of 139) the terms checkbox and Crear Cuenta submit are fully inside the viewport."
+      },
+      "controls": {
+        "seven_text_password_controls_rendered": true,
+        "exact_labels": ["Nombre*", "Apellido*", "Correo electrónico*", "Teléfono*", "Cédula/ID*", "Crear contraseña*", "Confirmar contraseña*"],
+        "all_labels_exact": true,
+        "all_visible": true,
+        "display": "block (all seven)",
+        "visibility": "visible (all seven)",
+        "opacity": "1 (all seven)",
+        "clipped_horizontally": false,
+        "overlaps_detected": [],
+        "control_width_px": 208.23,
+        "required_attribute_count": 8,
+        "aria_required_true_count": 8,
+        "visible_asterisk_labels": 8,
+        "terms_label": "Acepto los términos y condiciones y la Política de Privacidad.*",
+        "submit": { "tag": "BUTTON", "type": "submit", "text": "Crear Cuenta", "visible": true }
+      },
+      "role_control": {
+        "tag": "BUTTON",
+        "type": "button",
+        "visible_text": "Estudiante",
+        "hidden_name": "rol",
+        "hidden_value": "estudiante",
+        "accessible_name": "Tipo de cuenta: Estudiante, cambiar a Docente",
+        "aria_pressed": null,
+        "live_region_text": "Tipo de cuenta seleccionado: Estudiante.",
+        "focus_indicator": { "focus_visible": true, "outline": "3px solid rgb(48, 68, 133)", "outline_offset": "2px" },
+        "toggle_enter": { "text": "Docente", "hidden_value": "docente", "accessible_name": "Tipo de cuenta: Docente, cambiar a Estudiante", "live_region_text": "Tipo de cuenta seleccionado: Docente.", "aria_pressed": null, "url_unchanged": true },
+        "toggle_space_back": { "text": "Estudiante", "hidden_value": "estudiante", "accessible_name": "Tipo de cuenta: Estudiante, cambiar a Docente", "live_region_text": "Tipo de cuenta seleccionado: Estudiante.", "aria_pressed": null, "url_unchanged": true },
+        "a11y_tree_student": [
+          "uid=5_12 button \"Tipo de cuenta: Estudiante, cambiar a Docente\"",
+          "  uid=5_13 \"Estudiante\"",
+          "uid=5_14 status atomic live=\"polite\" relevant=\"additions text\"",
+          "  uid=5_15 \"Tipo de cuenta seleccionado: Estudiante.\""
+        ]
+      },
+      "required_control_a11y_tree": [
+        "uid=5_17 ignored",
+        "  uid=5_18 LabelText",
+        "    uid=5_19 \"Nombre*\"",
+        "  uid=5_20 textbox \"Nombre*\" required",
+        "    uid=5_21 generic"
+      ],
+      "invalid_control": {
+        "network": "POST http://localhost/pages/register.php [200]",
+        "scripts_present": 1,
+        "error_id": "register-email-error",
+        "error_text": "El correo electrónico no es válido.",
+        "form_level_alert_present": false,
+        "aria_invalid": "true",
+        "aria_describedby": "register-email-error",
+        "focused_element": "register-email",
+        "focus_visible": true,
+        "focus_outline": { "width": "3px", "style": "solid", "color": "rgb(48, 68, 133)", "offset": "1px" },
+        "error_text_style": { "color": "rgb(179, 38, 30)", "opacity": "1", "font_size": "12px", "line_height": "16.8px", "overflow_wrap": "break-word", "scrollWidth": 208, "clientWidth": 208 },
+        "error_inside_card": true,
+        "card_width_px": 244.95,
+        "document": { "scrollWidth": 402, "clientWidth": 402, "horizontal_overflow": false },
+        "a11y_tree": [
+          "uid=6_30 LabelText",
+          "  uid=6_31 \"Correo electrónico*\"",
+          "uid=6_32 textbox \"Correo electrónico*\" description=\"El correo electrónico no es válido.\" focusable focused invalid=\"true\" required value=\"usu..ario@example.com\"",
+          "  uid=6_33 generic",
+          "    uid=6_34 \"usu..ario@example.com\"",
+          "uid=6_35 generic",
+          "  uid=6_36 paragraph",
+          "    uid=6_37 \"El correo electrónico no es válido.\""
+        ]
+      },
+      "long_error_simulation": {
+        "simulated": true,
+        "injected_characters": 624,
+        "p_scrollWidth": 208,
+        "p_clientWidth": 208,
+        "wrapped_lines_approx": 19,
+        "line_height": "16.8px",
+        "inside_card_horizontally": true,
+        "document_horizontal_overflow": false,
+        "restored_to_real_server_message": true
+      },
+      "meta_description": {
+        "value": "Regístrate en ProfeGo como estudiante o docente.",
+        "exact": true
+      },
+      "console": "<no console messages found> (no errors, no warnings)"
+    }
+  },
+  "assertion_summary": {
+    "all_checks_passed_both_widths": true,
+    "failed_checks": [],
+    "checks": [
+      { "id": "C1", "name": "Seven text/password controls + labels + role + terms + submit rendered, visible, not clipped, not overlapping, reachable by vertical scroll, no horizontal overflow", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C2", "name": "Exactly eight visible '*' markers, eight required and eight aria-required='true'", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C3", "name": "Role control: visible 'Estudiante', hidden 'estudiante', accessible name, button role, no aria-pressed; toggle to Docente and back updates all signals without navigation", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C4", "name": "Accessibility tree captured for role control, required control and invalid control; aria-invalid/aria-describedby/error-text association confirmed", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C5", "name": "Visible focus indicators (3px solid outline) on role button and invalid control", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C6", "name": "Error text rgb(179,38,30), opacity 1, 14px desktop / 12px mobile, contrast 6.5365:1 >= 4.5:1", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C7", "name": "Simulated long error wraps inside the card with no horizontal overflow; real server state restored", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C8", "name": "Meta description exactly 'Regístrate en ProfeGo como estudiante o docente.'", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C9", "name": "Console clean in JavaScript-enabled fresh-GET runs", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C10", "name": "Real invalid POST produced no account or tutor profile (no DB writes)", "result": "PASS", "widths": ["1440x900", "402x874"] },
+      { "id": "C11", "name": "Visual comparison against T1.1 baseline: intended structure/typography/colors/spacing preserved; only approved deviations visible", "result": "PASS", "widths": ["1440x900", "402x874"] }
+    ]
+  }
+}
